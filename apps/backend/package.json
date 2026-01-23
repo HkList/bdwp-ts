@@ -1,0 +1,34 @@
+{
+  "name": "backend",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "build": "bun build --compile ./src/index.ts --outfile dist/app",
+    "preview": "NODE_ENV=production bun run ./src/index.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "typecheck": "tsgo --noEmit"
+  },
+  "dependencies": {
+    "@elysiajs/bearer": "^1.4.2",
+    "@elysiajs/cors": "^1.4.1",
+    "@elysiajs/static": "^1.4.7",
+    "@elysiajs/swagger": "^1.3.1",
+    "drizzle-orm": "^1.0.0-beta.11-05230d9",
+    "elysia": "^1.4.22",
+    "env-var": "^7.5.0",
+    "ioredis": "^5.9.2"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^7.0.1",
+    "@types/bun": "^1.3.6",
+    "@types/pg": "^8.16.0",
+    "@typescript/native-preview": "^7.0.0-dev.20260103.1",
+    "bullmq": "^5.66.5",
+    "drizzle-kit": "^1.0.0-beta.11-05230d9",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "pg": "^8.17.1",
+    "typescript": "^5.9.3"
+  }
+}
