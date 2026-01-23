@@ -9,7 +9,6 @@ export const UserModule = new Elysia({ prefix: '/users' })
     body: UserModel.createUserBody,
     response: {
       200: UserModel.createUserSuccess,
-      400: UserModel.createUserFailedWrongConfirmPassword,
       409: UserModel.createUserFailedUsernameExists,
     },
     detail: {

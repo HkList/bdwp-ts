@@ -24,7 +24,9 @@ export default defineNuxtConfig({
       import.meta.dirname,
       "../backend/src/services/elysia.ts",
     ),
+    "@backend/api": join(import.meta.dirname, "../backend/src/api/index.ts"),
     "@backend": join(import.meta.dirname, "../backend/src"),
+    "@root": join(import.meta.dirname, "../../"),
   },
 
   routeRules: {
@@ -55,7 +57,9 @@ export default defineNuxtConfig({
         paths: {
           "@backend/db": ["../backend/src/database/index.ts"],
           "@backend/elysia": ["../backend/src/services/elysia.ts"],
+          "@backend/api": ["../backend/src/api/index.ts"],
           "@backend/*": ["../backend/src/*"],
+          "@root/*": ["../../*"],
         },
       },
     },

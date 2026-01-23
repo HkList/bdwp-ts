@@ -5,17 +5,12 @@ export const UserModel = {
   createUserBody: t.Object({
     username: t.String({ minLength: 3, maxLength: 30 }),
     password: t.String({ minLength: 6, maxLength: 100 }),
-    confirm_password: t.String({ minLength: 6, maxLength: 100 }),
   }),
   createUserSuccess: t.Object({
     message: t.Literal('创建用户成功'),
     data: t.Object({
       id: t.Number(),
     }),
-  }),
-  createUserFailedWrongConfirmPassword: t.Object({
-    message: t.Literal('两次输入的密码不一致'),
-    data: t.Null(),
   }),
   createUserFailedUsernameExists: t.Object({
     message: t.Literal('用户名已存在'),

@@ -5,13 +5,7 @@ import { status } from 'elysia'
 
 export class UserService {
   static async createUser(body: UserModelType['createUserBody']) {
-    const { username, password, confirm_password } = body
-    if (password !== confirm_password) {
-      return status(400, {
-        message: '两次输入的密码不一致',
-        data: null,
-      })
-    }
+    const { username, password } = body
 
     try {
       const [insertedUser] = await Drizzle.insert(Schemas.User)

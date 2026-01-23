@@ -1,10 +1,11 @@
 import { config } from '@backend/config.ts'
-import { AuthModule, UserModule } from '@backend/modules/index.ts'
+import { AuthModule, ParseModule, UserModule } from '@backend/modules/index.ts'
 import { AuthPlugin } from '@backend/plugins/authPlugin.ts'
 import { bearer } from '@elysiajs/bearer'
 import { cors } from '@elysiajs/cors'
 import { staticPlugin } from '@elysiajs/static'
 import { swagger } from '@elysiajs/swagger'
+import packageJson from '@root/package.json' with { type: 'json' }
 import { DrizzleQueryError } from 'drizzle-orm/errors'
 import { Elysia, ElysiaCustomStatusResponse, status } from 'elysia'
 
@@ -14,9 +15,9 @@ export const app = new Elysia()
       path: config.OPENAPI_PATH,
       documentation: {
         info: {
-          title: 'vue-elysia',
-          version: '1.0.0',
-          description: 'vue-elysia API 文档',
+          title: 'bdwp-nuxt 后端 API 文档',
+          version: packageJson.version,
+          description: 'bdwp-nuxt 后端 API 文档',
         },
         security: [{ bearer: [] }],
         components: {
@@ -85,7 +86,10 @@ export const app = new Elysia()
     })
   })
   .group('/api', (app) =>
-    app.use(AuthModule).group('/admin', (app) => app.use(AuthPlugin()).use(UserModule)),
+    app
+      .use(AuthModule)
+      .use(ParseModule)
+      .group('/admin', (app) => app.use(AuthPlugin()).use(UserModule)),
   )
 
 export type App = typeof app

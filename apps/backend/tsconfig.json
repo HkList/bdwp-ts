@@ -12,8 +12,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "paths": {
+      "@backend/db": ["./src/database/index.ts"],
+      "@backend/api": ["./src/api/index.ts"],
       "@backend/*": ["./src/*"],
-      "@backend/db": ["./src/database/index.ts"]
+      "@root/*": ["../../*"]
     }
   },
   "include": ["src", "drizzle.config.ts"]
