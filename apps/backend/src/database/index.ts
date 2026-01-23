@@ -5,9 +5,10 @@ import { Schemas } from '@backend/database/schema.ts'
 import { Typeboxs } from '@backend/database/typebox.ts'
 import { drizzle } from 'drizzle-orm/bun-sql'
 
-export { Schemas, Typeboxs, TypeboxTypes }
-
-export const Drizzle = drizzle(config.DATABASE_URL, {
+const Drizzle = drizzle(config.DATABASE_URL, {
   schema: Schemas,
   relations: Relations,
 })
+
+export { Drizzle, Schemas, Typeboxs }
+export type { TypeboxTypes }
