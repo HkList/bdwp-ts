@@ -38,14 +38,18 @@ export const bdwp_config = {
     .asString(),
 
   PC_VERSION: env.get('PC_VERSION').default('8.1.6.101').asString(),
+  WX_VERSION: env.get('WX_VERSION').default('2.9.6').asString(),
 
   WEB_CLIENTTYPE: env.get('WEB_CLIENTTYPE').default('0').asString(),
   PC_CLIENTTYPE: env.get('PC_CLIENTTYPE').default('8').asString(),
   ANDROID_CLIENTTYPE: env.get('ANDROID_CLIENTTYPE').default('21').asString(),
+  WX_CLIENTTYPE: env.get('WX_CLIENTTYPE').default('25').asString(),
 
   WEB_CHANNEL: env.get('WEB_CHANNEL').default('chunlei').asString(),
   PC_CHANNEL: env.get('PC_CHANNEL').default('00000000000000000000000040000001').asString(),
+  WX_CHANNEL: env.get('WX_CHANNEL').default('weixin').asString(),
 
+  WEB_APP_ID: env.get('WEB_APP_ID').default('250528').asString(),
   ENTERPRISE_APP_ID: env.get('ENTERPRISE_APP_ID').default('24029990').asString(),
   ENTERPRISE_TK_APP_ID: env.get('ENTERPRISE_TK_APPID').default('10000').asString(),
 }
