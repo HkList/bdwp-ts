@@ -32,7 +32,14 @@ export type AccountInfoResponse =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: string
+        message: '获取账号信息失败, 接口可能失效'
+        data: null
+      }
+    >
+  | ElysiaCustomStatusResponse<
+      500,
+      {
+        message: `获取账号信息失败: ${string} (${number})`
         data: null
       }
     >

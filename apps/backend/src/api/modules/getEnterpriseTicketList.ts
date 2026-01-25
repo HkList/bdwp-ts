@@ -47,7 +47,14 @@ export type EnterpriseTicketListResponse =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: string
+        message: '获取企业票据列表失败, 接口可能失效'
+        data: null
+      }
+    >
+  | ElysiaCustomStatusResponse<
+      500,
+      {
+        message: `获取企业票据列表失败: ${string} (${number})`
         data: null
       }
     >

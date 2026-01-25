@@ -29,7 +29,14 @@ export type TemplateVariableResponse =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: string
+        message: '获取模板变量失败, 接口可能失效'
+        data: null
+      }
+    >
+  | ElysiaCustomStatusResponse<
+      500,
+      {
+        message: `获取模板变量失败: (${number})`
         data: null
       }
     >
@@ -58,7 +65,7 @@ export async function getTemplateVariable(cookie: string): Promise<TemplateVaria
 
   if (response.errno !== 0 || Array.isArray(response.result)) {
     return status(500, {
-      message: `获取模板变量失败 (${response.errno})`,
+      message: `获取模板变量失败: (${response.errno})`,
       data: null,
     })
   }

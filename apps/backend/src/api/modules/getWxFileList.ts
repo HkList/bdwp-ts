@@ -62,7 +62,21 @@ export type FileListResponse =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: string
+        message: '获取文件列表失败, 接口可能失效'
+        data: null
+      }
+    >
+  | ElysiaCustomStatusResponse<
+      500,
+      {
+        message: `获取文件列表失败: ${string} (${number}) (${string | number})`
+        data: null
+      }
+    >
+  | ElysiaCustomStatusResponse<
+      500,
+      {
+        message: '获取文件列表失败: 无数据返回'
         data: null
       }
     >
@@ -149,7 +163,7 @@ export async function getWxFileList(
     const info = errorMessages[errno]?.[errtype] ?? errorMessages[errno]?.default ?? `未知错误`
 
     return status(500, {
-      message: `获取文件列表失败: ${info} (errtype: ${errtype}) (errno: ${errno})`,
+      message: `获取文件列表失败: ${info} (${errno}) (${errtype})`,
       data: null,
     })
   }

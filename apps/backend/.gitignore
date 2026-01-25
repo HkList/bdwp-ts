@@ -2,3 +2,4 @@ dist
 node_modules
 .env
 env.ts
+test/test.ts

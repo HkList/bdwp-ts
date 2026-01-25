@@ -6,10 +6,16 @@ import { status } from 'elysia'
 
 export type GetTaskInfoApiSuccessResponse<T = object> = T & {
   errno: 0
-  progress: number
-  status: 'success' | 'running'
   task_errno: 0
-}
+} & (
+    | {
+        status: 'running'
+        progress: number
+      }
+    | {
+        status: 'success'
+      }
+  )
 
 export type GetTaskInfoApiFailedResponse<T = object> = T & {
   errno: number
@@ -28,30 +34,44 @@ export type GetTaskInfoResponse<T = object> =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: string
+        message: '任务查询失败, 接口可能失效'
         data: null
       }
     >
+  | ElysiaCustomStatusResponse<
+      500,
+      {
+        message: `任务查询失败: (${number}) (${string | number})`
+        data: null
+      }
+    >
+  | ElysiaCustomStatusResponse<
+      500,
+      {
+        message: `任务查询成功: 任务状态为失败: (${number}) (${string | number})`
+        data: GetTaskInfoApiFailedResponse<T>
+      }
+    >
 
-export interface GetTaskInfoOptions<T = object> {
+export interface GetTaskInfoOptions {
   cookie: string
   task_id: string
-  onTaskChecked?: (response: GetTaskInfoResponse<T>) => MaybePromise<void>
   cid?: string
 }
 
 export async function waitForTaskComplete<T = object>(
-  options: GetTaskInfoOptions<T>,
+  options: GetTaskInfoOptions,
   onTaskChecked?: (response: GetTaskInfoResponse<T>) => MaybePromise<void>,
 ): Promise<GetTaskInfoResponse<T>> {
   while (true) {
-    const taskResponse = await taskQuery<T>(options)
-    if (taskResponse.code !== 200) {
-      return taskResponse
-    }
+    const taskResponse = await getTaskInfo<T>(options)
 
     if (onTaskChecked) {
       onTaskChecked(taskResponse)
+    }
+
+    if (taskResponse.code !== 200) {
+      return taskResponse
     }
 
     const taskData = taskResponse.response.data
@@ -64,22 +84,24 @@ export async function waitForTaskComplete<T = object>(
   }
 }
 
-export async function taskQuery<T = object>(
-  options: GetTaskInfoOptions<T>,
+export async function getTaskInfo<T = object>(
+  options: GetTaskInfoOptions,
 ): Promise<GetTaskInfoResponse<T>> {
   let count = 0
 
   while (true) {
-    const taskResponse = await _taskQuery<T>(options)
+    const taskResponse = await _getTaskInfo<T>(options)
     if (taskResponse.code !== 200) {
+      // 如果返回了字符串, 说明接口可能失效, 提前返回错误数据, 不再重试
+      if (!taskResponse.response.message.includes('接口可能失效')) {
+        return taskResponse
+      }
+
       count++
 
       await Bun.sleep(1000)
       if (count >= 5) {
-        return status(500, {
-          message: '任务查询失败, 接口可能失效',
-          data: null,
-        })
+        return taskResponse
       }
 
       continue
@@ -89,8 +111,8 @@ export async function taskQuery<T = object>(
   }
 }
 
-export async function _taskQuery<T = object>(
-  options: GetTaskInfoOptions<T>,
+export async function _getTaskInfo<T = object>(
+  options: GetTaskInfoOptions,
 ): Promise<GetTaskInfoResponse<T>> {
   const response = await request.send<
     GetTaskInfoApiSuccessResponse<T>,
@@ -131,8 +153,15 @@ export async function _taskQuery<T = object>(
 
   if (response.errno !== 0) {
     return status(500, {
-      message: `任务查询失败: (errno: ${response.errno}) (task_errno: ${response.task_errno})`,
+      message: `任务查询失败: (${response.errno}) (${response.task_errno})`,
       data: null,
+    })
+  }
+
+  if (response.status === 'failed') {
+    return status(500, {
+      message: `任务查询成功: 任务状态为失败: (${response.errno}) (${response.task_errno})`,
+      data: response,
     })
   }
 

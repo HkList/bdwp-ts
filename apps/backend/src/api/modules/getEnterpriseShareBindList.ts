@@ -42,7 +42,14 @@ export type EnterpriseShareBindListResponse =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: string
+        message: '获取企业分享绑定列表失败, 接口可能失效'
+        data: null
+      }
+    >
+  | ElysiaCustomStatusResponse<
+      500,
+      {
+        message: `获取企业分享绑定列表失败: ${string} (${number})`
         data: null
       }
     >
@@ -72,7 +79,7 @@ export async function getEnterpriseShareBindList(
 
   if (typeof response === 'string') {
     return status(500, {
-      message: '获取企业分享绑定列表失败, 请检查 Cookie 是否有效',
+      message: '获取企业分享绑定列表失败, 接口可能失效',
       data: null,
     })
   }
