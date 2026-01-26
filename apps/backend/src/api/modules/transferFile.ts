@@ -1,5 +1,5 @@
 import type { GetTaskInfoResponse } from '@backend/api/modules/getTaskInfo.ts'
-import type { FileItem } from '@backend/api/modules/getWxFileList.ts'
+import type { WxFileItem } from '@backend/api/modules/getWxFileList.ts'
 import type { ElysiaCustomStatusResponse, MaybePromise } from 'elysia'
 import { waitForTaskComplete } from '@backend/api'
 import { bdwp_config } from '@backend/config.ts'
@@ -37,7 +37,7 @@ export interface TransferFileApiFailedResponse {
   errno: number
   show_msg: string
   duplicated?: {
-    list: FileItem[]
+    list: WxFileItem[]
   }
 }
 

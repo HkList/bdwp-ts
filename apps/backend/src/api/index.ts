@@ -19,17 +19,31 @@ export { getEnterpriseShareRecord } from '@backend/api/modules/getEnterpriseShar
 export type { EnterpriseTicketListItem } from '@backend/api/modules/getEnterpriseTicketList.ts'
 export { getEnterpriseTicketList } from '@backend/api/modules/getEnterpriseTicketList.ts'
 
+export type { FileItem } from '@backend/api/modules/getList.ts'
+export { getList } from '@backend/api/modules/getList.ts'
+
 export type { GetTaskInfoApiSuccessResponse } from '@backend/api/modules/getTaskInfo.ts'
-export { _getTaskInfo, getTaskInfo, waitForTaskComplete } from '@backend/api/modules/getTaskInfo.ts'
+export { getTaskInfo, waitForTaskComplete } from '@backend/api/modules/getTaskInfo.ts'
 
 export type { TemplateVariable } from '@backend/api/modules/getTemplateVariable.ts'
 export { getTemplateVariable } from '@backend/api/modules/getTemplateVariable.ts'
 
-export type { FileItem, FileListData } from '@backend/api/modules/getWxFileList.ts'
+export type { WxFileItem, WxFileListData } from '@backend/api/modules/getWxFileList.ts'
 export { getWxFileList } from '@backend/api/modules/getWxFileList.ts'
 
 export type { ManageFileApiSuccessResponse } from '@backend/api/modules/manageFile.ts'
 export { manageFile } from '@backend/api/modules/manageFile.ts'
+
+export type { GetQrCodeStatusApiSuccessResponse } from '@backend/api/modules/qrlogin/checkQrCodeStatus.ts'
+export { checkQrCodeStatus } from '@backend/api/modules/qrlogin/checkQrCodeStatus.ts'
+
+export type { GetCookieByBdussApiSuccessResponse } from '@backend/api/modules/qrlogin/getCookieByBduss.ts'
+export { getCookieByBduss } from '@backend/api/modules/qrlogin/getCookieByBduss.ts'
+
+export { getFullCookie } from '@backend/api/modules/qrlogin/getFullCookie.ts'
+
+export type { GetQrCodeApiSuccessResponse } from '@backend/api/modules/qrlogin/getQrCode.ts'
+export { getQrCode } from '@backend/api/modules/qrlogin/getQrCode.ts'
 
 export type { TransferFileExtraItem } from '@backend/api/modules/transferFile.ts'
 export { transferFile } from '@backend/api/modules/transferFile.ts'

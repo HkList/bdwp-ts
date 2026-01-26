@@ -5,7 +5,7 @@ import ky, { HTTPError } from 'ky'
  * 封装的 ky 请求实例
  */
 class RequestClient {
-  private client: KyInstance
+  client: KyInstance
 
   constructor(baseOptions?: Options) {
     this.client = ky.create({

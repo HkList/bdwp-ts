@@ -3,7 +3,7 @@ import { bdwp_config } from '@backend/config.ts'
 import { request } from '@backend/utils/request.ts'
 import { status } from 'elysia'
 
-export interface FileItem {
+export interface WxFileItem {
   category: string
   fs_id: string
   is_dir: '1' | '0'
@@ -17,7 +17,7 @@ export interface FileItem {
   size: number
 }
 
-export interface ParsedFileItem {
+export interface ParsedWxFileItem {
   category: number
   fs_id: number
   is_dir: boolean
@@ -31,11 +31,11 @@ export interface ParsedFileItem {
   size: number
 }
 
-export interface FileListData {
+export interface WxFileListData {
   title: string
   link_ctime: number
   has_more: boolean
-  list: ParsedFileItem[]
+  list: ParsedWxFileItem[]
   user: {
     avatar: string
   }
@@ -48,8 +48,8 @@ export interface FileListData {
 export interface FileListApiSuccessResponse {
   errno: 0
   errtype: 0
-  data: Omit<FileListData, 'list'> & {
-    list: FileItem[]
+  data: Omit<WxFileListData, 'list'> & {
+    list: WxFileItem[]
   }
 }
 
@@ -71,7 +71,7 @@ export type FileListResponse =
       200,
       {
         message: '获取文件列表成功'
-        data: FileListData
+        data: WxFileListData
       }
     >
   | ElysiaCustomStatusResponse<
