@@ -76,45 +76,46 @@ export interface MoveOrCopyFileAsyncFailedInfoItem {
   to: string
 }
 
-export interface ManageFileBaseOptions {
+export interface ManageFileBaseOptions<K = object> {
   cookie: string
   async?: 0 | 1 | 2
   wait_finish?: boolean
   ondup?: 'fail' | 'newcopy' | 'overwrite' | 'skip'
   cid?: string
+  onTaskChecked?: (response: GetTaskInfoResponse<K>) => MaybePromise<void>
 }
 
-export interface DeleteFileOptions extends ManageFileBaseOptions {
+export interface DeleteFileOptions<K = object> extends ManageFileBaseOptions<K> {
   filelist: string[]
 }
 
-export interface RenameFileOptions extends ManageFileBaseOptions {
+export interface RenameFileOptions<K = object> extends ManageFileBaseOptions<K> {
   filelist: { path: string; newname: string }[]
 }
 
-export interface MoveOrCopyFileOptions extends ManageFileBaseOptions {
+export interface MoveOrCopyFileOptions<K = object> extends ManageFileBaseOptions<K> {
   filelist: { path: string; dest: string }[]
 }
 
-export interface FileOpMap {
+export interface FileOpMap<K = object> {
   delete: {
     success: DeleteFileSuccessInfoItem
     failed: DeleteFileFailedInfoItem
-    options: DeleteFileOptions
+    options: DeleteFileOptions<K>
     asyncSuccess: DeleteFileAsyncSuccessInfoItem
     asyncFailed: DeleteFileAsyncFailedInfoItem
   }
   rename: {
     success: RenameFileSuccessInfoItem
     failed: RenameFileFailedInfoItem
-    options: RenameFileOptions
+    options: RenameFileOptions<K>
     asyncSuccess: RenameFileAsyncSuccessInfoItem
     asyncFailed: RenameFileAsyncFailedInfoItem
   }
   move: {
     success: MoveOrCopyFileSuccessInfoItem
     failed: MoveOrCopyFileFailedInfoItem
-    options: MoveOrCopyFileOptions
+    options: MoveOrCopyFileOptions<K>
     asyncSuccess: MoveOrCopyFileAsyncSuccessInfoItem
     asyncFailed: MoveOrCopyFileAsyncFailedInfoItem
   }
@@ -162,22 +163,8 @@ export type ManageFileResponse<
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: `操作文件失败: 任务查询失败, 接口可能失效`
-        data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `操作文件失败: 任务查询失败: (${number}) (${string | number})`
-        data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `操作文件失败: 任务查询成功: 任务状态为失败: (${number}) (${string | number})`
-        data: GetTaskInfoApiFailedResponse<K>
+        message: `操作文件失败: 任务查询${string}`
+        data: null | GetTaskInfoApiFailedResponse<K>
       }
     >
 
@@ -193,11 +180,7 @@ export async function manageFile<
   K extends {
     list: (FileOpMap[T]['asyncSuccess'] | FileOpMap[T]['asyncFailed'])[]
   },
->(
-  method: T,
-  options: FileOpMap[T]['options'],
-  onTaskChecked?: (response: GetTaskInfoResponse<K>) => MaybePromise<void>,
-): Promise<ManageFileResponse<T, K>> {
+>(method: T, options: FileOpMap<K>[T]['options']): Promise<ManageFileResponse<T, K>> {
   const response = await request.send<
     ManageFileApiSuccessResponse<T>,
     ManageFileApiFailedResponse<T>
@@ -248,48 +231,18 @@ export async function manageFile<
   const typedResponse = response as ManageFileApiSuccessResponse<T>
 
   if (typedResponse.taskid && (options.wait_finish || !('wait_finish' in options))) {
-    const res = await waitForTaskComplete<K>(
-      {
-        cookie: options.cookie,
-        task_id: typedResponse.taskid.toString(),
-        cid: options.cid,
-      },
-      onTaskChecked,
-    )
+    const res = await waitForTaskComplete<K>({
+      cookie: options.cookie,
+      task_id: typedResponse.taskid.toString(),
+      cid: options.cid,
+      onTaskChecked: options.onTaskChecked,
+    })
 
     if (res.code !== 200) {
-      if (res.response.message === '任务查询失败, 接口可能失效') {
-        return status(500, {
-          message: `操作文件失败: 任务查询失败, 接口可能失效`,
-          data: null,
-        })
-      } else if (res.response.message.startsWith('任务查询失败')) {
-        const typedRes = res as ElysiaCustomStatusResponse<
-          500,
-          {
-            message: `任务查询失败: (${number}) (${string | number})`
-            data: null
-          }
-        >
-
-        return status(500, {
-          message: `操作文件失败: ${typedRes.response.message}`,
-          data: null,
-        })
-      } else {
-        const typedRes = res as ElysiaCustomStatusResponse<
-          500,
-          {
-            message: `任务查询成功: 任务状态为失败: (${number}) (${string | number})`
-            data: GetTaskInfoApiFailedResponse<K>
-          }
-        >
-
-        return status(500, {
-          message: `操作文件失败: ${typedRes.response.message}`,
-          data: typedRes.response.data,
-        })
-      }
+      return status(500, {
+        message: `操作文件失败: ${res.response.message}`,
+        data: res.response.data,
+      })
     }
 
     return status(200, {

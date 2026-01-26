@@ -30,3 +30,6 @@ export { getWxFileList } from '@backend/api/modules/getWxFileList.ts'
 
 export type { ManageFileApiSuccessResponse } from '@backend/api/modules/manageFile.ts'
 export { manageFile } from '@backend/api/modules/manageFile.ts'
+
+export type { TransferFileExtraItem } from '@backend/api/modules/transferFile.ts'
+export { transferFile } from '@backend/api/modules/transferFile.ts'

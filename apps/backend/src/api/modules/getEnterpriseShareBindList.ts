@@ -54,10 +54,14 @@ export type EnterpriseShareBindListResponse =
       }
     >
 
+export interface GetEnterpriseShareBindListOptions {
+  cookie: string
+  cid: string
+  shareid: string
+}
+
 export async function getEnterpriseShareBindList(
-  cookie: string,
-  cid: string,
-  shareid: string,
+  options: GetEnterpriseShareBindListOptions,
 ): Promise<EnterpriseShareBindListResponse> {
   const response = await request.send<
     EnterpriseShareBindListApiSuccessResponse,
@@ -66,14 +70,14 @@ export async function getEnterpriseShareBindList(
     method: 'get',
     headers: {
       'User-Agent': bdwp_config.BROWSER_USERAGENT,
-      Cookie: cookie,
+      Cookie: options.cookie,
     },
     searchParams: {
       tkappid: bdwp_config.ENTERPRISE_TK_APP_ID,
-      activity_id: shareid,
+      activity_id: options.shareid,
       clienttype: bdwp_config.ANDROID_CLIENTTYPE,
       app_id: bdwp_config.ENTERPRISE_APP_ID,
-      cid,
+      cid: options.cid,
     },
   })
 

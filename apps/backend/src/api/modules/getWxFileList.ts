@@ -9,20 +9,33 @@ export interface FileItem {
   is_dir: '1' | '0'
   local_ctime: string
   local_mtime: string
-  md5: string
+  md5?: string
   path: string
   server_ctime: string
   server_filename: string
   server_mtime: string
   size: number
-  dlink?: string
+}
+
+export interface ParsedFileItem {
+  category: number
+  fs_id: number
+  is_dir: boolean
+  local_ctime: number
+  local_mtime: number
+  md5: string
+  path: string
+  server_ctime: number
+  server_filename: string
+  server_mtime: number
+  size: number
 }
 
 export interface FileListData {
   title: string
   link_ctime: number
   has_more: boolean
-  list: FileItem[]
+  list: ParsedFileItem[]
   user: {
     avatar: string
   }
@@ -35,7 +48,9 @@ export interface FileListData {
 export interface FileListApiSuccessResponse {
   errno: 0
   errtype: 0
-  data: FileListData
+  data: Omit<FileListData, 'list'> & {
+    list: FileItem[]
+  }
 }
 
 export interface FileListApiErrorResponse {
@@ -108,14 +123,19 @@ export const errorMessages: Record<string | number, Record<string | number, stri
   },
 }
 
-export async function getWxFileList(
-  surl: string,
-  pwd = '',
-  dir = '/',
-  page = 1,
-  num = 1000,
-  order = 'filename',
-): Promise<FileListResponse> {
+export interface GetWxFileListOptions {
+  surl: string
+  pwd?: string
+  dir?: string
+  page?: number
+  num?: number
+  order?: 'filename' | 'time' | 'size' | 'type'
+}
+
+export async function getWxFileList(options: GetWxFileListOptions): Promise<FileListResponse> {
+  const { pwd = '', dir = '/', page = 1, num = 1000, order = 'filename' } = options
+  let { surl } = options
+
   // 处理 surl，确保以 "1" 开头
   if (/^\d/.test(surl)) {
     surl = surl.substring(1)
@@ -177,8 +197,31 @@ export async function getWxFileList(
 
   const typedResponse = response as FileListApiSuccessResponse
 
+  const pasedSeckey = typedResponse.data.seckey
+    .replace(/-/g, '+')
+    .replace(/~/g, '=')
+    .replace(/_/g, '/')
+
+  const parsedList = typedResponse.data.list.map((item) => ({
+    category: Number.parseInt(item.category),
+    fs_id: Number.parseInt(item.fs_id),
+    is_dir: item.is_dir === '1',
+    local_ctime: Number.parseInt(item.local_ctime),
+    local_mtime: Number.parseInt(item.local_mtime),
+    md5: item.md5 ?? '',
+    path: item.path,
+    server_ctime: Number.parseInt(item.server_ctime),
+    server_filename: item.server_filename,
+    server_mtime: Number.parseInt(item.server_mtime),
+    size: item.size,
+  }))
+
   return status(200, {
     message: '获取文件列表成功',
-    data: typedResponse.data,
+    data: {
+      ...typedResponse.data,
+      seckey: pasedSeckey,
+      list: parsedList,
+    },
   })
 }

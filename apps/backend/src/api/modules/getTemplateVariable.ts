@@ -41,7 +41,13 @@ export type TemplateVariableResponse =
       }
     >
 
-export async function getTemplateVariable(cookie: string): Promise<TemplateVariableResponse> {
+export interface GetTemplateVariableOptions {
+  cookie: string
+}
+
+export async function getTemplateVariable(
+  options: GetTemplateVariableOptions,
+): Promise<TemplateVariableResponse> {
   const response = await request.send<
     TemplateVariableApiSuccessResponse,
     TemplateVariableApiFailedResponse
@@ -49,7 +55,7 @@ export async function getTemplateVariable(cookie: string): Promise<TemplateVaria
     method: 'get',
     headers: {
       'User-Agent': bdwp_config.BROWSER_USERAGENT,
-      Cookie: cookie,
+      Cookie: options.cookie,
     },
     searchParams: {
       fields: JSON.stringify(['bdstoken', 'uk']),

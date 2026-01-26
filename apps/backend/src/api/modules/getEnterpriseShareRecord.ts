@@ -50,9 +50,13 @@ export type EnterpriseShareRecordResponse =
       }
     >
 
+export interface GetEnterpriseShareRecordOptions {
+  cookie: string
+  cid: string
+}
+
 export async function getEnterpriseShareRecord(
-  cookie: string,
-  cid: string,
+  options: GetEnterpriseShareRecordOptions,
 ): Promise<EnterpriseShareRecordResponse> {
   const list: ShareRecordItem[] = []
   let page = 1
@@ -65,7 +69,7 @@ export async function getEnterpriseShareRecord(
       method: 'post',
       headers: {
         'User-Agent': bdwp_config.BROWSER_USERAGENT,
-        Cookie: cookie,
+        Cookie: options.cookie,
       },
       searchParams: {
         channel: bdwp_config.WEB_CHANNEL,
@@ -77,7 +81,7 @@ export async function getEnterpriseShareRecord(
         web: '1',
         order: 'ctime',
         desc: '1',
-        cid,
+        cid: options.cid,
         is_batch: '1',
       },
     })

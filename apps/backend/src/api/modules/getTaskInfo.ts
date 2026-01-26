@@ -59,15 +59,18 @@ export interface GetTaskInfoOptions {
   cid?: string
 }
 
+export interface WaitForTaskCompleteOptions<T = object> extends GetTaskInfoOptions {
+  onTaskChecked?: (response: GetTaskInfoResponse<T>) => MaybePromise<void>
+}
+
 export async function waitForTaskComplete<T = object>(
-  options: GetTaskInfoOptions,
-  onTaskChecked?: (response: GetTaskInfoResponse<T>) => MaybePromise<void>,
+  options: WaitForTaskCompleteOptions<T>,
 ): Promise<GetTaskInfoResponse<T>> {
   while (true) {
     const taskResponse = await getTaskInfo<T>(options)
 
-    if (onTaskChecked) {
-      onTaskChecked(taskResponse)
+    if (options.onTaskChecked) {
+      await options.onTaskChecked(taskResponse)
     }
 
     if (taskResponse.code !== 200) {

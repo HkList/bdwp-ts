@@ -59,10 +59,14 @@ export type EnterpriseTicketListResponse =
       }
     >
 
+export interface GetEnterpriseTicketListOptions {
+  cookie: string
+  cid: string
+  package_type_list?: number[]
+}
+
 export async function getEnterpriseTicketList(
-  cookie: string,
-  cid: string,
-  package_type_list = [2],
+  options: GetEnterpriseTicketListOptions,
 ): Promise<EnterpriseTicketListResponse> {
   const response = await request.send<
     EnterpriseTicketListApiSuccessResponse,
@@ -71,18 +75,18 @@ export async function getEnterpriseTicketList(
     method: 'post',
     headers: {
       'User-Agent': bdwp_config.PC_USERAGENT,
-      Cookie: cookie,
+      Cookie: options.cookie,
     },
     searchParams: {
       clienttype: bdwp_config.PC_CLIENTTYPE,
       app_id: bdwp_config.ENTERPRISE_APP_ID,
-      cid,
+      cid: options.cid,
       channel: bdwp_config.PC_CHANNEL,
       version: bdwp_config.PC_VERSION,
     },
     body: new URLSearchParams({
       tkappid: bdwp_config.ENTERPRISE_TK_APP_ID,
-      package_type_list: JSON.stringify(package_type_list),
+      package_type_list: JSON.stringify(options.package_type_list ?? [2]),
     }),
   })
 

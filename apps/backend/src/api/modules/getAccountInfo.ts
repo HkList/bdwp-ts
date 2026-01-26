@@ -44,14 +44,18 @@ export type AccountInfoResponse =
       }
     >
 
-export async function getAccountInfo(cookie: string): Promise<AccountInfoResponse> {
+export interface GetAccountInfoOptions {
+  cookie: string
+}
+
+export async function getAccountInfo(options: GetAccountInfoOptions): Promise<AccountInfoResponse> {
   const response = await request.send<AccountInfoApiSuccessResponse, AccountInfoApiFailedResponse>(
     'https://pan.baidu.com/rest/2.0/xpan/nas',
     {
       method: 'get',
       headers: {
         'User-Agent': bdwp_config.BROWSER_USERAGENT,
-        Cookie: cookie,
+        Cookie: options.cookie,
       },
       searchParams: {
         method: 'uinfo',

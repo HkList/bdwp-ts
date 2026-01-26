@@ -47,7 +47,13 @@ export type EnterpriseInfoResponse =
       }
     >
 
-export async function getEnterpriseInfo(cookie: string): Promise<EnterpriseInfoResponse> {
+export interface GetEnterpriseInfoOptions {
+  cookie: string
+}
+
+export async function getEnterpriseInfo(
+  options: GetEnterpriseInfoOptions,
+): Promise<EnterpriseInfoResponse> {
   const response = await request.send<
     EnterpriseInfoApiSuccessResponse,
     EnterpriseInfoApiFailedResponse
@@ -55,7 +61,7 @@ export async function getEnterpriseInfo(cookie: string): Promise<EnterpriseInfoR
     method: 'get',
     headers: {
       'User-Agent': bdwp_config.BROWSER_USERAGENT,
-      Cookie: cookie,
+      Cookie: options.cookie,
     },
     searchParams: {
       clienttype: bdwp_config.WEB_CLIENTTYPE,
