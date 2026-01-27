@@ -13,8 +13,8 @@
   "dependencies": {
     "@elysiajs/bearer": "^1.4.2",
     "@elysiajs/cors": "^1.4.1",
+    "@elysiajs/openapi": "^1.4.14",
     "@elysiajs/static": "^1.4.7",
-    "@elysiajs/swagger": "^1.3.1",
     "drizzle-orm": "^1.0.0-beta.11-05230d9",
     "elysia": "^1.4.22",
     "env-var": "^7.5.0",

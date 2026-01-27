@@ -47,7 +47,7 @@ export type GetCookieByBdussResponse =
     >
 
 export interface GetCookieByBdussOptions {
-  budss: string
+  bduss: string
 }
 
 export async function getCookieByBduss(
@@ -60,11 +60,11 @@ export async function getCookieByBduss(
     method: 'get',
     headers: {
       'User-Agent': bdwp_config.BROWSER_USERAGENT,
-      Cookie: `BDUSS=${options.budss};`,
+      Cookie: `BDUSS=${options.bduss};`,
     },
     searchParams: {
       v: Date.now(),
-      bduss: options.budss,
+      bduss: options.bduss,
       u: 'http://passport.baidu.com',
       loginVersion: 'v5',
       qrcode: '1',

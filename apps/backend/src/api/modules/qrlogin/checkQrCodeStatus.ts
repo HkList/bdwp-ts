@@ -33,9 +33,16 @@ export type GetQrCodeStatusResponse =
       }
     >
   | ElysiaCustomStatusResponse<
+      202,
+      {
+        message: `获取二维码状态成功: ${'二维码等待确认中' | '二维码取消登录'}`
+        data: null
+      }
+    >
+  | ElysiaCustomStatusResponse<
       500,
       {
-        message: `获取二维码状态失败: ${'gid查询失败' | 'bduss获取失败' | '二维码等待确认中' | '二维码取消登录' | number}`
+        message: `获取二维码状态失败: ${'gid查询失败' | 'bduss获取失败' | number}`
         data: null
       }
     >
@@ -92,13 +99,13 @@ export async function checkQrCodeStatus(
   const channelStatus: number = channel_v?.status ?? 0
 
   if (channelStatus === 1) {
-    return status(500, {
-      message: '获取二维码状态失败: 二维码等待确认中',
+    return status(202, {
+      message: '获取二维码状态成功: 二维码等待确认中',
       data: null,
     })
   } else if (channelStatus === 2) {
-    return status(500, {
-      message: '获取二维码状态失败: 二维码取消登录',
+    return status(202, {
+      message: '获取二维码状态成功: 二维码取消登录',
       data: null,
     })
   } else if (channelStatus !== 0) {

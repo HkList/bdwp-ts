@@ -1,17 +1,17 @@
 import { config } from '@backend/config.ts'
-import { AuthModule, ParseModule, UserModule } from '@backend/modules/index.ts'
+import { AuthModule, ParseModule, QrloginModule, UserModule } from '@backend/modules/index.ts'
 import { AuthPlugin } from '@backend/plugins/authPlugin.ts'
 import { bearer } from '@elysiajs/bearer'
 import { cors } from '@elysiajs/cors'
+import { openapi } from '@elysiajs/openapi'
 import { staticPlugin } from '@elysiajs/static'
-import { swagger } from '@elysiajs/swagger'
 import packageJson from '@root/package.json' with { type: 'json' }
 import { DrizzleQueryError } from 'drizzle-orm/errors'
 import { Elysia, ElysiaCustomStatusResponse, status } from 'elysia'
 
 export const app = new Elysia()
   .use(
-    swagger({
+    openapi({
       path: config.OPENAPI_PATH,
       documentation: {
         info: {
@@ -28,6 +28,19 @@ export const app = new Elysia()
             },
           },
         },
+      },
+      scalar: {
+        authentication: {
+          securitySchemes: {
+            bearer: {
+              // 固定的 token 值，实际应用中应该从配置中读取
+              token: 'c3afe8be-9ce1-4d6a-bb7a-e8b62d3afce4',
+            },
+          },
+        },
+      },
+      exclude: {
+        paths: ['/', '/*', '', '/public/*'],
       },
     }),
   )
@@ -89,6 +102,7 @@ export const app = new Elysia()
     app
       .use(AuthModule)
       .use(ParseModule)
+      .use(QrloginModule)
       .group('/admin', (app) => app.use(AuthPlugin()).use(UserModule)),
   )
 
