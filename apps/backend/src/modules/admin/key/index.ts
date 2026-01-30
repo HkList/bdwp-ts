@@ -27,17 +27,17 @@ export const KeyModule = new Elysia({ prefix: '/keys' })
       tags: ['卡密管理'],
     },
   })
-  // .patch('/', async ({ body }) => await KeyService.updateKeys(body), {
-  //   body: KeyModel.updateKeysBody,
-  //   response: {
-  //     201: KeyModel.updateKeysSuccess,
-  //     404: KeyModel.updateKeysFailedNotFound,
-  //   },
-  //   detail: {
-  //     summary: '更新卡密信息',
-  //     tags: ['卡密管理'],
-  //   },
-  // })
+  .patch('/', async ({ body }) => await KeyService.updateKeys(body), {
+    body: KeyModel.updateKeysBody,
+    response: {
+      201: KeyModel.updateKeysSuccess,
+      404: KeyModel.updateKeysFailedNotFound,
+    },
+    detail: {
+      summary: '更新卡密信息',
+      tags: ['卡密管理'],
+    },
+  })
   .get('/', async ({ user, query }) => await KeyService.getAllKeys(user, query), {
     query: KeyModel.getAllKeysQuery,
     response: {

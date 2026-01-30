@@ -17,6 +17,10 @@ export function KeyAuthPlugin() {
       throw status(404, { message: '卡密不存在', data: null })
     }
 
+    if (key.expired_at && key.expired_at < new Date()) {
+      throw status(403, { message: '卡密已过期', data: null })
+    }
+
     return { key }
   })
 }
