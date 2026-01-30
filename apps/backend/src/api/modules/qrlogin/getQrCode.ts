@@ -18,7 +18,7 @@ export interface GetQrCodeApiFailedResponse {
 
 export type GetQrCodeResponse =
   | ElysiaCustomStatusResponse<
-      200,
+      201,
       {
         message: '获取二维码成功'
         data: GetQrCodeApiSuccessResponse
@@ -27,14 +27,7 @@ export type GetQrCodeResponse =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: '获取二维码失败, 接口可能失效'
-        data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `获取二维码失败: ${number}`
+        message: string
         data: null
       }
     >
@@ -61,7 +54,7 @@ export async function getQrCode(): Promise<GetQrCodeResponse> {
 
   if (typeof response === 'string') {
     return status(500, {
-      message: '获取二维码失败, 接口可能失效',
+      message: '获取二维码失败: 接口可能失效',
       data: null,
     })
   }
@@ -77,7 +70,7 @@ export async function getQrCode(): Promise<GetQrCodeResponse> {
 
   await redis.set(`qrlogin:${typedResponse.sign}`, gid, 'EX', 60)
 
-  return status(200, {
+  return status(201, {
     message: '获取二维码成功',
     data: typedResponse,
   })

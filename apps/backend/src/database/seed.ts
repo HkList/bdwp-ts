@@ -11,7 +11,7 @@ async function main() {
     .onConflictDoUpdate({
       target: [Schemas.User.username],
       set: {
-        username: 'Alice',
+        username: 'admin',
         password: await Bun.password.hash('admin_password'),
       },
     })

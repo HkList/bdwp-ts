@@ -31,14 +31,7 @@ export type CreateFolderResponse =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: '创建文件夹失败, 接口可能失效'
-        data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `创建文件夹失败: (${number})`
+        message: string
         data: null
       }
     >
@@ -85,7 +78,7 @@ export async function createFolder(options: CreateFolderOptions): Promise<Create
 
   if (typeof response === 'string') {
     return status(500, {
-      message: '创建文件夹失败, 接口可能失效',
+      message: '创建文件夹失败: 接口可能失效',
       data: null,
     })
   }

@@ -33,7 +33,7 @@ export class AuthService {
       })
     }
 
-    if (!(await Bun.password.verify(user.password, password))) {
+    if (!(await Bun.password.verify(password, user.password))) {
       return status(401, {
         message: '密码错误',
         data: null,
@@ -42,7 +42,7 @@ export class AuthService {
 
     const token = await this.generateToken(user.id, remember_me)
 
-    return status(200, {
+    return status(201, {
       message: '登录成功',
       data: {
         token,

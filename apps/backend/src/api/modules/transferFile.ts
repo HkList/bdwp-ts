@@ -1,6 +1,6 @@
-import type { GetTaskInfoResponse } from '@backend/api/modules/getTaskInfo.ts'
-import type { WxFileItem } from '@backend/api/modules/getWxFileList.ts'
-import type { ElysiaCustomStatusResponse, MaybePromise } from 'elysia'
+import type { GetTaskInfoResponse, WxFileItem } from '@backend/api'
+import type { MaybePromise } from 'bun'
+import type { ElysiaCustomStatusResponse } from 'elysia'
 import { waitForTaskComplete } from '@backend/api'
 import { bdwp_config } from '@backend/config.ts'
 import { request } from '@backend/utils/request.ts'
@@ -52,22 +52,8 @@ export type TransferFileResponse =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: '转存文件失败, 接口可能失效'
+        message: string
         data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `转存文件失败: ${string} (${number})`
-        data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `转存文件失败: 任务查询${string}`
-        data: null | TransferFileAsyncApiSuccessObject
       }
     >
 
@@ -80,7 +66,6 @@ export interface TransferFileOptions {
   sekey: string
   fsidlist: number[]
   path: string
-  wait_finish?: boolean
   onTaskChecked?: (
     response: GetTaskInfoResponse<TransferFileAsyncApiSuccessObject>,
   ) => MaybePromise<void>
@@ -125,7 +110,7 @@ export async function transferFile(options: TransferFileOptions): Promise<Transf
 
   if (typeof response === 'string') {
     return status(500, {
-      message: '转存文件失败, 接口可能失效',
+      message: '转存文件失败: 接口可能失效',
       data: null,
     })
   }
@@ -139,7 +124,7 @@ export async function transferFile(options: TransferFileOptions): Promise<Transf
 
   const typedResponse = response as TransferFileApiSuccessResponse
 
-  if (typedResponse.taskid && (options.wait_finish || !('wait_finish' in options))) {
+  if (typedResponse.taskid) {
     const res = await waitForTaskComplete<TransferFileAsyncApiSuccessObject>({
       cookie: options.cookie,
       task_id: typedResponse.taskid.toString(),

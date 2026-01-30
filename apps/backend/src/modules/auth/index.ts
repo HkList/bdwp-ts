@@ -1,13 +1,13 @@
 import { AuthModel } from '@backend/modules/auth/model.ts'
 import { AuthService } from '@backend/modules/auth/service.ts'
-import { AuthPlugin } from '@backend/plugins/authPlugin.ts'
+import { UserAuthPlugin } from '@backend/plugins/userAuthPlugin.ts'
 import { Elysia } from 'elysia'
 
 export const AuthModule = new Elysia({ prefix: '/auth' })
   .post('/sign_in', async ({ body }) => await AuthService.signIn(body), {
     body: AuthModel.signInBody,
     response: {
-      200: AuthModel.signInSuccess,
+      201: AuthModel.signInSuccess,
       401: AuthModel.signInFailedInvalidPassword,
       404: AuthModel.signInFailedAccountNotFound,
     },
@@ -17,13 +17,15 @@ export const AuthModule = new Elysia({ prefix: '/auth' })
     },
   })
   .group('', (app) =>
-    app.use(AuthPlugin()).delete('/sign_out', async ({ user }) => await AuthService.signOut(user), {
-      response: {
-        200: AuthModel.signOutSuccess,
-      },
-      detail: {
-        summary: '注销',
-        tags: ['授权管理'],
-      },
-    }),
+    app
+      .use(UserAuthPlugin())
+      .delete('/sign_out', async ({ user }) => await AuthService.signOut(user), {
+        response: {
+          200: AuthModel.signOutSuccess,
+        },
+        detail: {
+          summary: '注销',
+          tags: ['授权管理'],
+        },
+      }),
   )

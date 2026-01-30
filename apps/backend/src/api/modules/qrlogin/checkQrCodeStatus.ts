@@ -28,7 +28,7 @@ export type GetQrCodeStatusResponse =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: '获取二维码状态失败, 接口可能失效'
+        message: string
         data: null
       }
     >
@@ -36,13 +36,6 @@ export type GetQrCodeStatusResponse =
       202,
       {
         message: `获取二维码状态成功: ${'二维码等待确认中' | '二维码取消登录'}`
-        data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `获取二维码状态失败: ${'gid查询失败' | 'bduss获取失败' | number}`
         data: null
       }
     >
@@ -82,7 +75,7 @@ export async function checkQrCodeStatus(
 
   if (typeof response === 'string') {
     return status(500, {
-      message: '获取二维码状态失败, 接口可能失效',
+      message: '获取二维码状态失败: 接口可能失效',
       data: null,
     })
   }

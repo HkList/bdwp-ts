@@ -3,7 +3,7 @@ import { bdwp_config } from '@backend/config.ts'
 import { request } from '@backend/utils/request.ts'
 import { status } from 'elysia'
 
-export type GetQrCodeResponse =
+export type GetFullCookieResponse =
   | ElysiaCustomStatusResponse<
       200,
       {
@@ -25,7 +25,7 @@ export interface GetFullCookieOptions {
   cookie: string
 }
 
-export async function getFullCookie(options: GetFullCookieOptions): Promise<GetQrCodeResponse> {
+export async function getFullCookie(options: GetFullCookieOptions): Promise<GetFullCookieResponse> {
   try {
     const response = await request.client('https://pan.baidu.com/disk/main', {
       method: 'get',

@@ -15,7 +15,7 @@ export class UserService {
         })
         .returning({ id: Schemas.User.id })
 
-      return status(200, {
+      return status(201, {
         message: '创建用户成功',
         data: {
           id: insertedUser!.id,
@@ -31,24 +31,6 @@ export class UserService {
 
       throw error
     }
-  }
-
-  static async deleteUserById(id: number) {
-    const deleted = await Drizzle.delete(Schemas.User)
-      .where(eq(Schemas.User.id, id))
-      .returning({ id: Schemas.User.id })
-
-    if (deleted.length === 0) {
-      return status(404, {
-        message: '用户不存在',
-        data: null,
-      })
-    }
-
-    return status(200, {
-      message: '删除用户成功',
-      data: null,
-    })
   }
 
   static async deleteUsers(body: UserModelType['deleteUsersBody']) {
@@ -79,40 +61,6 @@ export class UserService {
 
     return status(200, {
       message: '删除用户成功',
-      data: null,
-    })
-  }
-
-  static async updateUserById(id: number, body: UserModelType['updateUserByIdBody']) {
-    if (body.password) {
-      body.password = await Bun.password.hash(body.password)
-    }
-
-    try {
-      const updated = await Drizzle.update(Schemas.User)
-        .set(body)
-        .where(eq(Schemas.User.id, id))
-        .returning({ id: Schemas.User.id })
-
-      if (updated.length === 0) {
-        return status(404, {
-          message: '用户不存在',
-          data: null,
-        })
-      }
-    } catch (error) {
-      if (error instanceof Error && error.message.includes('UNIQUE')) {
-        return status(409, {
-          message: '用户名已存在',
-          data: null,
-        })
-      }
-
-      throw error
-    }
-
-    return status(200, {
-      message: '更新用户信息成功',
       data: null,
     })
   }
@@ -166,7 +114,7 @@ export class UserService {
     }
 
     return status(200, {
-      message: '批量更新用户信息成功',
+      message: '更新用户信息成功',
       data: null,
     })
   }
@@ -174,13 +122,17 @@ export class UserService {
   static async getAllUsers(query: UserModelType['getAllUsersQuery']) {
     const page = query.page ?? 1
     const page_size = query.page_size ?? 10
+    const id = query.id
+
+    const where = id ? eq(Schemas.User.id, id) : undefined
 
     const [users, total] = await Promise.all([
-      Drizzle.query.User.findMany({
-        limit: page_size,
-        offset: (page - 1) * page_size,
-      }),
-      Drizzle.select({ count: count() }).from(Schemas.User),
+      Drizzle.select()
+        .from(Schemas.User)
+        .limit(page_size)
+        .offset((page - 1) * page_size)
+        .where(where),
+      Drizzle.select({ count: count() }).from(Schemas.User).where(where),
     ])
 
     return status(200, {
@@ -191,26 +143,6 @@ export class UserService {
         total: total[0]!.count,
         data: users,
       },
-    })
-  }
-
-  static async getUserById(id: number) {
-    const user = await Drizzle.query.User.findFirst({
-      where: {
-        id,
-      },
-    })
-
-    if (!user) {
-      return status(404, {
-        message: '用户不存在',
-        data: null,
-      })
-    }
-
-    return status(200, {
-      message: '获取用户信息成功',
-      data: user,
     })
   }
 }

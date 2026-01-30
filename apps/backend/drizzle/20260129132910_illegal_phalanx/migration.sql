@@ -5,7 +5,9 @@ CREATE TABLE "accounts" (
 	"uk" text NOT NULL,
 	"cookie" text NOT NULL,
 	"bdstoken" text NOT NULL,
-	"account_data" jsonb NOT NULL,
+	"org_name" text NOT NULL,
+	"cid" text NOT NULL,
+	"ticket_remain_count" integer NOT NULL,
 	"status" boolean DEFAULT true NOT NULL,
 	"reason" text DEFAULT '' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -17,7 +19,7 @@ CREATE TABLE "keys" (
 	"user_id" integer NOT NULL,
 	"account_id" integer NOT NULL,
 	"user_data" jsonb,
-	"key" text NOT NULL,
+	"key" text NOT NULL UNIQUE,
 	"used_count" integer DEFAULT 0 NOT NULL,
 	"total_count" integer NOT NULL,
 	"expired_at" timestamp,
@@ -25,15 +27,14 @@ CREATE TABLE "keys" (
 	"status" boolean DEFAULT true NOT NULL,
 	"reason" text DEFAULT '' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "keys_key_unique" UNIQUE("key")
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "share_links" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "share_links_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"user_id" integer NOT NULL,
 	"account_id" integer NOT NULL,
-	"surl" text NOT NULL,
+	"surl" text NOT NULL UNIQUE,
 	"pwd" text NOT NULL,
 	"randsk" text NOT NULL,
 	"shareid" text NOT NULL,
@@ -42,21 +43,19 @@ CREATE TABLE "share_links" (
 	"path" text NOT NULL,
 	"ctime" timestamp NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "share_links_surl_unique" UNIQUE("surl")
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "users_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
-	"username" text NOT NULL,
+	"username" text NOT NULL UNIQUE,
 	"password" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "users_username_unique" UNIQUE("username")
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "keys" ADD CONSTRAINT "keys_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "keys" ADD CONSTRAINT "keys_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "public"."accounts"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "share_links" ADD CONSTRAINT "share_links_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "share_links" ADD CONSTRAINT "share_links_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "public"."accounts"("id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id");--> statement-breakpoint
+ALTER TABLE "keys" ADD CONSTRAINT "keys_user_id_users_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id");--> statement-breakpoint
+ALTER TABLE "keys" ADD CONSTRAINT "keys_account_id_accounts_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id");--> statement-breakpoint
+ALTER TABLE "share_links" ADD CONSTRAINT "share_links_user_id_users_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id");--> statement-breakpoint
+ALTER TABLE "share_links" ADD CONSTRAINT "share_links_account_id_accounts_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id");

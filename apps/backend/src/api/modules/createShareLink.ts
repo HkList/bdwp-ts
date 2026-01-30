@@ -40,14 +40,7 @@ export type CreateShareLinkResponse =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: '创建分享链接失败, 接口可能失效'
-        data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `创建分享链接失败: ${string} (${number})`
+        message: string
         data: null
       }
     >
@@ -115,7 +108,7 @@ export async function createShareLink(
 
   if (typeof response === 'string') {
     return status(500, {
-      message: '创建分享链接失败, 接口可能失效',
+      message: '创建分享链接失败: 接口可能失效',
       data: null,
     })
   }

@@ -8,7 +8,7 @@ export class QrloginService {
     return await getQrCode()
   }
 
-  static async loginByQrcode({ sign }: QrloginModelType['loginByQrcodeQuery']) {
+  static async loginByQrcode({ sign }: QrloginModelType['loginByQrcodeBody']) {
     const bdussResponse = await checkQrCodeStatus({ sign })
     if (bdussResponse.code === 500) {
       return status(500, {

@@ -5,15 +5,15 @@
     "apps/*"
   ],
   "scripts": {
-    "r": "bun run scripts/run-command.ts",
-    "dev": "bun run r dev backend,frontend-nuxt",
-    "build": "bun run r build backend,frontend-nuxt",
-    "preview": "bun run r preview backend,frontend-nuxt",
-    "lint": "bun run r lint backend,frontend-nuxt",
-    "lint:fix": "bun run r lint:fix backend,frontend-nuxt",
-    "typecheck": "bun run r typecheck backend,frontend-nuxt",
-    "drizzle": "bun run r drizzle-kit backend",
-    "seed": "bun run ./apps/backend/src/db/seed.ts"
+    "d": "bun run scripts/run-command.ts",
+    "dev": "bun run d dev backend,frontend-nuxt",
+    "build": "bun run d build backend,frontend-nuxt",
+    "preview": "bun run d preview backend,frontend-nuxt",
+    "lint": "bun run d lint backend,frontend-nuxt",
+    "lint:fix": "bun run d lint:fix backend,frontend-nuxt",
+    "typecheck": "bun run d typecheck backend,frontend-nuxt",
+    "drizzle": "bun run d drizzle-kit backend",
+    "seed": "bun run ./apps/backend/src/database/seed.ts"
   },
   "devDependencies": {
     "@types/bun": "^1.3.6",

@@ -29,14 +29,7 @@ export type TemplateVariableResponse =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: '获取模板变量失败, 接口可能失效'
-        data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `获取模板变量失败: (${number})`
+        message: string
         data: null
       }
     >
@@ -64,7 +57,7 @@ export async function getTemplateVariable(
 
   if (typeof response === 'string') {
     return status(500, {
-      message: '获取模板变量失败, 接口可能失效',
+      message: '获取模板变量失败: 接口可能失效',
       data: null,
     })
   }

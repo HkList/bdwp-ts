@@ -20,7 +20,7 @@ export type GetTaskInfoApiSuccessResponse<T = object> = T & {
 export type GetTaskInfoApiFailedResponse<T = object> = T & {
   errno: number
   status: 'failed'
-  task_errno: string | number
+  task_errno?: string | number
 }
 
 export type GetTaskInfoResponse<T = object> =
@@ -34,22 +34,8 @@ export type GetTaskInfoResponse<T = object> =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: '任务查询失败, 接口可能失效'
+        message: string
         data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `任务查询失败: (${number}) (${string | number})`
-        data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `任务查询成功: 任务状态为失败: (${number}) (${string | number})`
-        data: GetTaskInfoApiFailedResponse<T>
       }
     >
 
@@ -149,22 +135,22 @@ export async function _getTaskInfo<T = object>(
 
   if (typeof response === 'string') {
     return status(500, {
-      message: '任务查询失败, 接口可能失效',
+      message: '任务查询失败: 接口可能失效',
       data: null,
     })
   }
 
   if (response.errno !== 0) {
     return status(500, {
-      message: `任务查询失败: (${response.errno}) (${response.task_errno})`,
+      message: `任务查询失败: (${response.errno}) (${response?.task_errno ?? ''})`,
       data: null,
     })
   }
 
   if (response.status === 'failed') {
     return status(500, {
-      message: `任务查询成功: 任务状态为失败: (${response.errno}) (${response.task_errno})`,
-      data: response,
+      message: `任务查询成功: 任务状态为失败: (${response.errno}) (${response?.task_errno ?? ''})`,
+      data: null,
     })
   }
 

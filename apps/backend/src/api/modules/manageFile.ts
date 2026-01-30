@@ -1,7 +1,4 @@
-import type {
-  GetTaskInfoApiFailedResponse,
-  GetTaskInfoResponse,
-} from '@backend/api/modules/getTaskInfo.ts'
+import type { GetTaskInfoResponse } from '@backend/api'
 import type { ElysiaCustomStatusResponse, MaybePromise } from 'elysia'
 import { waitForTaskComplete } from '@backend/api'
 import { bdwp_config } from '@backend/config.ts'
@@ -26,7 +23,7 @@ export interface DeleteFileAsyncSuccessInfoItem {
   size: string
 }
 
-export interface DeleteFileAsyncFailedInfoItem {}
+// export interface DeleteFileAsyncFailedInfoItem {}
 
 export interface RenameFileSuccessInfoItem {
   errno: number
@@ -45,11 +42,11 @@ export interface RenameFileAsyncSuccessInfoItem {
   to: string
 }
 
-export interface RenameFileAsyncFailedInfoItem {
-  error_code: number
-  from: string
-  to: string
-}
+// export interface RenameFileAsyncFailedInfoItem {
+//   error_code: number
+//   from: string
+//   to: string
+// }
 
 export interface MoveOrCopyFileSuccessInfoItem {
   errno: number
@@ -70,16 +67,15 @@ export interface MoveOrCopyFileAsyncSuccessInfoItem {
   to_path: string
 }
 
-export interface MoveOrCopyFileAsyncFailedInfoItem {
-  error_code: number
-  from: string
-  to: string
-}
+// export interface MoveOrCopyFileAsyncFailedInfoItem {
+//   error_code: number
+//   from: string
+//   to: string
+// }
 
 export interface ManageFileBaseOptions<K = object> {
   cookie: string
   async?: 0 | 1 | 2
-  wait_finish?: boolean
   ondup?: 'fail' | 'newcopy' | 'overwrite' | 'skip'
   cid?: string
   onTaskChecked?: (response: GetTaskInfoResponse<K>) => MaybePromise<void>
@@ -103,42 +99,37 @@ export interface FileOpMap<K = object> {
     failed: DeleteFileFailedInfoItem
     options: DeleteFileOptions<K>
     asyncSuccess: DeleteFileAsyncSuccessInfoItem
-    asyncFailed: DeleteFileAsyncFailedInfoItem
+    // asyncFailed: DeleteFileAsyncFailedInfoItem
   }
   rename: {
     success: RenameFileSuccessInfoItem
     failed: RenameFileFailedInfoItem
     options: RenameFileOptions<K>
     asyncSuccess: RenameFileAsyncSuccessInfoItem
-    asyncFailed: RenameFileAsyncFailedInfoItem
+    // asyncFailed: RenameFileAsyncFailedInfoItem
   }
   move: {
     success: MoveOrCopyFileSuccessInfoItem
     failed: MoveOrCopyFileFailedInfoItem
     options: MoveOrCopyFileOptions<K>
     asyncSuccess: MoveOrCopyFileAsyncSuccessInfoItem
-    asyncFailed: MoveOrCopyFileAsyncFailedInfoItem
+    // asyncFailed: MoveOrCopyFileAsyncFailedInfoItem
   }
   copy: FileOpMap['move']
 }
 
 export interface ManageFileApiSuccessResponse<T extends keyof FileOpMap> {
   errno: 0
-  info: (FileOpMap[T]['success'] | FileOpMap[T]['asyncSuccess'])[]
+  info: FileOpMap[T]['success'][] | FileOpMap[T]['asyncSuccess'][]
   taskid?: number
 }
 
 export interface ManageFileApiFailedResponse<T extends keyof FileOpMap> {
   errno: number
-  info: (FileOpMap[T]['failed'] | FileOpMap[T]['asyncFailed'])[]
+  info: FileOpMap[T]['failed'][]
 }
 
-export type ManageFileResponse<
-  T extends keyof FileOpMap,
-  K extends {
-    list: (FileOpMap[T]['asyncSuccess'] | FileOpMap[T]['asyncFailed'])[]
-  },
-> =
+export type ManageFileResponse<T extends keyof FileOpMap> =
   | ElysiaCustomStatusResponse<
       200,
       {
@@ -149,22 +140,8 @@ export type ManageFileResponse<
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: '操作文件失败, 接口可能失效'
+        message: string
         data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `操作文件失败: (${number})`
-        data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `操作文件失败: 任务查询${string}`
-        data: null | GetTaskInfoApiFailedResponse<K>
       }
     >
 
@@ -175,12 +152,10 @@ export const ondupMap = {
   rename: 'overwrite',
 }
 
-export async function manageFile<
-  T extends keyof FileOpMap,
-  K extends {
-    list: (FileOpMap[T]['asyncSuccess'] | FileOpMap[T]['asyncFailed'])[]
-  },
->(method: T, options: FileOpMap<K>[T]['options']): Promise<ManageFileResponse<T, K>> {
+export async function manageFile<T extends keyof FileOpMap>(
+  method: T,
+  options: FileOpMap[T]['options'],
+): Promise<ManageFileResponse<T>> {
   const response = await request.send<
     ManageFileApiSuccessResponse<T>,
     ManageFileApiFailedResponse<T>
@@ -216,7 +191,7 @@ export async function manageFile<
 
   if (typeof response === 'string') {
     return status(500, {
-      message: '操作文件失败, 接口可能失效',
+      message: '操作文件失败: 接口可能失效',
       data: null,
     })
   }
@@ -230,8 +205,10 @@ export async function manageFile<
 
   const typedResponse = response as ManageFileApiSuccessResponse<T>
 
-  if (typedResponse.taskid && (options.wait_finish || !('wait_finish' in options))) {
-    const res = await waitForTaskComplete<K>({
+  if (typedResponse.taskid) {
+    const res = await waitForTaskComplete<{
+      list: FileOpMap[T]['asyncSuccess'][]
+    }>({
       cookie: options.cookie,
       task_id: typedResponse.taskid.toString(),
       cid: options.cid,
@@ -241,13 +218,13 @@ export async function manageFile<
     if (res.code !== 200) {
       return status(500, {
         message: `操作文件失败: ${res.response.message}`,
-        data: res.response.data,
+        data: null,
       })
     }
 
     return status(200, {
       message: '操作文件成功',
-      data: res.response.data.list as FileOpMap[T]['asyncSuccess'][],
+      data: res.response.data.list,
     })
   }
 

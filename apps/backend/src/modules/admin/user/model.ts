@@ -17,15 +17,6 @@ export const UserModel = {
     data: t.Null(),
   }),
 
-  deleteUserByIdSuccess: t.Object({
-    message: t.Literal('删除用户成功'),
-    data: t.Null(),
-  }),
-  deleteUserByIdFailedNotFound: t.Object({
-    message: t.Literal('用户不存在'),
-    data: t.Null(),
-  }),
-
   deleteUsersBody: t.Object({
     ids: t.Array(t.Number()),
   }),
@@ -38,25 +29,6 @@ export const UserModel = {
     data: t.Null(),
   }),
 
-  updateUserByIdBody: t.Partial(
-    t.Object({
-      username: t.String({ minLength: 3, maxLength: 30 }),
-      password: t.String({ minLength: 6, maxLength: 100 }),
-    }),
-  ),
-  updateUserByIdSuccess: t.Object({
-    message: t.Literal('更新用户信息成功'),
-    data: t.Null(),
-  }),
-  updateUserByIdFailedNotFound: t.Object({
-    message: t.Literal('用户不存在'),
-    data: t.Null(),
-  }),
-  updateUserByIdFailedUsernameExists: t.Object({
-    message: t.Literal('用户名已存在'),
-    data: t.Null(),
-  }),
-
   updateUsersBody: t.Array(
     t.Object({
       id: t.Number(),
@@ -65,7 +37,7 @@ export const UserModel = {
     }),
   ),
   updateUsersSuccess: t.Object({
-    message: t.Literal('批量更新用户信息成功'),
+    message: t.Literal('更新用户信息成功'),
     data: t.Null(),
   }),
   updateUsersFailedNotFound: t.Object({
@@ -91,21 +63,11 @@ export const UserModel = {
       data: t.Array(Typeboxs.UserTypeboxSchema),
     }),
   }),
-
-  getUserByIdSuccess: t.Object({
-    message: t.Literal('获取用户信息成功'),
-    data: Typeboxs.UserTypeboxSchema,
-  }),
-  getUserByIdFailedNotFound: t.Object({
-    message: t.Literal('用户不存在'),
-    data: t.Null(),
-  }),
 }
 
 export interface UserModelType {
   createUserBody: typeof UserModel.createUserBody.static
   deleteUsersBody: typeof UserModel.deleteUsersBody.static
-  updateUserByIdBody: typeof UserModel.updateUserByIdBody.static
   updateUsersBody: typeof UserModel.updateUsersBody.static
   getAllUsersQuery: typeof UserModel.getAllUsersQuery.static
 }

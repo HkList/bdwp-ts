@@ -3,8 +3,13 @@ import process from 'node:process'
 
 const args = process.argv.slice(2)
 
-const script = args[0] ?? 'dev'
-const packages = (args[1] ?? 'backend').split(',')
+if (args.length < 2) {
+  console.error('Usage: bun run scripts/run-command.ts <script> <package1,package2,...> [args...]')
+  process.exit(1)
+}
+
+const script = args[0]
+const packages = args[1]!.split(',')
 
 const { result } = concurrently(
   packages.map((app) => ({

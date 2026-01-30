@@ -8,6 +8,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsgo --noEmit",
+    "typecheck:legacy": "tsc --noEmit",
     "test": "bun run test/test.ts"
   },
   "dependencies": {

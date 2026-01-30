@@ -27,29 +27,25 @@ export interface EnterpriseShareBindListApiFailedResponse {
   show_msg: string
 }
 
+export interface EnterpriseShareBindListResponseData {
+  tkbind_list: EnterpriseShareBindListItem[]
+  use_count: number
+  total_count: number
+  shareid: string
+}
+
 export type EnterpriseShareBindListResponse =
   | ElysiaCustomStatusResponse<
       200,
       {
         message: '获取企业分享绑定列表成功'
-        data: {
-          tkbind_list: EnterpriseShareBindListItem[]
-          use_count: number
-          total_count: number
-        }
+        data: EnterpriseShareBindListResponseData
       }
     >
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: '获取企业分享绑定列表失败, 接口可能失效'
-        data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `获取企业分享绑定列表失败: ${string} (${number})`
+        message: string
         data: null
       }
     >
@@ -83,7 +79,7 @@ export async function getEnterpriseShareBindList(
 
   if (typeof response === 'string') {
     return status(500, {
-      message: '获取企业分享绑定列表失败, 接口可能失效',
+      message: '获取企业分享绑定列表失败: 接口可能失效',
       data: null,
     })
   }
@@ -103,6 +99,7 @@ export async function getEnterpriseShareBindList(
       tkbind_list: typedResponse.data.tkbind_list ?? [],
       use_count: typedResponse.data.use_count,
       total_count: typedResponse.data.total_count,
+      shareid: options.shareid,
     },
   })
 }

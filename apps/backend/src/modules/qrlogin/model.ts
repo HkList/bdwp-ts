@@ -11,15 +11,11 @@ export const QrloginModel = {
     }),
   }),
   getQrCodeFailed: t.Object({
-    message: t.TemplateLiteral([t.Literal('获取二维码失败: '), t.Number()]),
-    data: t.Null(),
-  }),
-  getQroCodeFailedApiInvalid: t.Object({
-    message: t.Literal('获取二维码失败, 接口可能失效'),
+    message: t.String(),
     data: t.Null(),
   }),
 
-  loginByQrcodeQuery: t.Object({
+  loginByQrcodeBody: t.Object({
     sign: t.String(),
   }),
   loginByQrcodeSuccess: t.Object({
@@ -35,44 +31,12 @@ export const QrloginModel = {
     ]),
     data: t.Null(),
   }),
-  loginByQrcodeFailedApiInvalid: t.Object({
-    message: t.Literal('获取二维码状态失败, 接口可能失效'),
-    data: t.Null(),
-  }),
   loginByQrcodeFailed: t.Object({
-    message: t.TemplateLiteral([
-      t.Literal('获取二维码状态失败: '),
-      t.Union([
-        t.Literal('gid查询失败'),
-        t.Literal('bduss获取失败'),
-        t.Literal('二维码等待确认中'),
-        t.Number(),
-      ]),
-    ]),
-    data: t.Null(),
-  }),
-  loginByQrcodeFailedGetBdussError: t.Object({
-    message: t.Union([
-      t.Literal('获取CK失败, 接口可能失效'),
-      t.TemplateLiteral([
-        t.Literal('获取CK失败: '),
-        t.Union([
-          t.Literal('接口数据解析失败'),
-          t.Number(),
-          t.TemplateLiteral([t.String(), t.Literal(' ('), t.String(), t.Literal(')')]),
-          t.Literal('stoken获取失败'),
-          t.Literal('bduss获取失败'),
-        ]),
-      ]),
-    ]),
-    data: t.Null(),
-  }),
-  loginByQrcodeFailedGetFullCookieError: t.Object({
-    message: t.Literal('获取完整CK失败'),
+    message: t.String(),
     data: t.Null(),
   }),
 }
 
 export interface QrloginModelType {
-  loginByQrcodeQuery: typeof QrloginModel.loginByQrcodeQuery.static
+  loginByQrcodeBody: typeof QrloginModel.loginByQrcodeBody.static
 }

@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "surl_shareid_unique_idx" ON "share_links" ("surl","shareid");

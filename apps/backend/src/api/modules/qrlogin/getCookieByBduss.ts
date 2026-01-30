@@ -34,14 +34,7 @@ export type GetCookieByBdussResponse =
   | ElysiaCustomStatusResponse<
       500,
       {
-        message: '获取CK失败, 接口可能失效'
-        data: null
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `获取CK失败: ${'接口数据解析失败' | number | `${string} (${string})` | 'stoken获取失败' | 'bduss获取失败'}`
+        message: string
         data: null
       }
     >

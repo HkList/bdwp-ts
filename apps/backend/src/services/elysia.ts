@@ -1,6 +1,14 @@
 import { config } from '@backend/config.ts'
-import { AuthModule, ParseModule, QrloginModule, UserModule } from '@backend/modules/index.ts'
-import { AuthPlugin } from '@backend/plugins/authPlugin.ts'
+import {
+  AccountModule,
+  AuthModule,
+  KeyModule,
+  ParseModule,
+  QrloginModule,
+  TaskModule,
+  UserModule,
+} from '@backend/modules/index.ts'
+import { UserAuthPlugin } from '@backend/plugins/userAuthPlugin.ts'
 import { bearer } from '@elysiajs/bearer'
 import { cors } from '@elysiajs/cors'
 import { openapi } from '@elysiajs/openapi'
@@ -34,7 +42,7 @@ export const app = new Elysia()
           securitySchemes: {
             bearer: {
               // 固定的 token 值，实际应用中应该从配置中读取
-              token: 'c3afe8be-9ce1-4d6a-bb7a-e8b62d3afce4',
+              token: '8073b3ed-bd62-4264-ba2e-ab9888ebf3da',
             },
           },
         },
@@ -93,6 +101,8 @@ export const app = new Elysia()
       })
     }
 
+    console.log('未知错误:', error)
+
     return status(500, {
       message: '服务器内部错误',
       data: { ...(config.NODE_ENV === 'development' ? { code, error } : null) },
@@ -103,7 +113,10 @@ export const app = new Elysia()
       .use(AuthModule)
       .use(ParseModule)
       .use(QrloginModule)
-      .group('/admin', (app) => app.use(AuthPlugin()).use(UserModule)),
+      .use(TaskModule)
+      .group('/admin', (app) =>
+        app.use(UserAuthPlugin()).use(UserModule).use(AccountModule).use(KeyModule),
+      ),
   )
 
 export type App = typeof app

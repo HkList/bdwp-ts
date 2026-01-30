@@ -5,6 +5,7 @@ export const redis = new Redis({
   host: config.REDIS_HOST,
   maxRetriesPerRequest: null,
   lazyConnect: true,
+  db: config.REDIS_DB,
 })
 
 export async function initRedis() {
