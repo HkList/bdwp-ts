@@ -5,8 +5,7 @@
     "dev": "bun --watch src/index.ts",
     "build": "bun build --compile ./src/index.ts --outfile dist/app",
     "preview": "NODE_ENV=production bun run ./src/index.ts",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
+    "lint": "eslint .  --cache",
     "typecheck": "tsgo --noEmit",
     "typecheck:legacy": "tsc --noEmit",
     "test": "bun run test/test.ts"

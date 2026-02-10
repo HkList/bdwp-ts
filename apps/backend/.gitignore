@@ -1,5 +1,4 @@
 dist
 node_modules
-.env
-env.ts
+.eslintcache
 test/test.ts

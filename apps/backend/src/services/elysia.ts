@@ -23,9 +23,9 @@ export const app = new Elysia()
       path: config.OPENAPI_PATH,
       documentation: {
         info: {
-          title: 'bdwp-nuxt 后端 API 文档',
+          title: 'bdwp-ts 后端 API 文档',
           version: packageJson.version,
-          description: 'bdwp-nuxt 后端 API 文档',
+          description: 'bdwp-ts 后端 API 文档',
         },
         security: [{ bearer: [] }],
         components: {

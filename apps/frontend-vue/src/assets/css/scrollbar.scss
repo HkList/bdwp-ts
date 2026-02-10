@@ -1,0 +1,26 @@
+:root {
+  --td-scrollbar-color: rgba(0, 0, 0, 0.1);
+  --td-scrollbar-hover-color: rgba(0, 0, 0, 0.3);
+}
+
+.dark:root {
+  --td-scrollbar-color: rgba(255, 255, 255, 0.1);
+  --td-scrollbar-hover-color: rgba(255, 255, 255, 0.3);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  background-clip: content-box;
+  background-color: var(--td-scrollbar-color);
+  border-radius: 15px;
+}
+
+::-webkit-scrollbar-thumb:vertical:hover,
+::-webkit-scrollbar-thumb:horizontal:hover {
+  background-color: var(--td-scrollbar-hover-color);
+}
