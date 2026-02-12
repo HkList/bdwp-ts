@@ -18,13 +18,17 @@ const props = defineProps<{
 .logo {
   width: 100%;
   height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
   box-sizing: border-box;
 
-  &:focus {
+  :deep(.n-button__content) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  &:focus,
+  &:hover {
     background-color: transparent;
   }
 
