@@ -9,7 +9,7 @@
   >
     <Logo :show-text="!collapsedWarped" show-border />
 
-    <n-menu
+    <NMenu
       :collapsed="collapsedWarped"
       :collapsed-width="64"
       :collapsed-icon-size="22"
@@ -35,7 +35,7 @@ import { storeToRefs } from 'pinia'
 import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { computed } from 'vue'
-import Logo from '@frontend/layouts/AdminLayout/Logo.vue'
+import Logo from '@frontend/layouts/AdminLayout/components/Logo.vue'
 
 const layoutStore = useLayoutStore()
 

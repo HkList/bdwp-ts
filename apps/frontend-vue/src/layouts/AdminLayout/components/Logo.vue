@@ -1,8 +1,10 @@
 <template>
-  <NButton quaternary class="logo" :class="props.showBorder ? 'border' : ''">
-    <img src="/favicon.ico" alt="Logo" class="logo-img" />
+  <div quaternary class="logo" :class="props.showBorder ? 'border' : ''">
+    <NButton quaternary class="button">
+      <img src="/favicon.ico" alt="Logo" class="logo-img" />
+    </NButton>
     <span v-if="props.showText" class="logo-text">BDWP-ts</span>
-  </NButton>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -19,16 +21,12 @@ const props = defineProps<{
   width: 100%;
   height: 64px;
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  :deep(.n-button__content) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-  }
-
-  &:focus,
-  &:hover {
+  .button:focus,
+  .button:hover {
     background-color: transparent;
   }
 
