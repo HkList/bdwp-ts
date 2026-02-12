@@ -155,6 +155,20 @@ watch(
     --hk-background-active-color: rgb(17 26 44);
   }
 
+  @keyframes tabIn {
+    from {
+      max-width: 0px;
+      opacity: 0;
+      margin-left: 0px;
+    }
+
+    to {
+      max-width: 200px;
+      opacity: 1;
+      margin-left: 10px;
+    }
+  }
+
   .tab {
     display: flex;
     align-items: flex-start;
@@ -174,6 +188,8 @@ watch(
       color 0.3s,
       box-shadow 0.3s,
       background-color 0.3s;
+
+    animation: tabIn 0.8s;
 
     :deep(.n-card__content) {
       padding: 0 10px;
