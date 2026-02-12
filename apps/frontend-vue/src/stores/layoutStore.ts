@@ -1,7 +1,6 @@
 import { ADMIN_ROUTES, type RouteRecordRawPlus } from '@frontend/router/index.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { useMobile } from '@frontend/utils/useMobile.ts'
-import { HomeOutlined } from '@vicons/antd'
 import type { MenuOption } from 'naive-ui'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
@@ -11,6 +10,7 @@ export interface Breadcrumb {
   path: string
   title: string
   icon?: ReturnType<typeof renderIcon>
+  route: RouteRecordRawPlus
 }
 
 // 将路由转换为菜单选项（支持嵌套）
@@ -32,14 +32,23 @@ const routeToMenuOption = (route: RouteRecordRawPlus): MenuOption => {
 }
 
 export const useLayoutStore = defineStore('layout', () => {
-  const { isMobile } = useMobile()
   const route = useRoute()
   const router = useRouter()
 
   const collapsed = ref(false)
-
   const toggleCollapsed = () => {
     collapsed.value = !collapsed.value
+  }
+
+  const { isMobile } = useMobile()
+  const collapsedMobileDrawer = ref(false)
+  const toggleCollapsedMobileDrawer = () => {
+    collapsedMobileDrawer.value = !collapsedMobileDrawer.value
+  }
+
+  const showMenu = ref(true)
+  const toggleShowMenu = () => {
+    showMenu.value = !showMenu.value
   }
 
   const activeKey = computed(() => route.path)
@@ -56,24 +65,15 @@ export const useLayoutStore = defineStore('layout', () => {
 
   // 面包屑导航
   const breadcrumbs = computed<Breadcrumb[]>(() => {
-    const routes = route.matched
-      .filter((item) => item.path !== '/admin')
-      .map(
-        (item) =>
-          ({
-            path: item.path,
-            title: item.meta.title,
-            icon: item.meta.icon,
-          }) as Breadcrumb,
-      )
-
-    routes.unshift({
-      path: '/',
-      title: '首页',
-      icon: renderIcon(HomeOutlined),
-    })
-
-    return routes
+    return route.matched.map(
+      (item) =>
+        ({
+          path: item.path,
+          title: item.meta.title,
+          icon: item.meta.icon,
+          route: item as unknown as RouteRecordRawPlus,
+        }) as Breadcrumb,
+    )
   })
 
   return {
@@ -81,6 +81,11 @@ export const useLayoutStore = defineStore('layout', () => {
     toggleCollapsed,
 
     isMobile,
+    collapsedMobileDrawer,
+    toggleCollapsedMobileDrawer,
+
+    showMenu,
+    toggleShowMenu,
 
     activeKey,
     menuOptions,

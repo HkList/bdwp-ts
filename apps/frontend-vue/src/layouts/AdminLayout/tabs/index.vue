@@ -1,0 +1,209 @@
+<template>
+  <NScrollbar x-scrollable class="scrollbar" @mousewheel.stop="handleMousewheel" ref="scrollbar">
+    <div class="tabs">
+      <NCard
+        v-for="path in tabsOrder"
+        :key="path"
+        class="tab"
+        :class="{
+          active: path === activeTab,
+        }"
+        @click="handleCardClick(path)"
+        @auxclick.middle="(event: MouseEvent) => warpedCloseTab(event, path, true)"
+      >
+        <template v-if="tabs[path]">
+          <component :is="tabs[path].icon" class="icon" />
+          <span>{{ tabs[path].title }}</span>
+          <div
+            class="icon"
+            :class="{
+              invisable: !closeAble,
+            }"
+          >
+            <component
+              :is="renderIcon(Close)"
+              @click.stop="(event: MouseEvent) => warpedCloseTab(event, path)"
+            />
+          </div>
+        </template>
+      </NCard>
+    </div>
+  </NScrollbar>
+</template>
+
+<script setup lang="ts">
+import { NScrollbar, NCard } from 'naive-ui'
+import { activeTab, switchTab, tabs, tabsOrder } from '@frontend/utils/useRouteTabs.ts'
+import { useRouter } from 'vue-router'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { Close } from '@vicons/ionicons5'
+import { ref, useTemplateRef, watch } from 'vue'
+import { closeTab } from '@frontend/utils/useRouteTabs.ts'
+
+const router = useRouter()
+const closeAble = ref(true)
+watch(tabsOrder.value, (newValue) => (closeAble.value = newValue.length > 1), { immediate: true })
+
+const handleCardClick = (path: string) => {
+  if (path === activeTab.value) return
+  router.push(path)
+}
+
+const scrollbar = useTemplateRef('scrollbar')
+const handleMousewheel = (event: WheelEvent) => {
+  if (!scrollbar.value) return
+
+  scrollbar.value.scrollBy({
+    left: Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY,
+    behavior: 'auto',
+  })
+}
+
+const warpedCloseTab = (event: MouseEvent, path: string, fromTab = false) => {
+  // 判断是否还有剩余标签
+  if (!closeAble.value) return
+
+  let tabElement: HTMLElement | undefined | null
+
+  if (fromTab) {
+    tabElement = event.currentTarget as HTMLElement
+  } else {
+    const target = event.currentTarget as HTMLElement
+    if (!target) return
+    tabElement = target.parentElement?.parentElement?.parentElement
+  }
+
+  if (!tabElement) return
+
+  tabElement.style.maxWidth = '0px'
+  tabElement.style.opacity = '0'
+  tabElement.style.borderWidth = '0px'
+  tabElement.style.marginLeft = '0px'
+
+  // 如果关闭的标签是当前激活的标签，提前切换到下一个标签, 避免需要等待动画结束, 才能看到切换效果
+  if (path === activeTab.value) {
+    // 提前跳转
+    switchTab(path, true)
+  }
+
+  if (tabsOrder.value.length - 1 <= 1) {
+    closeAble.value = false
+  }
+
+  setTimeout(() => {
+    closeTab(path)
+  }, 600)
+}
+
+// 监听路由变化，自动滚动到 activeTab
+watch(activeTab, () => {
+  if (!scrollbar.value) return
+  const activeTabElement = document.querySelector('.tab.active') as HTMLElement
+  if (!activeTabElement) return
+
+  const { offsetLeft, offsetWidth } = activeTabElement
+  let left = offsetLeft - offsetWidth
+
+  if (left <= 10) {
+    left = 0
+  }
+
+  scrollbar.value.scrollTo({ left, behavior: 'smooth' })
+})
+</script>
+
+<style lang="scss">
+.scrollbar {
+  .n-scrollbar-content {
+    height: 100%;
+  }
+
+  .n-scrollbar-rail {
+    display: none;
+  }
+}
+</style>
+<style scoped lang="scss">
+.tabs {
+  display: flex;
+  align-items: center;
+
+  height: 100%;
+  white-space: nowrap;
+
+  --hk-border-color: rgb(224, 224, 230);
+  --hk-border-hover-color: rgb(224, 224, 230);
+  --hk-border-active-color: rgb(22, 119, 255);
+
+  --hk-background-color: transparent;
+  --hk-background-hover-color: rgb(243, 243, 245);
+  --hk-background-active-color: rgb(230, 244, 255);
+
+  @media (prefers-color-scheme: dark) {
+    --hk-border-color: rgba(255, 255, 255, 0.24);
+    --hk-border-hover-color: rgba(255, 255, 255, 0.24);
+    --hk-border-active-color: rgb(22, 104, 220);
+
+    --hk-background-color: transparent;
+    --hk-background-hover-color: rgba(255, 255, 255, 0.09);
+    --hk-background-active-color: rgb(17 26 44);
+  }
+
+  .tab {
+    display: flex;
+    align-items: flex-start;
+
+    width: fit-content;
+    max-width: 200px;
+    overflow: hidden;
+    margin-left: 10px;
+
+    height: 36px;
+    border-radius: 6px;
+    border-color: var(--hk-border-color);
+    transition:
+      max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.5s,
+      margin-left 0.5s,
+      color 0.3s,
+      box-shadow 0.3s,
+      background-color 0.3s;
+
+    :deep(.n-card__content) {
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 5px;
+      width: fit-content;
+    }
+
+    &:hover {
+      cursor: pointer;
+      background-color: var(--hk-background-hover-color);
+      border-color: var(--hk-border-hover-color);
+    }
+
+    .icon {
+      font-size: 17px;
+      height: 17px;
+      width: 17px;
+      display: flex;
+
+      transition: all 0.3s;
+
+      &.invisable {
+        font-size: 0px;
+        width: 0;
+        height: 0;
+      }
+    }
+
+    &.active {
+      background-color: var(--hk-background-active-color);
+      border-color: var(--hk-border-active-color);
+      color: var(--hk-border-active-color);
+    }
+  }
+}
+</style>

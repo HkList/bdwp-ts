@@ -6,5 +6,8 @@ export const useMobile = () => {
   const isMobile = computed(() => {
     return breakpoints.between('sm', 'md').value || breakpoints.smallerOrEqual('sm').value
   })
-  return { isMobile }
+  return {
+    isMobile,
+    isWeChat: /MicroMessenger/i.test(navigator.userAgent),
+  }
 }
