@@ -37,7 +37,7 @@ import { activeTab, switchTab, tabs, tabsOrder } from '@frontend/utils/useRouteT
 import { useRouter } from 'vue-router'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { Close } from '@vicons/ionicons5'
-import { ref, useTemplateRef, watch } from 'vue'
+import { nextTick, ref, useTemplateRef, watch } from 'vue'
 import { closeTab } from '@frontend/utils/useRouteTabs.ts'
 
 const router = useRouter()
@@ -96,20 +96,26 @@ const warpedCloseTab = (event: MouseEvent, path: string, fromTab = false) => {
 }
 
 // 监听路由变化，自动滚动到 activeTab
-watch(activeTab, () => {
-  if (!scrollbar.value) return
-  const activeTabElement = document.querySelector('.tab.active') as HTMLElement
-  if (!activeTabElement) return
+watch(
+  activeTab,
+  async () => {
+    await nextTick()
 
-  const { offsetLeft, offsetWidth } = activeTabElement
-  let left = offsetLeft - offsetWidth
+    if (!scrollbar.value) return
+    const activeTabElement = document.querySelector('.tab.active') as HTMLElement
+    if (!activeTabElement) return
 
-  if (left <= 10) {
-    left = 0
-  }
+    const { offsetLeft, offsetWidth } = activeTabElement
+    let left = offsetLeft - offsetWidth
 
-  scrollbar.value.scrollTo({ left, behavior: 'smooth' })
-})
+    if (left <= 10) {
+      left = 0
+    }
+
+    scrollbar.value.scrollTo({ left, behavior: 'smooth' })
+  },
+  { immediate: true },
+)
 </script>
 
 <style lang="scss">

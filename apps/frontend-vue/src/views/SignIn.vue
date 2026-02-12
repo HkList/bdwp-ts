@@ -68,14 +68,16 @@ const onSubmit = async () => {
 
 <style lang="scss" scoped>
 .signIn {
-  width: 30%;
-  height: 45%;
+  width: 35%;
   margin: 100px auto;
   padding: 20px;
 
+  @media (max-width: 1250px) {
+    width: 50%;
+  }
+
   @media (max-width: 1024px) {
     width: 80%;
-    height: 80%;
   }
 }
 </style>

@@ -34,14 +34,14 @@
           <div class="pcHeader">
             <NButton quaternary @click="toggleShowMenu" :render-icon="renderIcon(Menu, 24)" />
 
-            <NBreadcrumb>
+            <NBreadcrumb class="breadcrumb">
               <NBreadcrumbItem v-for="item in breadcrumbs" :key="item.path" :clickable="false">
                 <NButton
                   quaternary
                   :disabled="item.route.children?.length !== 0 && !item.route.redirect"
                   @click="handleClickCrumb(item)"
                 >
-                  <NSpace :size="8" align="center">
+                  <NSpace :size="8" align="center" :wrap="false">
                     <component :is="item.icon"></component>
                     <span>{{ item.title }}</span>
                   </NSpace>
@@ -126,7 +126,7 @@ import { useLayoutStore, type Breadcrumb } from '@frontend/stores/layoutStore.ts
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import LayoutSider from '@frontend/layouts/AdminLayout/components/LayoutSider.vue'
 import Logo from '@frontend/layouts/AdminLayout/components/Logo.vue'
-import Tabs from '@frontend/layouts/AdminLayout/components/tabs.vue'
+import Tabs from '@frontend/layouts/AdminLayout/components/Tabs.vue'
 import { Menu } from '@vicons/ionicons5'
 import { useRouter } from 'vue-router'
 
@@ -177,6 +177,13 @@ const handleClickCrumb = (item: Breadcrumb) => {
         display: flex;
         align-items: center;
         gap: 12px;
+        width: 70%;
+        overflow: auto;
+
+        .breadcrumb {
+          width: calc(100% - 16px);
+          overflow: auto;
+        }
       }
 
       .mobileHeader {

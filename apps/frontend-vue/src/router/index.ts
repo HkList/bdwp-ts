@@ -48,6 +48,36 @@ export const ADMIN_ROUTES: RouteRecordRawPlus[] = [
         meta: { title: '仪表盘3', icon: renderIcon(DashboardFilled) },
         component: () => import('@frontend/views/SignIn.vue'),
       },
+      {
+        path: '/admin/users224',
+        meta: { title: '仪表盘4', icon: renderIcon(DashboardFilled) },
+        component: () => import('@frontend/views/SignIn.vue'),
+      },
+      {
+        path: '/admin/users225',
+        meta: { title: '仪表盘5', icon: renderIcon(DashboardFilled) },
+        component: () => import('@frontend/views/SignIn.vue'),
+      },
+      {
+        path: '/admin/users226',
+        meta: { title: '仪表盘6', icon: renderIcon(DashboardFilled) },
+        component: () => import('@frontend/views/SignIn.vue'),
+      },
+      {
+        path: '/admin/users227',
+        meta: { title: '仪表盘7', icon: renderIcon(DashboardFilled) },
+        component: () => import('@frontend/views/SignIn.vue'),
+      },
+      {
+        path: '/admin/users228',
+        meta: { title: '仪表盘8', icon: renderIcon(DashboardFilled) },
+        component: () => import('@frontend/views/SignIn.vue'),
+      },
+      {
+        path: '/admin/users229',
+        meta: { title: '仪表盘9', icon: renderIcon(DashboardFilled) },
+        component: () => import('@frontend/views/SignIn.vue'),
+      },
     ],
   },
 ]
