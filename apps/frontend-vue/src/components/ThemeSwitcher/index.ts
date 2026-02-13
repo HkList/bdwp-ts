@@ -1,5 +1,5 @@
-import { computed } from 'vue'
-import { useColorMode } from '@vueuse/core'
+import { computed, nextTick } from 'vue'
+import { useColorMode, useMouse } from '@vueuse/core'
 import { darkTheme, type ConfigProviderProps, type DropdownOption } from 'naive-ui'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { DesktopOutline, Moon, Sunny } from '@vicons/ionicons5'
@@ -31,6 +31,42 @@ export const configProviderProps = computed<ConfigProviderProps>(() => ({
 
 export const setMode = (next: ThemeMode) => {
   colorMode.store.value = next
+}
+
+const { x, y } = useMouse()
+export const setModeWithTransition = (next: ThemeMode) => {
+  if (
+    !('startViewTransition' in document) ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
+    setMode(next)
+    return
+  }
+
+  const endRadius = Math.hypot(
+    Math.max(x.value, innerWidth - x.value),
+    Math.max(y.value, innerHeight - y.value),
+  )
+  const transition = document.startViewTransition(async () => {
+    setMode(next)
+    return nextTick()
+  })
+  transition.ready.then(() => {
+    const clipPath = [
+      `circle(0 at ${x.value}px ${y.value}px)`,
+      `circle(${endRadius}px at ${x.value}px ${y.value}px)`,
+    ]
+    document.documentElement.animate(
+      {
+        clipPath: isDark.value ? clipPath : [...clipPath].reverse(),
+      },
+      {
+        duration: 400,
+        easing: 'ease-in',
+        pseudoElement: isDark.value ? '::view-transition-new(root)' : '::view-transition-old(root)',
+      },
+    )
+  })
 }
 
 export { default as ThemeSwitcher } from '@frontend/components/ThemeSwitcher/ThemeSwitcher.vue'

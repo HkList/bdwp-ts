@@ -173,12 +173,6 @@ const onDragEnd = (event: { item: HTMLElement }) => {
 
 <style scoped lang="scss">
 .tabs {
-  display: flex;
-  align-items: center;
-
-  height: 100%;
-  white-space: nowrap;
-
   --hk-border-color: rgb(224, 224, 230);
   --hk-border-hover-color: rgb(224, 224, 230);
   --hk-border-active-color: rgb(22, 119, 255);
@@ -186,16 +180,26 @@ const onDragEnd = (event: { item: HTMLElement }) => {
   --hk-background-color: transparent;
   --hk-background-hover-color: rgb(243, 243, 245);
   --hk-background-active-color: rgb(230, 244, 255);
+}
 
-  @media (prefers-color-scheme: dark) {
-    --hk-border-color: rgba(255, 255, 255, 0.24);
-    --hk-border-hover-color: rgba(255, 255, 255, 0.24);
-    --hk-border-active-color: rgb(22, 104, 220);
+.dark .tabs {
+  --hk-border-color: rgba(255, 255, 255, 0.24);
+  --hk-border-hover-color: rgba(255, 255, 255, 0.24);
+  --hk-border-active-color: rgb(22, 104, 220);
 
-    --hk-background-color: transparent;
-    --hk-background-hover-color: rgba(255, 255, 255, 0.09);
-    --hk-background-active-color: rgb(17 26 44);
-  }
+  --hk-background-color: transparent;
+  --hk-background-hover-color: rgba(255, 255, 255, 0.09);
+  --hk-background-active-color: rgb(17 26 44);
+}
+</style>
+
+<style scoped lang="scss">
+.tabs {
+  display: flex;
+  align-items: center;
+
+  height: 100%;
+  white-space: nowrap;
 
   @keyframes tabIn {
     from {
