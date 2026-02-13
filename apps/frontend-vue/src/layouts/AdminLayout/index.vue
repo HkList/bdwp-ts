@@ -196,7 +196,7 @@ const handleClickCrumb = (item: Breadcrumb) => {
 
     .subHeader {
       width: 100%;
-      height: 40px;
+      height: 42px;
       display: flex;
       align-items: center;
       padding: 0 24px;
@@ -204,7 +204,7 @@ const handleClickCrumb = (item: Breadcrumb) => {
     }
 
     .content {
-      height: calc(100vh - 64px - 40px - 48px); // 减去头部、二级导航栏和底部的高度
+      height: calc(100vh - 64px - 42px - 48px); // 减去头部、二级导航栏和底部的高度
 
       .content-wrapper {
         padding: 24px;
