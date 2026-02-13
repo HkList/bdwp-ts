@@ -32,53 +32,7 @@ export const ADMIN_ROUTES: RouteRecordRawPlus[] = [
   {
     path: '/admin/dashboard',
     meta: { title: '仪表盘', icon: renderIcon(DashboardFilled) },
-    component: () => import('@frontend/views/admin/Dashboard.vue'),
-  },
-  {
-    path: '/admin/users',
-    meta: { title: '用户管理', icon: renderIcon(DashboardFilled) },
-    children: [
-      {
-        path: '/admin/users22',
-        meta: { title: '仪表盘2', icon: renderIcon(DashboardFilled) },
-        component: () => import('@frontend/views/SignIn.vue'),
-      },
-      {
-        path: '/admin/users223',
-        meta: { title: '仪表盘3', icon: renderIcon(DashboardFilled) },
-        component: () => import('@frontend/views/SignIn.vue'),
-      },
-      {
-        path: '/admin/users224',
-        meta: { title: '仪表盘4', icon: renderIcon(DashboardFilled) },
-        component: () => import('@frontend/views/SignIn.vue'),
-      },
-      {
-        path: '/admin/users225',
-        meta: { title: '仪表盘5', icon: renderIcon(DashboardFilled) },
-        component: () => import('@frontend/views/SignIn.vue'),
-      },
-      {
-        path: '/admin/users226',
-        meta: { title: '仪表盘6', icon: renderIcon(DashboardFilled) },
-        component: () => import('@frontend/views/SignIn.vue'),
-      },
-      {
-        path: '/admin/users227',
-        meta: { title: '仪表盘7', icon: renderIcon(DashboardFilled) },
-        component: () => import('@frontend/views/SignIn.vue'),
-      },
-      {
-        path: '/admin/users228',
-        meta: { title: '仪表盘8', icon: renderIcon(DashboardFilled) },
-        component: () => import('@frontend/views/SignIn.vue'),
-      },
-      {
-        path: '/admin/users229',
-        meta: { title: '仪表盘9', icon: renderIcon(DashboardFilled) },
-        component: () => import('@frontend/views/SignIn.vue'),
-      },
-    ],
+    component: () => import('@frontend/views/Admin/Dashboard.vue'),
   },
 ]
 
@@ -91,7 +45,7 @@ export const routes: RouteRecordRawPlus[] = [
       {
         path: '/parse',
         meta: { title: '解析页', icon: renderIcon(Share) },
-        component: () => import('@frontend/views/Home.vue'),
+        component: () => import('@frontend/views/User/Parse.vue'),
       },
     ],
   },
