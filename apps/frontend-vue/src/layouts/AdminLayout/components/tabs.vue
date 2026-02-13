@@ -42,6 +42,7 @@ import { closeTab } from '@frontend/utils/useRouteTabs.ts'
 
 const router = useRouter()
 const closeAble = ref(true)
+const isClosingCount = ref(0)
 watch(tabsOrder.value, (newValue) => (closeAble.value = newValue.length > 1), { immediate: true })
 
 const handleCardClick = (path: string) => {
@@ -75,6 +76,9 @@ const warpedCloseTab = (event: MouseEvent, path: string, fromTab = false) => {
 
   if (!tabElement) return
 
+  if (tabsOrder.value.length - isClosingCount.value <= 1) return
+  isClosingCount.value += 1
+
   tabElement.style.maxWidth = '0px'
   tabElement.style.opacity = '0'
   tabElement.style.borderWidth = '0px'
@@ -92,6 +96,7 @@ const warpedCloseTab = (event: MouseEvent, path: string, fromTab = false) => {
 
   setTimeout(() => {
     closeTab(path)
+    isClosingCount.value -= 1
   }, 600)
 }
 
