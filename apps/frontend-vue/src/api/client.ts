@@ -1,4 +1,5 @@
-import { ref, type Ref } from 'vue'
+import type { Ref } from 'vue'
+import { ref } from 'vue'
 import { useDebounceFn, useThrottleFn } from '@vueuse/core'
 
 export interface UseRequestOptions {

@@ -53,6 +53,7 @@ export const UserModel = {
     page: t.Optional(t.Number()),
     page_size: t.Optional(t.Number()),
     id: t.Optional(t.Number()),
+    username: t.Optional(t.String()),
   }),
   getAllUsersSuccess: t.Object({
     message: t.Literal('获取用户列表成功'),

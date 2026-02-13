@@ -1,6 +1,6 @@
 import type { UserModelType } from '@backend/modules/admin/user/model.ts'
 import { Drizzle, Schemas } from '@backend/db'
-import { count, eq, inArray } from 'drizzle-orm'
+import { and, count, eq, inArray, like } from 'drizzle-orm'
 import { status } from 'elysia'
 
 export class UserService {
@@ -122,9 +122,13 @@ export class UserService {
   static async getAllUsers(query: UserModelType['getAllUsersQuery']) {
     const page = query.page ?? 1
     const page_size = query.page_size ?? 10
-    const id = query.id
+    const user_id = query.id
+    const username = query.username
 
-    const where = id ? eq(Schemas.User.id, id) : undefined
+    const where = and(
+      user_id ? eq(Schemas.User.id, user_id) : undefined,
+      username ? like(Schemas.User.username, `%${username}%`) : undefined,
+    )
 
     const [users, total] = await Promise.all([
       Drizzle.select()

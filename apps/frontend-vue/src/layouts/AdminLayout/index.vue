@@ -41,17 +41,17 @@
                   :disabled="item.route.children?.length !== 0 && !item.route.redirect"
                   @click="handleClickCrumb(item)"
                 >
-                  <NSpace :size="8" align="center" :wrap="false">
+                  <NFlex :size="8" align="center" :wrap="false">
                     <component :is="item.icon"></component>
                     <span>{{ item.title }}</span>
-                  </NSpace>
+                  </NFlex>
                 </NButton>
               </NBreadcrumbItem>
             </NBreadcrumb>
           </div>
         </template>
 
-        <NSpace :size="16">
+        <NFlex :size="16" :wrap="false" class="rightButtons">
           <!-- 主题切换 -->
           <ThemeSwitcher />
 
@@ -76,7 +76,7 @@
 
             确定要退出登录吗？
           </NPopconfirm>
-        </NSpace>
+        </NFlex>
       </NLayoutHeader>
 
       <!-- 二级导航栏 -->
@@ -112,7 +112,7 @@ import {
   NBreadcrumb,
   NBreadcrumbItem,
   NButton,
-  NSpace,
+  NFlex,
   NPopconfirm,
   NDrawer,
   NDrawerContent,
@@ -122,7 +122,8 @@ import { useUserStore } from '@frontend/stores/userStore.ts'
 import { ThemeSwitcher } from '@frontend/components/ThemeSwitcher/index.ts'
 import { useFullscreen } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
-import { useLayoutStore, type Breadcrumb } from '@frontend/stores/layoutStore.ts'
+import type { Breadcrumb } from '@frontend/stores/layoutStore.ts'
+import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import LayoutSider from '@frontend/layouts/AdminLayout/components/LayoutSider.vue'
 import Logo from '@frontend/layouts/AdminLayout/components/Logo.vue'
@@ -192,6 +193,10 @@ const handleClickCrumb = (item: Breadcrumb) => {
         justify-content: space-between;
         gap: 12px;
       }
+    }
+
+    .rightButtons {
+      overflow: auto;
     }
 
     .subHeader {

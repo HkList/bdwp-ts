@@ -6,17 +6,17 @@
 
     <NResult status="404" title="页面走丢了" description="你访问的页面不存在或已被移除">
       <template #footer>
-        <NSpace justify="center">
+        <NFlex justify="center">
           <NButton type="success" @click="goHome">返回首页</NButton>
           <NButton type="info" @click="goBack">返回上一页</NButton>
-        </NSpace>
+        </NFlex>
       </template>
     </NResult>
   </NCard>
 </template>
 
 <script lang="ts" setup>
-import { NButton, NResult, NSpace, NCard } from 'naive-ui'
+import { NButton, NResult, NFlex, NCard } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { ThemeSwitcher } from '@frontend/components/ThemeSwitcher/index.ts'
 

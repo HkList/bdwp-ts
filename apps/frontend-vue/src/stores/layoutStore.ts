@@ -1,4 +1,5 @@
-import { ADMIN_ROUTES, type RouteRecordRawPlus } from '@frontend/router/index.ts'
+import type { RouteRecordRawPlus } from '@frontend/router/index.ts'
+import { ADMIN_ROUTES } from '@frontend/router/index.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { useMobile } from '@frontend/utils/useMobile.ts'
 import type { MenuOption } from 'naive-ui'

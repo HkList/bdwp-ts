@@ -1,8 +1,10 @@
 import { useUserStore } from '@frontend/stores/userStore'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import { DashboardFilled } from '@vicons/antd'
 import { Desktop, Home, LogIn, Search, Share } from '@vicons/ionicons5'
+import { User } from '@vicons/carbon'
 import { loadingBar } from '@frontend/utils/discreteApi.ts'
 
 type BaseRouteRecordRawPlus = Omit<RouteRecordRaw, 'meta' | 'children' | 'component'> & {
@@ -33,6 +35,11 @@ export const ADMIN_ROUTES: RouteRecordRawPlus[] = [
     path: '/admin/dashboard',
     meta: { title: '仪表盘', icon: renderIcon(DashboardFilled) },
     component: () => import('@frontend/views/Admin/Dashboard.vue'),
+  },
+  {
+    path: '/admin/users',
+    meta: { title: '用户管理', icon: renderIcon(User) },
+    component: () => import('@frontend/views/Admin/Users/Index.vue'),
   },
 ]
 

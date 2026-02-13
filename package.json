@@ -1,9 +1,10 @@
 {
   "name": "bdwp-ts",
   "version": "0.0.1",
-  "workspaces": [
-    "apps/*"
-  ],
+  "devDependencies": {
+    "@types/bun": "^1.3.6",
+    "concurrently": "^9.2.1"
+  },
   "scripts": {
     "d": "bun run scripts/run-command.ts",
     "dev": "bun run d dev backend,frontend-vue",
@@ -15,8 +16,7 @@
     "drizzle": "bun run d drizzle-kit backend",
     "seed": "bun run ./apps/backend/src/database/seed.ts"
   },
-  "devDependencies": {
-    "@types/bun": "^1.3.6",
-    "concurrently": "^9.2.1"
-  }
+  "workspaces": [
+    "apps/*"
+  ]
 }

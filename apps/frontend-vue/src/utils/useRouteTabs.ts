@@ -1,8 +1,8 @@
-import { type MaybePromise } from 'elysia'
+import type { MaybePromise } from 'elysia'
 import type { Router } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { ref } from 'vue'
-import { router } from '@frontend/router/index.ts'
 
 export interface RouteTab {
   pinned: boolean
@@ -110,7 +110,7 @@ export const switchTab = (path: string, prefliht = false) => {
   if (!newTab) throw new Error('没有可切换的标签了')
 
   activeTab.value = newTab
-  router.push(activeTab.value)
+  useRouter().push(activeTab.value)
   localStorage.setItem(ACTIVE_TAB_KEY, activeTab.value)
 }
 

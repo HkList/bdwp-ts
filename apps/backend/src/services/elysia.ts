@@ -42,7 +42,7 @@ export const app = new Elysia()
           securitySchemes: {
             bearer: {
               // 固定的 token 值，实际应用中应该从配置中读取
-              token: '8073b3ed-bd62-4264-ba2e-ab9888ebf3da',
+              token: 'f3e55d07-4700-4143-b7a4-732884ac47d8',
             },
           },
         },

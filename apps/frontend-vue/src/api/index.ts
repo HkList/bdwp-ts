@@ -1,8 +1,8 @@
 import { treaty } from '@elysiajs/eden'
 import type { App } from '@backend/elysia'
 import { useUserStore } from '@frontend/stores/userStore'
-import { router } from '@frontend/router/index.ts'
 import { loadingBar, notification } from '@frontend/utils/discreteApi.ts'
+import { useRouter } from 'vue-router'
 
 export const api = treaty<App>(`${window?.location?.origin}`, {
   headers(path) {
@@ -38,7 +38,7 @@ export const api = treaty<App>(`${window?.location?.origin}`, {
         })
 
         setTimeout(() => {
-          router.push('/sign_in')
+          useRouter().push('/sign_in')
         }, 1000)
         return
       }

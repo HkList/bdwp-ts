@@ -8,6 +8,11 @@ body,
   justify-content: center;
 }
 
+.n-input-number,
+.n-date-picker {
+  width: 100%;
+}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;

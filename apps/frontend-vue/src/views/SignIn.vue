@@ -1,6 +1,6 @@
 <template>
   <NCard class="signIn">
-    <NSpace vertical :size="24">
+    <NFlex vertical :size="24">
       <h1>欢迎登录</h1>
 
       <NFormPlus :label-width="80" :model="formData" :rules="formRules" @submit="onSubmit">
@@ -32,7 +32,7 @@
           登录
         </NButton>
       </NFormPlus>
-    </NSpace>
+    </NFlex>
   </NCard>
 </template>
 
@@ -42,7 +42,8 @@ import { NFormPlus } from '@frontend/components/NFormPlus/index.ts'
 import { useUserStore } from '@frontend/stores/userStore'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { LogIn } from '@vicons/ionicons5'
-import { NCard, NButton, NCheckbox, NFormItem, NInput, NSpace, type FormRules } from 'naive-ui'
+import type { FormRules } from 'naive-ui'
+import { NCard, NButton, NCheckbox, NFormItem, NInput, NFlex } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 
