@@ -35,6 +35,9 @@ export const setMode = (next: ThemeMode) => {
 
 const { x, y } = useMouse()
 export const setModeWithTransition = (next: ThemeMode) => {
+  // 判断是否是一样的mode
+  if (next === colorMode.store.value) return
+
   if (
     !('startViewTransition' in document) ||
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
