@@ -1,49 +1,69 @@
 <template>
   <NScrollbar x-scrollable class="scrollbar" @mousewheel.stop="handleMousewheel" ref="scrollbar">
-    <div class="tabs">
-      <NCard
-        v-for="path in tabsOrder"
-        :key="path"
-        class="tab"
-        :class="{
-          active: path === activeTab,
-        }"
-        @click="handleCardClick(path)"
-        @auxclick.middle="(event: MouseEvent) => warpedCloseTab(event, path, true)"
-      >
-        <template v-if="tabs[path]">
-          <component :is="tabs[path].icon" class="icon" />
-          <span>{{ tabs[path].title }}</span>
-          <div
-            class="icon"
-            :class="{
-              invisable: !closeAble,
-            }"
-          >
-            <component
-              :is="renderIcon(Close)"
-              @click.stop="(event: MouseEvent) => warpedCloseTab(event, path)"
-            />
-          </div>
-        </template>
-      </NCard>
-    </div>
+    <Draggable
+      v-model="tabsOrder"
+      class="tabs"
+      :item-key="(item: string) => item"
+      animation="200"
+      ghost-class="ghost"
+      @end="onDragEnd"
+    >
+      <template #item="{ element: path }">
+        <NCard
+          class="tab"
+          :class="{
+            active: path === activeTab,
+            fadeIn: !dropedPath.includes(path),
+          }"
+          :path="path"
+          @click="handleCardClick(path)"
+          @auxclick.middle="(event: MouseEvent) => warpedCloseTab(event, path, true)"
+        >
+          <template v-if="tabs[path]">
+            <component :is="tabs[path].icon" class="icon" />
+            <span>{{ tabs[path].title }}</span>
+            <div
+              class="icon"
+              :class="{
+                invisable: !closeAble,
+              }"
+            >
+              <component
+                :is="renderIcon(Close)"
+                @click.stop="(event: MouseEvent) => warpedCloseTab(event, path)"
+              />
+            </div>
+          </template>
+        </NCard>
+      </template>
+    </Draggable>
   </NScrollbar>
 </template>
 
 <script setup lang="ts">
 import { NScrollbar, NCard } from 'naive-ui'
-import { activeTab, switchTab, tabs, tabsOrder } from '@frontend/utils/useRouteTabs.ts'
+import {
+  activeTab,
+  switchTab,
+  tabs,
+  tabsOrder,
+  updateTabsOrder,
+} from '@frontend/utils/useRouteTabs.ts'
 import { useRouter } from 'vue-router'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { Close } from '@vicons/ionicons5'
 import { nextTick, ref, useTemplateRef, watch } from 'vue'
 import { closeTab } from '@frontend/utils/useRouteTabs.ts'
+import Draggable from 'vuedraggable'
 
 const router = useRouter()
 const closeAble = ref(true)
 const isClosingCount = ref(0)
 watch(tabsOrder.value, (newValue) => (closeAble.value = newValue.length > 1), { immediate: true })
+// 兜底
+setTimeout(() => {
+  closeAble.value = tabsOrder.value.length > 1
+}, 1000)
 
 const handleCardClick = (path: string) => {
   if (path === activeTab.value) return
@@ -96,6 +116,11 @@ const warpedCloseTab = (event: MouseEvent, path: string, fromTab = false) => {
 
   setTimeout(() => {
     closeTab(path)
+
+    // 清理拖拽动画关闭的标签时，可能存在的残留路径
+    const pathIndex = dropedPath.value.indexOf(path)
+    if (pathIndex !== -1) dropedPath.value.splice(pathIndex, 1)
+
     isClosingCount.value -= 1
   }, 600)
 }
@@ -121,6 +146,17 @@ watch(
   },
   { immediate: true },
 )
+
+const dropedPath = ref<string[]>([])
+const onDragEnd = (event: { item: HTMLElement }) => {
+  const element = event.item as HTMLElement
+  const path = element.getAttribute('path') || ''
+
+  dropedPath.value.push(path)
+
+  // 拖拽结束后，更新 tabsOrder 的顺序
+  updateTabsOrder(tabsOrder.value)
+}
 </script>
 
 <style lang="scss">
@@ -134,6 +170,7 @@ watch(
   }
 }
 </style>
+
 <style scoped lang="scss">
 .tabs {
   display: flex;
@@ -194,8 +231,6 @@ watch(
       box-shadow 0.3s,
       background-color 0.3s;
 
-    animation: tabIn 0.8s;
-
     :deep(.n-card__content) {
       padding: 0 10px;
       display: flex;
@@ -209,6 +244,10 @@ watch(
       cursor: pointer;
       background-color: var(--hk-background-hover-color);
       border-color: var(--hk-border-hover-color);
+    }
+
+    &.fadeIn {
+      animation: tabIn 0.8s;
     }
 
     .icon {
@@ -231,6 +270,12 @@ watch(
       border-color: var(--hk-border-active-color);
       color: var(--hk-border-active-color);
     }
+  }
+
+  .ghost {
+    opacity: 0.5;
+    background-color: var(--hk-background-hover-color);
+    animation: none !important;
   }
 }
 </style>

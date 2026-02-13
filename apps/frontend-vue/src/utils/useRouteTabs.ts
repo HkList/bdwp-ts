@@ -131,3 +131,10 @@ export const closeTab = (path: string) => {
   localStorage.setItem(ROUTE_TABS_KEY, JSON.stringify(tabs.value))
   localStorage.setItem(ROUTE_TABS_ORDER_KEY, JSON.stringify(tabsOrder.value))
 }
+
+export const updateTabsOrder = (newOrder: string[]) => {
+  tabsOrder.value = newOrder
+
+  // 同步到 localStorage
+  localStorage.setItem(ROUTE_TABS_ORDER_KEY, JSON.stringify(tabsOrder.value))
+}
