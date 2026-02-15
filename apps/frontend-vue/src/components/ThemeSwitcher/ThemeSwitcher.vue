@@ -12,5 +12,5 @@ import {
   DropdownThemeOptions,
   isDark,
   setModeWithTransition,
-} from '@frontend/components/ThemeSwitcher'
+} from '@frontend/components/ThemeSwitcher/composable'
 </script>
