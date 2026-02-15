@@ -48,17 +48,21 @@ export const setupRouteTabs = (
       tabs.value = json_tabs
     }
 
-    const json_tabs_order = JSON.parse(localStorage.getItem(ROUTE_TABS_ORDER_KEY) ?? '[]')
+    const json_tabs_order = JSON.parse(
+      localStorage.getItem(ROUTE_TABS_ORDER_KEY) ?? '[]',
+    ) as unknown
     if (Array.isArray(json_tabs_order)) {
       // 确保所有标签都在 order 中
-      Object.keys(tabs.value).forEach((path) => {
+      for (const path of Object.keys(tabs.value)) {
         if (!json_tabs_order.includes(path)) {
           json_tabs_order.push(path)
         }
-      })
+      }
 
       // 过滤掉 order 中不存在的标签
-      tabsOrder.value = json_tabs_order.filter((path) => path in tabs.value)
+      tabsOrder.value = json_tabs_order.filter(
+        (path): path is string => typeof path === 'string' && path in tabs.value,
+      )
     }
 
     const active_tab = localStorage.getItem(ACTIVE_TAB_KEY)
@@ -66,8 +70,11 @@ export const setupRouteTabs = (
       activeTab.value = active_tab
       router.push(activeTab.value)
     } else if (tabsOrder.value.length > 0) {
-      activeTab.value = tabsOrder.value[0]!
-      router.push(activeTab.value)
+      const firstTab = tabsOrder.value[0]
+      if (firstTab) {
+        activeTab.value = firstTab
+        router.push(activeTab.value)
+      }
     }
   } catch {
     // 无论如何解析失败都不影响正常使用
@@ -95,15 +102,15 @@ export const setupRouteTabs = (
   })
 }
 
-export const switchTab = (path: string, prefliht = false) => {
+export const switchTab = (path: string, preflight = false) => {
   const index = tabsOrder.value.indexOf(path)
   if (index === -1) return
 
   let nextIndex: number
-  if (prefliht) {
-    nextIndex = tabsOrder.value[index + 1] ? index + 1 : index - 1
+  if (preflight) {
+    nextIndex = tabsOrder.value[index + 1] !== undefined ? index + 1 : index - 1
   } else {
-    nextIndex = tabsOrder.value[index] ? index : index - 1
+    nextIndex = tabsOrder.value[index] !== undefined ? index : index - 1
   }
 
   const newTab = tabsOrder.value[nextIndex]

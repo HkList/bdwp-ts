@@ -1,19 +1,19 @@
 import { computed, nextTick } from 'vue'
 import { useColorMode, useMouse } from '@vueuse/core'
 import type { ConfigProviderProps, DropdownOption } from 'naive-ui'
-import { darkTheme } from 'naive-ui'
+import { darkTheme, dateZhCN } from 'naive-ui'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { DesktopOutline, Moon, Sunny } from '@vicons/ionicons5'
-import { zhCN, dateZhCN } from 'naive-ui'
+import { zhCN } from 'pro-naive-ui'
 
 export const ThemeMode = ['light', 'dark', 'auto'] as const
 export type ThemeMode = (typeof ThemeMode)[number]
 
-export const DropdownThemeOptions: DropdownOption[] = [
+export const DropdownThemeOptions = [
   { label: '浅色', key: 'light', icon: renderIcon(Sunny) },
   { label: '深色', key: 'dark', icon: renderIcon(Moon) },
   { label: '跟随系统', key: 'auto', icon: renderIcon(DesktopOutline) },
-]
+] satisfies (DropdownOption & { key: ThemeMode })[]
 
 export const colorMode = useColorMode()
 

@@ -1,10 +1,16 @@
-import { createDiscreteApi } from 'naive-ui'
+import {
+  createDiscreteApi,
+  type NotificationProviderInst,
+  type MessageProviderInst,
+  type DialogProviderInst,
+  type LoadingBarProviderInst,
+} from 'naive-ui'
 import { configProviderProps } from '@frontend/components/ThemeSwitcher/index.ts'
 
-let notification: ReturnType<typeof createDiscreteApi>['notification']
-let message: ReturnType<typeof createDiscreteApi>['message']
-let dialog: ReturnType<typeof createDiscreteApi>['dialog']
-let loadingBar: ReturnType<typeof createDiscreteApi>['loadingBar']
+let notification: NotificationProviderInst
+let message: MessageProviderInst
+let dialog: DialogProviderInst
+let loadingBar: LoadingBarProviderInst
 
 export function setupDiscreteApi() {
   const discreteApi = createDiscreteApi(['notification', 'message', 'dialog', 'loadingBar'], {
