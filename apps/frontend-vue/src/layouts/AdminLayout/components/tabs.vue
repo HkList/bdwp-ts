@@ -48,12 +48,12 @@ import {
   tabs,
   tabsOrder,
   updateTabsOrder,
-} from '@frontend/utils/useRouteTabs.ts'
+} from '@frontend/utils/useRouteTabs'
 import { useRouter } from 'vue-router'
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { renderIcon } from '@frontend/utils/renderIcon'
 import { Close } from '@vicons/ionicons5'
 import { nextTick, ref, useTemplateRef, watch } from 'vue'
-import { closeTab } from '@frontend/utils/useRouteTabs.ts'
+import { closeTab } from '@frontend/utils/useRouteTabs'
 import Draggable from 'vuedraggable'
 
 const router = useRouter()

@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ThemeSwitcher } from '@frontend/components/ThemeSwitcher/index.ts'
+import { ThemeSwitcher } from '@frontend/components/ThemeSwitcher'
 </script>
 
 <style lang="scss" scoped></style>

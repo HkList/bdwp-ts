@@ -1,13 +1,13 @@
 import { treaty } from '@elysiajs/eden'
 import type { App } from '@backend/elysia'
-import { useUserStore } from '@frontend/stores/userStore'
-import { loadingBar, notification } from '@frontend/utils/discreteApi.ts'
-import { router } from '@frontend/router/index.ts'
+import { useAuthStore } from '@frontend/stores/authStore'
+import { loadingBar, notification } from '@frontend/utils/discreteApi'
+import { router } from '@frontend/router'
 
 export const api = treaty<App>(`${window?.location?.origin}`, {
   headers(path) {
     if (path.startsWith('/api/admin') || path === '/api/auth/sign_out') {
-      const { token } = useUserStore()
+      const { token } = useAuthStore()
 
       return {
         authorization: `Bearer ${token}`,
@@ -25,7 +25,7 @@ export const api = treaty<App>(`${window?.location?.origin}`, {
 
       notification.success({
         title: json.message,
-        duration: 3000,
+        duration: 1000,
       })
     } else {
       loadingBar.error()
@@ -38,8 +38,9 @@ export const api = treaty<App>(`${window?.location?.origin}`, {
         })
 
         setTimeout(() => {
-          const userStore = useUserStore()
-          userStore.setToken(null)
+          const authStore = useAuthStore()
+          authStore.setToken(null)
+
           router.push('/sign_in')
         }, 1000)
         return
@@ -53,4 +54,4 @@ export const api = treaty<App>(`${window?.location?.origin}`, {
   },
 }).api
 
-export * from '@frontend/api/client.ts'
+export * from '@frontend/api/client'

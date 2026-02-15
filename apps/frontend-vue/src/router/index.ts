@@ -1,11 +1,11 @@
-import { useUserStore } from '@frontend/stores/userStore'
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { useAuthStore } from '@frontend/stores/authStore'
+import { renderIcon } from '@frontend/utils/renderIcon'
 import type { RouteRecordRaw } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
 import { DashboardFilled } from '@vicons/antd'
 import { Desktop, Home, LogIn, Search, Share } from '@vicons/ionicons5'
 import { User } from '@vicons/carbon'
-import { loadingBar } from '@frontend/utils/discreteApi.ts'
+import { loadingBar } from '@frontend/utils/discreteApi'
 
 type BaseRouteRecordRawPlus = Omit<RouteRecordRaw, 'meta' | 'children' | 'component'> & {
   meta: {
@@ -89,13 +89,13 @@ router.beforeEach((to) => {
   loadingBar.start()
 
   if (to.path.includes('/admin')) {
-    const userStore = useUserStore()
-    if (!userStore.isAuthenticated) {
+    const authStore = useAuthStore()
+    if (!authStore.isAuthenticated) {
       return '/sign_in'
     }
   } else if (to.path === '/sign_in') {
-    const userStore = useUserStore()
-    if (userStore.isAuthenticated) {
+    const authStore = useAuthStore()
+    if (authStore.isAuthenticated) {
       return '/admin'
     }
   }

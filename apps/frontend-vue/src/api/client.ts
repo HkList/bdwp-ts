@@ -1,5 +1,4 @@
-import type { Ref } from 'vue'
-import { ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import { useDebounceFn, useThrottleFn } from '@vueuse/core'
 
 export interface UseRequestOptions {
@@ -77,26 +76,4 @@ export function useRequest<TData, TParams extends unknown[]>(
     send,
     reset,
   }
-}
-
-/**
- * 查询数据的 hook（自动执行）
- * 适用于 GET 请求
- */
-export function useQuery<TData, TParams extends unknown[]>(
-  service: (...args: TParams) => Promise<TData>,
-  options: Omit<UseRequestOptions, 'manual'> = {},
-) {
-  return useRequest(service, { debounceWait: 300, ...options })
-}
-
-/**
- * 操作数据的 hook（手动执行）
- * 适用于 POST/PUT/DELETE 请求
- */
-export function useAction<TData, TParams extends unknown[]>(
-  service: (...args: TParams) => Promise<TData>,
-  options: Omit<UseRequestOptions, 'manual'> = {},
-) {
-  return useRequest(service, { throttleWait: 300, ...options })
 }

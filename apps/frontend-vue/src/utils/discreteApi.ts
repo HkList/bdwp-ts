@@ -5,7 +5,7 @@ import {
   type DialogProviderInst,
   type LoadingBarProviderInst,
 } from 'naive-ui'
-import { configProviderProps } from '@frontend/components/ThemeSwitcher/index.ts'
+import { configProviderProps } from '@frontend/components/ThemeSwitcher'
 
 let notification: NotificationProviderInst
 let message: MessageProviderInst

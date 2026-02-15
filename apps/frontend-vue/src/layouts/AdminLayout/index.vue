@@ -118,25 +118,24 @@ import {
   NDrawerContent,
 } from 'naive-ui'
 import { LogoutOutlined, FullscreenOutlined, FullscreenExitOutlined } from '@vicons/antd'
-import { useUserStore } from '@frontend/stores/userStore.ts'
-import { ThemeSwitcher } from '@frontend/components/ThemeSwitcher/index.ts'
+import { useAuthStore } from '@frontend/stores/authStore'
+import { ThemeSwitcher } from '@frontend/components/ThemeSwitcher'
 import { useFullscreen } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
-import type { Breadcrumb } from '@frontend/stores/layoutStore.ts'
-import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { useLayoutStore, type Breadcrumb } from '@frontend/stores/layoutStore'
+import { renderIcon } from '@frontend/utils/renderIcon'
 import LayoutSider from '@frontend/layouts/AdminLayout/components/LayoutSider.vue'
 import Logo from '@frontend/layouts/AdminLayout/components/Logo.vue'
 import Tabs from '@frontend/layouts/AdminLayout/components/Tabs.vue'
 import { Menu } from '@vicons/ionicons5'
 import { useRouter } from 'vue-router'
 
-const userStore = useUserStore()
+const authStore = useAuthStore()
 const layoutStore = useLayoutStore()
 const { isFullscreen, toggle } = useFullscreen()
 
-const { signOut } = userStore
-const { signOutLoading } = storeToRefs(userStore)
+const { signOut } = authStore
+const { signOutLoading } = storeToRefs(authStore)
 
 const { toggleCollapsedMobileDrawer, toggleShowMenu } = layoutStore
 const { breadcrumbs, isMobile, collapsedMobileDrawer, showMenu } = storeToRefs(layoutStore)

@@ -1,10 +1,9 @@
 import { computed, nextTick } from 'vue'
 import { useColorMode, useMouse } from '@vueuse/core'
-import type { ConfigProviderProps, DropdownOption } from 'naive-ui'
-import { darkTheme, dateZhCN } from 'naive-ui'
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { darkTheme, dateZhCN, type DropdownOption } from 'naive-ui'
+import { renderIcon } from '@frontend/utils/renderIcon'
 import { DesktopOutline, Moon, Sunny } from '@vicons/ionicons5'
-import { zhCN } from 'pro-naive-ui'
+import { zhCN, type ProConfigProviderProps } from 'pro-naive-ui'
 
 export const ThemeMode = ['light', 'dark', 'auto'] as const
 export type ThemeMode = (typeof ThemeMode)[number]
@@ -23,7 +22,7 @@ export const isDark = computed(() => {
     : colorMode.store.value === 'dark'
 })
 
-export const configProviderProps = computed<ConfigProviderProps>(() => ({
+export const configProviderProps = computed<ProConfigProviderProps>(() => ({
   abstract: true,
   theme: isDark.value ? darkTheme : null,
   locale: zhCN,

@@ -1,29 +1,34 @@
 import type {
-  SearchFormColumns,
-  NSearchFormConfig,
-  SearchFormRules,
-} from '@frontend/components/NSearchForm/index.ts'
+  ProSearchFormPlusColumns,
+  FormRules,
+  ProSearchFormPlusReturn,
+} from '@frontend/components/ProSearchFormPlus'
 import type { PaginationInfo } from 'naive-ui'
 import {
   useNDataTable,
   type UseNDataTableData as Data,
   type UseNDataTableParams as Params,
+  type ProDataTableProps,
   type UseNDataTableReturn,
   type UseNDataTableService,
 } from 'pro-naive-ui'
 import { computed } from 'vue'
 
-export type UseNDataTablePlusService = UseNDataTableService<Data, Params>
-
-export type UseNDataTablePlusReturn<T extends object> = UseNDataTableReturn<Data, Params> & {
-  search: NSearchFormConfig<T>
+export interface ProDataTablePlusProps extends ProDataTableProps {
+  cardTitle?: string
 }
 
-export const useNDataTablePlus = <T extends object>(
+export type UseProDataTablePlusService = UseNDataTableService<Data, Params>
+
+export type UseProDataTablePlusReturn<T extends object> = UseNDataTableReturn<Data, Params> & {
+  search: ProSearchFormPlusReturn<T>
+}
+
+export const useProDataTablePlus = <T extends object>(
   service: UseNDataTableService<Data, Params>,
-  columns?: SearchFormColumns<T>,
-  rules?: SearchFormRules<T>,
-): UseNDataTablePlusReturn<T> => {
+  columns?: ProSearchFormPlusColumns<T>,
+  rules?: FormRules<T>,
+): UseProDataTablePlusReturn<T> => {
   const NData = useNDataTable(service)
 
   const tableProps = computed(() => {
@@ -52,3 +57,5 @@ export const useNDataTablePlus = <T extends object>(
     },
   }
 }
+
+export { default as ProDataTablePlus } from '@frontend/components/ProDataTablePlus/ProDataTablePlus.vue'

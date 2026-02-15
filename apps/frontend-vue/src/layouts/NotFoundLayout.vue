@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { NButton, NResult, NFlex, NCard } from 'naive-ui'
 import { useRouter } from 'vue-router'
-import { ThemeSwitcher } from '@frontend/components/ThemeSwitcher/index.ts'
+import { ThemeSwitcher } from '@frontend/components/ThemeSwitcher'
 
 const router = useRouter()
 const goHome = () => router.push('/')

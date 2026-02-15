@@ -3,24 +3,12 @@
     <NFlex vertical :size="24">
       <h1>欢迎登录</h1>
 
-      <NFormPlus :label-width="80" :model="formData" :rules="formRules" @submit="onSubmit">
-        <NFormItem label="用户名" path="username">
-          <NInput v-model:value="formData.username" placeholder="请输入用户名" clearable />
-        </NFormItem>
+      <ProFormPlus :form="signInForm" :rules="signInFormRules">
+        <ProInput title="用户名" path="username" />
 
-        <NFormItem label="密码" path="password">
-          <NInput
-            v-model:value="formData.password"
-            type="password"
-            placeholder="请输入密码"
-            showPassword-on="click"
-            clearable
-          />
-        </NFormItem>
+        <ProPassword title="密码" path="password" />
 
-        <NFormItem>
-          <NCheckbox v-model:checked="formData.remember_me"> 7日内自动登录 </NCheckbox>
-        </NFormItem>
+        <ProCheckbox path="remember_me"> 7日内自动登录 </ProCheckbox>
 
         <NButton
           attr-type="submit"
@@ -31,40 +19,22 @@
         >
           登录
         </NButton>
-      </NFormPlus>
+      </ProFormPlus>
     </NFlex>
   </NCard>
 </template>
 
 <script lang="ts" setup>
-import type { AuthModelType } from '@backend/modules/auth/model.ts'
-import { NFormPlus } from '@frontend/components/NFormPlus/index.ts'
-import { useUserStore } from '@frontend/stores/userStore'
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { ProFormPlus } from '@frontend/components/ProFormPlus'
+import { useAuthStore } from '@frontend/stores/authStore'
+import { renderIcon } from '@frontend/utils/renderIcon'
 import { LogIn } from '@vicons/ionicons5'
-import type { FormRules } from 'naive-ui'
-import { NCard, NButton, NCheckbox, NFormItem, NInput, NFlex } from 'naive-ui'
+import { NCard, NFlex, NButton } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { ProInput, ProCheckbox, ProPassword } from 'pro-naive-ui'
 
-const formData = ref<AuthModelType['signInBody']>({
-  username: '',
-  password: '',
-  remember_me: false,
-})
-const formRules = ref<FormRules>({
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-})
-
-const userStore = useUserStore()
-
-const { signIn } = userStore
-const { signInLoading } = storeToRefs(userStore)
-
-const onSubmit = async () => {
-  await signIn(formData.value)
-}
+const authStore = useAuthStore()
+const { signInLoading, signInFormRules, signInForm } = storeToRefs(authStore)
 </script>
 
 <style lang="scss" scoped>

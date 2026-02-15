@@ -32,8 +32,8 @@
 import { NLayoutSider, NMenu, NButton } from 'naive-ui'
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@vicons/antd'
 import { storeToRefs } from 'pinia'
-import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { useLayoutStore } from '@frontend/stores/layoutStore'
+import { renderIcon } from '@frontend/utils/renderIcon'
 import { computed } from 'vue'
 import Logo from '@frontend/layouts/AdminLayout/components/Logo.vue'
 

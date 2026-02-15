@@ -1,17 +1,16 @@
 <template>
   <NFlex vertical :size="20">
-    <NCard>
-      <NSearchForm
-        v-model:value="searchForm"
-        :columns="searchFormColumns"
-        :rules="searchFormRules"
-        :hide-collapse-button="true"
-        @submit="getUsers"
-      />
-    </NCard>
+    <ProSearchFormPlus
+      v-model:value="searchForm"
+      :columns="searchFormColumns"
+      :rules="searchFormRules"
+      :hide-collapse-button="true"
+      @search="getUsers"
+      v-bind="searchFormProps"
+    />
 
-    <ProDataTable
-      title="用户列表"
+    <ProDataTablePlus
+      card-title="用户列表"
       row-key="id"
       :columns="tableColumns"
       v-bind="getUsersTableProps"
@@ -20,19 +19,20 @@
 </template>
 
 <script lang="ts" setup>
-import { NSearchForm } from '@frontend/components/NSearchForm/index.ts'
-import { NCard, NFlex } from 'naive-ui'
+import { ProSearchFormPlus } from '@frontend/components/ProSearchFormPlus'
+import { NFlex } from 'naive-ui'
 import { computed } from 'vue'
-import { ProDataTable, renderProDateText, type ProDataTableColumns } from 'pro-naive-ui'
+import { renderProDateText, type ProDataTableColumns } from 'pro-naive-ui'
 import type { TypeboxTypes } from '@backend/db'
-import { useUserStore } from '@frontend/stores/Admin/usersStore.ts'
+import { useUsersStore } from '@frontend/stores/Admin/usersStore'
 import { storeToRefs } from 'pinia'
+import { ProDataTablePlus } from '@frontend/components/ProDataTablePlus'
 
-const userStore = useUserStore()
+const usersStore = useUsersStore()
 
-const { getUsers } = userStore
-const { searchForm, searchFormColumns, searchFormRules, getUsersTableProps } =
-  storeToRefs(userStore)
+const { getUsers } = usersStore
+const { searchForm, searchFormColumns, searchFormRules, getUsersTableProps, searchFormProps } =
+  storeToRefs(usersStore)
 
 const tableColumns = computed<ProDataTableColumns<TypeboxTypes['UserTypeboxSchemaType']>>(() => {
   return [
