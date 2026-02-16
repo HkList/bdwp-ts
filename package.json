@@ -2,7 +2,7 @@
   "name": "bdwp-ts",
   "version": "0.0.1",
   "devDependencies": {
-    "@types/bun": "^1.3.6",
+    "@types/bun": "^1.3.9",
     "concurrently": "^9.2.1",
     "husky": "^9.1.7"
   },
@@ -15,7 +15,7 @@
     "lint:fix": "bun run d lint:fix backend,frontend-vue",
     "typecheck": "bun run d typecheck backend,frontend-vue",
     "drizzle": "bun run d drizzle-kit backend",
-    "seed": "bun run ./apps/backend/src/database/seed.ts",
+    "seed": "bun run --cwd apps/backend seed",
     "prepare": "husky"
   },
   "workspaces": [

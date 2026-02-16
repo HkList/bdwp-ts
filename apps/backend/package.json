@@ -8,7 +8,8 @@
     "lint": "eslint .  --cache",
     "typecheck": "tsgo --noEmit",
     "typecheck:legacy": "tsc --noEmit",
-    "test": "bun run test/test.ts"
+    "test": "bun run test/test.ts",
+    "seed": "bun run ./src/database/seed.ts"
   },
   "dependencies": {
     "@elysiajs/bearer": "^1.4.2",
