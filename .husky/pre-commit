@@ -1,2 +1,2 @@
+bun lint:fix
 bun typecheck
-bun lint

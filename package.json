@@ -16,7 +16,8 @@
     "typecheck": "bun run d typecheck backend,frontend-vue",
     "drizzle": "bun run d drizzle-kit backend",
     "seed": "bun run --cwd apps/backend seed",
-    "prepare": "husky"
+    "prepare": "husky",
+    "rebuild": "rimraf node_modules bun.lock ./apps/backend/node_modules ./apps/frontend-vue/node_modules"
   },
   "workspaces": [
     "apps/*"

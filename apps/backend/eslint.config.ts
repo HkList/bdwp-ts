@@ -1,12 +1,12 @@
 import antfu from '@antfu/eslint-config'
 import eslintConfigPrettier from 'eslint-config-prettier/flat'
+import { globalIgnores } from 'eslint/config'
 
 export default antfu(
+  globalIgnores(['**/dist/**', '**/coverage/**', '**/node_modules/**', 'tsconfig.json']),
+
   {
-    ignores: ['**/node_modules/**', '**/dist/**', '**/bak/**', 'tsconfig.json'],
-  },
-  {
-    files: ['**/*.js', '**/*.ts'],
+    files: ['**/*.ts'],
     rules: {
       'no-console': 'off',
       'antfu/no-top-level-await': 'off',
@@ -21,5 +21,6 @@ export default antfu(
       'antfu/consistent-list-newline': 'off',
     },
   },
+
   eslintConfigPrettier,
 )
