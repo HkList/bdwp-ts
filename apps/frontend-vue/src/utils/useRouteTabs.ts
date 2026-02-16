@@ -1,7 +1,7 @@
-import { type MaybePromise } from 'elysia'
 import { useRouter, type Router } from 'vue-router'
 import { renderIcon } from '@frontend/utils/renderIcon'
 import { ref } from 'vue'
+import type { MaybePromise } from '@frontend/utils/types.ts'
 
 export interface RouteTab {
   pinned: boolean
