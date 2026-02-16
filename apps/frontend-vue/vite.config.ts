@@ -38,10 +38,10 @@ export default defineConfig({
       'vue',
       'pinia',
       'naive-ui',
-      'lodash-es',
       'vue-router',
       'pro-naive-ui',
       '@vueuse/core',
+      '@elysiajs/eden',
     ],
   },
   build: {

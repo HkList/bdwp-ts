@@ -8,7 +8,13 @@
 import { ProCard, ProDataTable } from 'pro-naive-ui'
 import { type ProDataTablePlusProps } from '@frontend/components/ProDataTablePlus'
 
-const props = defineProps<ProDataTablePlusProps>()
+const props = withDefaults(defineProps<ProDataTablePlusProps>(), {
+  bottomBordered: true,
+  bordered: true,
+  cascade: true,
+  paginateSinglePage: true,
+  singleLine: true,
+})
 </script>
 
 <style lang="scss" scoped></style>

@@ -19,5 +19,5 @@
       "@root/*": ["../../*"]
     }
   },
-  "include": ["src", "test", "drizzle.config.ts"]
+  "include": ["src", "test", "drizzle.config.ts", "eslint.config.ts"]
 }
