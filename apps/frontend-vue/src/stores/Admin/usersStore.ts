@@ -6,6 +6,8 @@ import {
   useProDataTablePlus,
   type UseProDataTablePlusService,
 } from '@frontend/components/ProDataTablePlus'
+import { useDataTableSection } from '@frontend/utils/useDataTableSection'
+import type { TypeboxTypes } from '@backend/db'
 
 export const useUsersStore = defineStore('admin_users', () => {
   const searchForm = ref<UserModelType['getAllUsersQuery']>({
@@ -53,6 +55,10 @@ export const useUsersStore = defineStore('admin_users', () => {
     {},
   )
 
+  const dataTableSectionAttrs = useDataTableSection<TypeboxTypes['UserTypeboxSchemaType']>(
+    (row) => row.id,
+  )
+
   return {
     searchForm,
     searchFormProps,
@@ -61,5 +67,7 @@ export const useUsersStore = defineStore('admin_users', () => {
 
     getUsers,
     getUsersTableProps,
+
+    dataTableSectionAttrs,
   }
 })

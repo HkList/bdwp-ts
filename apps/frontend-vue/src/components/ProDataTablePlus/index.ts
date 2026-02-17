@@ -16,6 +16,8 @@ import { computed } from 'vue'
 
 export interface ProDataTablePlusProps extends ProDataTableProps {
   cardTitle?: string
+  disableSelectOnRowClick?: boolean
+  selectRowTagNames?: string[]
 }
 
 export type UseProDataTablePlusService = UseNDataTableService<Data, Params>

@@ -30,6 +30,7 @@
           attr-type="reset"
           v-if="!props.hideResetButton"
           v-bind="props.resetButtonProps"
+          :render-icon="renderIcon(Reset)"
         >
           重置
         </ProButton>
@@ -39,6 +40,7 @@
           attr-type="submit"
           v-if="!props.hideSearchButton"
           v-bind="props.searchButtonProps"
+          :render-icon="renderIcon(Search)"
         >
           查询
         </ProButton>
@@ -61,6 +63,8 @@ import {
   ProCard,
 } from 'pro-naive-ui'
 import type { FormRules } from 'naive-ui'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { Reset, Search } from '@vicons/carbon'
 
 const data = defineModel<T>('value', { required: true })
 const props = withDefaults(defineProps<ProSearchFormPlusProps<T>>(), {

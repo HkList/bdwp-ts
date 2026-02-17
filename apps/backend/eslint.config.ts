@@ -11,7 +11,7 @@ export default antfu(
       'no-console': 'off',
       'antfu/no-top-level-await': 'off',
       'unused-imports/no-unused-vars': [
-        'warn',
+        'error',
         {
           varsIgnorePattern: '^_',
           argsIgnorePattern: '^_',
