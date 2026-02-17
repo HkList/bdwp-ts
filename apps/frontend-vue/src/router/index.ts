@@ -71,7 +71,7 @@ export const routes: RouteRecordRawPlus[] = [
   {
     path: '/404',
     meta: { title: '404', icon: renderIcon(Search) },
-    component: () => import('@frontend/layouts/NotFoundLayout.vue'),
+    component: () => import('@frontend/views/NotFound.vue'),
   },
   {
     path: '/:pathMatch(.*)*',
