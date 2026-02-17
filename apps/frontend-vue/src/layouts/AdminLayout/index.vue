@@ -104,30 +104,32 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  NLayout,
-  NLayoutHeader,
-  NLayoutContent,
-  NLayoutFooter,
-  NBreadcrumb,
-  NBreadcrumbItem,
-  NButton,
-  NFlex,
-  NPopconfirm,
-  NDrawer,
-  NDrawerContent,
-} from 'naive-ui'
-import { LogoutOutlined, FullscreenOutlined, FullscreenExitOutlined } from '@vicons/antd'
-import { useAuthStore } from '@frontend/stores/authStore'
-import { ThemeSwitcher } from '@frontend/components/ThemeSwitcher'
-import { useFullscreen } from '@vueuse/core'
-import { storeToRefs } from 'pinia'
-import { useLayoutStore, type Breadcrumb } from '@frontend/stores/layoutStore'
-import { renderIcon } from '@frontend/utils/renderIcon'
+import type { Breadcrumb } from '@frontend/stores/layoutStore.ts'
+
+import { ThemeSwitcher } from '@frontend/components/ThemeSwitcher/index.ts'
 import LayoutSider from '@frontend/layouts/AdminLayout/components/LayoutSider.vue'
 import Logo from '@frontend/layouts/AdminLayout/components/Logo.vue'
 import Tabs from '@frontend/layouts/AdminLayout/components/Tabs.vue'
+import { useAuthStore } from '@frontend/stores/authStore.ts'
+import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { FullscreenExitOutlined, FullscreenOutlined, LogoutOutlined } from '@vicons/antd'
 import { Menu } from '@vicons/ionicons5'
+import { useFullscreen } from '@vueuse/core'
+import {
+  NBreadcrumb,
+  NBreadcrumbItem,
+  NButton,
+  NDrawer,
+  NDrawerContent,
+  NFlex,
+  NLayout,
+  NLayoutContent,
+  NLayoutFooter,
+  NLayoutHeader,
+  NPopconfirm,
+} from 'naive-ui'
+import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
@@ -138,7 +140,7 @@ const { signOut } = authStore
 const { signOutLoading } = storeToRefs(authStore)
 
 const { toggleCollapsedMobileDrawer, toggleShowMenu } = layoutStore
-const { breadcrumbs, isMobile, collapsedMobileDrawer, showMenu } = storeToRefs(layoutStore)
+const { breadcrumbs, collapsedMobileDrawer, isMobile, showMenu } = storeToRefs(layoutStore)
 
 const router = useRouter()
 router.beforeEach(() => {

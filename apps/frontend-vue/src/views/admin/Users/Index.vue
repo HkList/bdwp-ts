@@ -20,18 +20,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ProSearchFormPlus } from '@frontend/components/ProSearchFormPlus'
-import { NFlex, NButton } from 'naive-ui'
-import { useUsersStore } from '@frontend/stores/Admin/usersStore'
-import { storeToRefs } from 'pinia'
-import { ProDataTablePlus } from '@frontend/components/ProDataTablePlus'
+import { ProDataTablePlus } from '@frontend/components/ProDataTablePlus/index.ts'
+import { ProSearchFormPlus } from '@frontend/components/ProSearchFormPlus/index.ts'
+import { useUsersStore } from '@frontend/stores/Admin/usersStore.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { Create, Trash } from '@vicons/ionicons5'
+import { NButton, NFlex } from 'naive-ui'
+import { storeToRefs } from 'pinia'
 
 const usersStore = useUsersStore()
 
 const { deleteUsers } = usersStore
-const { formProps, tableProps, checkedRowKeys } = storeToRefs(usersStore)
+const { checkedRowKeys, formProps, tableProps } = storeToRefs(usersStore)
 </script>
 
 <style lang="scss" scoped></style>

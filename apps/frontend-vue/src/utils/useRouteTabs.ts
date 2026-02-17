@@ -1,13 +1,15 @@
-import { useRouter, type Router } from 'vue-router'
-import { renderIcon } from '@frontend/utils/renderIcon'
-import { ref } from 'vue'
+import type { renderIcon } from '@frontend/utils/renderIcon.ts'
 import type { MaybePromise } from '@frontend/utils/types.ts'
+import type { Router } from 'vue-router'
+
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 export interface RouteTab {
+  icon: ReturnType<typeof renderIcon>
+  path: string
   pinned: boolean
   title: string
-  path: string
-  icon: ReturnType<typeof renderIcon>
 }
 
 export type RouteTabs = Record<string, RouteTab>
@@ -84,10 +86,10 @@ export const setupRouteTabs = (
     if (checker && !(await checker(to.path))) return
 
     tabs.value[to.path] = {
+      icon: to.meta.icon as ReturnType<typeof renderIcon>,
+      path: to.path,
       pinned: false,
       title: to.meta.title as string,
-      path: to.path,
-      icon: to.meta.icon as ReturnType<typeof renderIcon>,
     }
     if (!tabsOrder.value.includes(to.path)) {
       tabsOrder.value.push(to.path)

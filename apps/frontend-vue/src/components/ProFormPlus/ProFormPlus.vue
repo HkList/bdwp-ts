@@ -5,12 +5,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ProForm, type ProFormProps } from 'pro-naive-ui'
+import type { ProFormProps } from 'pro-naive-ui'
+
+import { ProForm } from 'pro-naive-ui'
 
 const attrs = withDefaults(defineProps<ProFormProps>(), {
   labelPlacement: 'left',
-  showLabel: true,
   showFeedback: true,
+  showLabel: true,
   showRequireMark: true,
 })
 </script>

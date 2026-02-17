@@ -1,8 +1,9 @@
-import { treaty } from '@elysiajs/eden'
 import type { App } from '@backend/elysia'
-import { useAuthStore } from '@frontend/stores/authStore'
-import { loadingBar, notification } from '@frontend/utils/discreteApi'
-import { router } from '@frontend/router'
+
+import { treaty } from '@elysiajs/eden'
+import { router } from '@frontend/router/index.ts'
+import { useAuthStore } from '@frontend/stores/authStore.ts'
+import { loadingBar, notification } from '@frontend/utils/discreteApi.ts'
 
 export const api = treaty<App>(`${window?.location?.origin}`, {
   headers(path) {
@@ -24,17 +25,17 @@ export const api = treaty<App>(`${window?.location?.origin}`, {
       loadingBar.finish()
 
       notification.success({
-        title: json.message,
         duration: 1000,
+        title: json.message,
       })
     } else {
       loadingBar.error()
 
-      if (['未提供令牌', '令牌无效', '令牌对应用户不存在'].includes(json.message)) {
+      if (['令牌对应用户不存在', '令牌无效', '未提供令牌'].includes(json.message)) {
         notification.error({
-          title: json.message,
           content: '正在为您跳转到登陆页面...',
           duration: 3000,
+          title: json.message,
         })
 
         setTimeout(() => {
@@ -47,8 +48,8 @@ export const api = treaty<App>(`${window?.location?.origin}`, {
       }
 
       notification.error({
-        title: json.message,
         duration: 3000,
+        title: json.message,
       })
     }
   },

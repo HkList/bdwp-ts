@@ -1,12 +1,10 @@
 import '@frontend/assets/css/index.scss'
-
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-
 import App from '@frontend/App.vue'
-import { router } from '@frontend/router'
-import { setupDiscreteApi } from '@frontend/utils/discreteApi'
-import { setupRouteTabs } from '@frontend/utils/useRouteTabs'
+import { router } from '@frontend/router/index.ts'
+import { setupDiscreteApi } from '@frontend/utils/discreteApi.ts'
+import { setupRouteTabs } from '@frontend/utils/useRouteTabs.ts'
+import { createPinia } from 'pinia'
+import { createApp } from 'vue'
 
 setupDiscreteApi()
 setupRouteTabs(router, (path) => path.startsWith('/admin'))

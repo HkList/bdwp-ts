@@ -5,8 +5,8 @@
 </template>
 
 <script setup lang="ts">
-import { NButton, NDropdown } from 'naive-ui'
-import { Moon, Sunny } from '@vicons/ionicons5'
-import { renderIcon } from '@frontend/utils/renderIcon'
 import { DropdownThemeOptions, isDark } from '@frontend/components/ThemeSwitcher/composable'
+import { renderIcon } from '@frontend/utils/renderIcon'
+import { Moon, Sunny } from '@vicons/ionicons5'
+import { NButton, NDropdown } from 'naive-ui'
 </script>

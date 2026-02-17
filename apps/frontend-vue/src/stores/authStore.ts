@@ -1,6 +1,7 @@
-import type { AuthModelType } from '@backend/modules/auth/model'
-import { api, useRequest } from '@frontend/api'
-import { useProForm } from '@frontend/utils/useProForm'
+import type { AuthModelType } from '@backend/modules/auth/model.ts'
+
+import { api, useRequest } from '@frontend/api/index.ts'
+import { useProForm } from '@frontend/utils/useProForm.ts'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -10,11 +11,11 @@ export const TOKEN_STORAGE_KEY = 'BDWP_TOKEN'
 export const useAuthStore = defineStore('auth', () => {
   const router = useRouter()
 
-  const token = ref<string | null>(localStorage.getItem(TOKEN_STORAGE_KEY))
+  const token = ref<null | string>(localStorage.getItem(TOKEN_STORAGE_KEY))
 
   const isAuthenticated = computed(() => token.value !== null)
 
-  const setToken = (newToken: string | null) => {
+  const setToken = (newToken: null | string) => {
     token.value = newToken
     if (newToken) {
       localStorage.setItem(TOKEN_STORAGE_KEY, newToken)
@@ -33,15 +34,15 @@ export const useAuthStore = defineStore('auth', () => {
   const { form: signInForm, rules: signInFormRules } = useProForm<AuthModelType['signInBody']>(
     {
       initialValues: {
-        username: '',
         password: '',
         remember_me: false,
+        username: '',
       },
       onSubmit: signIn,
     },
     {
-      username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-      password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+      password: [{ message: '请输入密码', required: true, trigger: 'blur' }],
+      username: [{ message: '请输入用户名', required: true, trigger: 'blur' }],
     },
   )
 
@@ -53,16 +54,16 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   return {
-    token,
     isAuthenticated,
     setToken,
+    signIn,
 
     signInForm,
     signInFormRules,
     signInLoading,
-    signIn,
+    signOut,
 
     signOutLoading,
-    signOut,
+    token,
   }
 })

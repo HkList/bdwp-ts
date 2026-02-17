@@ -50,40 +50,41 @@
 </template>
 
 <script lang="ts" setup generic="T extends Record<string, any>">
-import type { ProSearchFormPlusProps } from '@frontend/components/ProSearchFormPlus'
-import { ProFormPlus } from '@frontend/components/ProFormPlus'
+import type { ProSearchFormPlusProps } from '@frontend/components/ProSearchFormPlus/types.ts'
+import type { FormRules } from 'naive-ui'
+
+import { ProFormPlus } from '@frontend/components/ProFormPlus/index.ts'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { Reset, Search } from '@vicons/carbon'
 import {
   createProForm,
+  ProButton,
+  ProCard,
   ProDate,
   ProDigit,
   ProInput,
   ProSelect,
-  ProButton,
-  ProCard,
 } from 'pro-naive-ui'
-import type { FormRules } from 'naive-ui'
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import { Reset, Search } from '@vicons/carbon'
 
 const data = defineModel<T>('value', { required: true })
 const props = withDefaults(defineProps<ProSearchFormPlusProps<T>>(), {
   title: '搜索',
 })
 const emit = defineEmits<{
-  search: []
   reset: []
+  search: []
 }>()
 
 const searchForm = createProForm({
   initialValues: data.value,
-  onSubmit() {
-    emit('search')
-  },
   onReset() {
     // 使用对象替换而非属性修改，确保响应式更新
     data.value = structuredClone(props.initValues)
 
     emit('reset')
+  },
+  onSubmit() {
+    emit('search')
   },
 })
 </script>

@@ -15,19 +15,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ProCard, ProDataTable, type ProDataTableSlots } from 'pro-naive-ui'
-import { type ProDataTablePlusProps } from '@frontend/components/ProDataTablePlus'
+import type { ProDataTablePlusProps } from '@frontend/components/ProDataTablePlus/types.ts'
+import type { ProDataTableSlots } from 'pro-naive-ui'
+
+import { ProCard, ProDataTable } from 'pro-naive-ui'
 import { computed } from 'vue'
 
 const slots = defineSlots<ProDataTableSlots>()
 
 const props = withDefaults(defineProps<ProDataTablePlusProps>(), {
-  bottomBordered: true,
   bordered: true,
+  bottomBordered: true,
   cascade: true,
   paginateSinglePage: true,
-  singleLine: true,
   selectRowTagNames: () => ['td'],
+  singleLine: true,
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,14 +53,14 @@ const onClick = (event: PointerEvent, row: any) => {
     if (Array.isArray(props['onUpdate:checkedRowKeys'])) {
       props['onUpdate:checkedRowKeys'].forEach((fn) =>
         fn(newKeys, props.data ?? [], {
-          row,
           action: isSelected ? 'uncheck' : 'check',
+          row,
         }),
       )
     } else if (props['onUpdate:checkedRowKeys']) {
       props['onUpdate:checkedRowKeys'](newKeys, props.data ?? [], {
-        row,
         action: isSelected ? 'uncheck' : 'check',
+        row,
       })
     }
   }

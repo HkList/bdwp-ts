@@ -1,30 +1,33 @@
-import { computed, nextTick } from 'vue'
-import { useColorMode } from '@vueuse/core'
-import { darkTheme, dateZhCN, type DropdownOption } from 'naive-ui'
-import { renderIcon } from '@frontend/utils/renderIcon'
+import type { ThemeModeType } from '@frontend/components/ThemeSwitcher/types.ts'
+import type { DropdownOption } from 'naive-ui'
+import type { ProConfigProviderProps } from 'pro-naive-ui'
+
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { DesktopOutline, Moon, Sunny } from '@vicons/ionicons5'
-import { zhCN, type ProConfigProviderProps } from 'pro-naive-ui'
-import type { ThemeModeType } from '@frontend/components/ThemeSwitcher/types'
+import { useColorMode } from '@vueuse/core'
+import { darkTheme, dateZhCN } from 'naive-ui'
+import { zhCN } from 'pro-naive-ui'
+import { computed, nextTick } from 'vue'
 
 export const ThemeMode = ['light', 'dark', 'auto'] as const
 
 export const DropdownThemeOptions = [
   {
-    label: '浅色',
-    key: 'light',
     icon: renderIcon(Sunny),
+    key: 'light',
+    label: '浅色',
     props: { onClick: (event) => setModeWithTransition(event, 'light') },
   },
   {
-    label: '深色',
-    key: 'dark',
     icon: renderIcon(Moon),
+    key: 'dark',
+    label: '深色',
     props: { onClick: (event) => setModeWithTransition(event, 'dark') },
   },
   {
-    label: '跟随系统',
-    key: 'auto',
     icon: renderIcon(DesktopOutline),
+    key: 'auto',
+    label: '跟随系统',
     props: { onClick: (event) => setModeWithTransition(event, 'auto') },
   },
 ] satisfies (DropdownOption & { key: ThemeModeType })[]
@@ -39,9 +42,9 @@ export const isDark = computed(() => {
 
 export const configProviderProps = computed<ProConfigProviderProps>(() => ({
   abstract: true,
-  theme: isDark.value ? darkTheme : null,
-  locale: zhCN,
   dateLocale: dateZhCN,
+  locale: zhCN,
+  theme: isDark.value ? darkTheme : null,
 }))
 
 export const setMode = (next: ThemeModeType) => {

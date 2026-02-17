@@ -1,11 +1,11 @@
+import { configProviderProps } from '@frontend/components/ThemeSwitcher/index.ts'
 import {
   createDiscreteApi,
-  type NotificationProviderInst,
-  type MessageProviderInst,
   type DialogProviderInst,
   type LoadingBarProviderInst,
+  type MessageProviderInst,
+  type NotificationProviderInst,
 } from 'naive-ui'
-import { configProviderProps } from '@frontend/components/ThemeSwitcher'
 
 let notification: NotificationProviderInst
 let message: MessageProviderInst
@@ -22,4 +22,4 @@ export function setupDiscreteApi() {
   loadingBar = discreteApi.loadingBar
 }
 
-export { notification, message, dialog, loadingBar }
+export { dialog, loadingBar, message, notification }

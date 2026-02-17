@@ -1,24 +1,26 @@
-import { ADMIN_ROUTES, type RouteRecordRawPlus } from '@frontend/router'
-import { renderIcon } from '@frontend/utils/renderIcon'
-import { useMobile } from '@frontend/utils/useMobile'
+import type { RouteRecordRawPlus } from '@frontend/router/index.ts'
+import type { renderIcon } from '@frontend/utils/renderIcon.ts'
 import type { MenuOption } from 'naive-ui'
+
+import { ADMIN_ROUTES } from '@frontend/router/index.ts'
+import { useMobile } from '@frontend/utils/useMobile.ts'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 export interface Breadcrumb {
-  path: string
-  title: string
   icon?: ReturnType<typeof renderIcon>
+  path: string
   route: RouteRecordRawPlus
+  title: string
 }
 
 // 将路由转换为菜单选项（支持嵌套）
 const routeToMenuOption = (route: RouteRecordRawPlus): MenuOption => {
   const menuOption: MenuOption = {
-    label: route.meta.title,
-    key: route.path,
     icon: route.meta.icon,
+    key: route.path,
+    label: route.meta.title,
   }
 
   // 如果有子路由，递归处理
@@ -67,29 +69,29 @@ export const useLayoutStore = defineStore('layout', () => {
   const breadcrumbs = computed<Breadcrumb[]>(() => {
     return route.matched.map<Breadcrumb>((item) => {
       return {
-        path: item.path,
-        title: (item.meta.title as string) ?? '',
         icon: item.meta.icon as ReturnType<typeof renderIcon> | undefined,
+        path: item.path,
         route: item as unknown as RouteRecordRawPlus,
+        title: (item.meta.title as string) ?? '',
       }
     })
   })
 
   return {
-    collapsed,
-    toggleCollapsed,
-
-    isMobile,
-    collapsedMobileDrawer,
-    toggleCollapsedMobileDrawer,
-
-    showMenu,
-    toggleShowMenu,
-
     activeKey,
-    menuOptions,
+    breadcrumbs,
+
+    collapsed,
+    collapsedMobileDrawer,
     handleMenuSelect,
 
-    breadcrumbs,
+    isMobile,
+    menuOptions,
+
+    showMenu,
+    toggleCollapsed,
+    toggleCollapsedMobileDrawer,
+
+    toggleShowMenu,
   }
 })

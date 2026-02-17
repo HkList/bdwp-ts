@@ -41,19 +41,19 @@
 </template>
 
 <script setup lang="ts">
-import { NScrollbar, NCard } from 'naive-ui'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import {
   activeTab,
+  closeTab,
   switchTab,
   tabs,
   tabsOrder,
   updateTabsOrder,
-} from '@frontend/utils/useRouteTabs'
-import { useRouter } from 'vue-router'
-import { renderIcon } from '@frontend/utils/renderIcon'
+} from '@frontend/utils/useRouteTabs.ts'
 import { Close } from '@vicons/ionicons5'
+import { NCard, NScrollbar } from 'naive-ui'
 import { nextTick, ref, useTemplateRef, watch } from 'vue'
-import { closeTab } from '@frontend/utils/useRouteTabs'
+import { useRouter } from 'vue-router'
 import Draggable from 'vuedraggable'
 
 const router = useRouter()
@@ -75,8 +75,8 @@ const handleMousewheel = (event: WheelEvent) => {
   if (!scrollbar.value) return
 
   scrollbar.value.scrollBy({
-    left: Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY,
     behavior: 'auto',
+    left: Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY,
   })
 }
 
@@ -84,7 +84,7 @@ const warpedCloseTab = (event: MouseEvent, path: string, fromTab = false) => {
   // 判断是否还有剩余标签
   if (!closeAble.value) return
 
-  let tabElement: HTMLElement | undefined | null
+  let tabElement: HTMLElement | null | undefined
 
   if (fromTab) {
     tabElement = event.currentTarget as HTMLElement
@@ -142,7 +142,7 @@ watch(
       left = 0
     }
 
-    scrollbar.value.scrollTo({ left, behavior: 'smooth' })
+    scrollbar.value.scrollTo({ behavior: 'smooth', left })
   },
   { immediate: true },
 )

@@ -1,5 +1,6 @@
-import { NIcon } from 'naive-ui'
 import type { Component } from 'vue'
+
+import { NIcon } from 'naive-ui'
 import { h } from 'vue'
 
 /**

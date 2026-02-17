@@ -11,8 +11,8 @@
 import { NButton } from 'naive-ui'
 
 const props = defineProps<{
-  showText: boolean
   showBorder?: boolean
+  showText: boolean
 }>()
 </script>
 

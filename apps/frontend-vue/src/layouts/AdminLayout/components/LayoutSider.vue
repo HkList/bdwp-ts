@@ -29,18 +29,18 @@
 </template>
 
 <script lang="ts" setup>
-import { NLayoutSider, NMenu, NButton } from 'naive-ui'
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@vicons/antd'
-import { storeToRefs } from 'pinia'
-import { useLayoutStore } from '@frontend/stores/layoutStore'
-import { renderIcon } from '@frontend/utils/renderIcon'
-import { computed } from 'vue'
 import Logo from '@frontend/layouts/AdminLayout/components/Logo.vue'
+import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@vicons/antd'
+import { NButton, NLayoutSider, NMenu } from 'naive-ui'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 
 const layoutStore = useLayoutStore()
 
 const { handleMenuSelect, toggleCollapsed } = layoutStore
-const { collapsed, activeKey, menuOptions } = storeToRefs(layoutStore)
+const { activeKey, collapsed, menuOptions } = storeToRefs(layoutStore)
 
 const collapsedWarped = computed(() => {
   if (props.isMobileDrawer) {

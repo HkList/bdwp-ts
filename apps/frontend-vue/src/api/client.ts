@@ -1,5 +1,7 @@
-import { ref, type Ref } from 'vue'
+import type { Ref } from 'vue'
+
 import { useDebounceFn, useThrottleFn } from '@vueuse/core'
+import { ref } from 'vue'
 
 export interface UseRequestOptions {
   /** 防抖延迟（毫秒） */
@@ -9,16 +11,16 @@ export interface UseRequestOptions {
 }
 
 export interface UseRequestResult<TData, TParams extends unknown[]> {
-  /** 加载状态 */
-  loading: Ref<boolean>
   /** 响应数据 */
   data: Ref<TData | undefined>
   /** 错误信息 */
   error: Ref<Error | undefined>
-  /** 执行请求 */
-  send: (...params: TParams) => Promise<TData>
+  /** 加载状态 */
+  loading: Ref<boolean>
   /** 重置状态 */
   reset: () => void
+  /** 执行请求 */
+  send: (...params: TParams) => Promise<TData>
 }
 
 /**
@@ -70,10 +72,10 @@ export function useRequest<TData, TParams extends unknown[]>(
   }
 
   return {
-    loading,
     data,
     error,
-    send,
+    loading,
     reset,
+    send,
   }
 }

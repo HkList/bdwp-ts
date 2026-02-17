@@ -1,8 +1,9 @@
-import { globalIgnores } from 'eslint/config'
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
-import pluginVue from 'eslint-plugin-vue'
-import pluginOxlint from 'eslint-plugin-oxlint'
 import eslintConfigPrettier from 'eslint-config-prettier/flat'
+import pluginOxlint from 'eslint-plugin-oxlint'
+import perfectionist from 'eslint-plugin-perfectionist'
+import pluginVue from 'eslint-plugin-vue'
+import { globalIgnores } from 'eslint/config'
 
 // To allow more languages other than `ts` in `.vue` files, uncomment the following lines:
 // import { configureVueProject } from '@vue/eslint-config-typescript'
@@ -11,8 +12,8 @@ import eslintConfigPrettier from 'eslint-config-prettier/flat'
 
 export default defineConfigWithVueTs(
   {
-    name: 'app/files-to-lint',
     files: ['**/*.{vue,ts,mts,tsx}'],
+    name: 'app/files-to-lint',
   },
 
   globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
@@ -20,21 +21,23 @@ export default defineConfigWithVueTs(
   ...pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
 
+  perfectionist.configs['recommended-natural'],
+
   ...pluginOxlint.buildFromOxlintConfigFile('.oxlintrc.json'),
 
   eslintConfigPrettier,
 
   {
     rules: {
-      'vue/multi-word-component-names': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
-          varsIgnorePattern: '^_',
           argsIgnorePattern: '^_',
           caughtErrorsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
         },
       ],
+      'vue/multi-word-component-names': 'off',
     },
   },
 )

@@ -1,13 +1,14 @@
-import { api, useRequest } from '@frontend/api'
-import { defineStore } from 'pinia'
-import type { UserModelType } from '@backend/modules/admin/user/model'
+import type { TypeboxTypes } from '@backend/db'
+import type { UserModelType } from '@backend/modules/admin/user/model.ts'
+
+import { api, useRequest } from '@frontend/api/index.ts'
 import {
   useProDataTablePlus,
   type UseProDataTablePlusService,
-} from '@frontend/components/ProDataTablePlus'
-import type { TypeboxTypes } from '@backend/db'
-import { renderProDateText } from 'pro-naive-ui'
+} from '@frontend/components/ProDataTablePlus/index.ts'
 import { NButton, NFlex } from 'naive-ui'
+import { defineStore } from 'pinia'
+import { renderProDateText } from 'pro-naive-ui'
 import { h } from 'vue'
 
 export const useUsersStore = defineStore('admin_users', () => {
@@ -34,39 +35,31 @@ export const useUsersStore = defineStore('admin_users', () => {
   }
 
   const {
-    send: getUsers,
-    table: { tableProps, checkedRowKeys },
     search: { formProps, formValues },
+    send: getUsers,
+    table: { checkedRowKeys, tableProps },
   } = useProDataTablePlus<UserModelType['getAllUsersQuery'], TypeboxTypes['UserTypeboxSchemaType']>(
     {
-      service,
-      options: {
-        rowKey: (row) => row.id,
-        customProps: {
-          cardTitle: '用户列表',
-        },
-      },
       columns: () => [
         {
           title: '选择',
           type: 'selection',
         },
         {
-          title: 'ID',
           key: 'id',
+          title: 'ID',
           width: 80,
         },
         {
-          title: '用户名',
           key: 'username',
+          title: '用户名',
         },
         {
-          title: '创建时间',
           key: 'created_at',
           render: (row) => renderProDateText(row.created_at),
+          title: '创建时间',
         },
         {
-          title: '操作',
           key: 'actions',
           render: (_row) =>
             h(NFlex, null, {
@@ -74,37 +67,45 @@ export const useUsersStore = defineStore('admin_users', () => {
                 h(
                   NButton,
                   {
-                    type: 'primary',
                     size: 'small',
+                    type: 'primary',
                   },
                   { default: () => '编辑' },
                 ),
                 h(
                   NButton,
                   {
-                    type: 'error',
                     size: 'small',
+                    type: 'error',
                   },
                   { default: () => '删除' },
                 ),
               ],
             }),
+          title: '操作',
         },
       ],
+      options: {
+        customProps: {
+          cardTitle: '用户列表',
+        },
+        rowKey: (row) => row.id,
+      },
+      service,
     },
     {
-      initValues: {},
       columns: () => [
         {
-          title: '用户名',
           key: 'username',
+          title: '用户名',
         },
       ],
+      initValues: {},
       rules: () => ({}),
     },
   )
 
-  const { send: _deleteUsers, loading: deleteUsersLoading } = useRequest(api.admin.users.delete)
+  const { loading: deleteUsersLoading, send: _deleteUsers } = useRequest(api.admin.users.delete)
   const deleteUsers = async (ids: number[]) => {
     await _deleteUsers({
       ids,
@@ -113,13 +114,13 @@ export const useUsersStore = defineStore('admin_users', () => {
   }
 
   return {
-    getUsers,
-    tableProps,
-    formProps,
-    formValues,
     checkedRowKeys,
-
     deleteUsers,
     deleteUsersLoading,
+    formProps,
+    formValues,
+
+    getUsers,
+    tableProps,
   }
 })

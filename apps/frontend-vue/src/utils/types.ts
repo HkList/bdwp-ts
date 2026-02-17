@@ -1,3 +1,3 @@
-export type StringKeys<T> = Extract<keyof T, string>
+export type MaybePromise<T> = Promise<T> | T
 
-export type MaybePromise<T> = T | Promise<T>
+export type StringKeys<T> = Extract<keyof T, string>

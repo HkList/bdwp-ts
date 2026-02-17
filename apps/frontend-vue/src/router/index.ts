@@ -1,81 +1,82 @@
-import { useAuthStore } from '@frontend/stores/authStore'
-import { renderIcon } from '@frontend/utils/renderIcon'
 import type { RouteRecordRaw } from 'vue-router'
-import { createRouter, createWebHistory } from 'vue-router'
-import { DashboardFilled } from '@vicons/antd'
-import { Desktop, Home, LogIn, Search, Share } from '@vicons/ionicons5'
-import { User } from '@vicons/carbon'
-import { loadingBar } from '@frontend/utils/discreteApi'
 
-type BaseRouteRecordRawPlus = Omit<RouteRecordRaw, 'meta' | 'children' | 'component'> & {
-  meta: {
-    title: string
-    icon?: ReturnType<typeof renderIcon>
-  }
-}
+import { useAuthStore } from '@frontend/stores/authStore.ts'
+import { loadingBar } from '@frontend/utils/discreteApi.ts'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { DashboardFilled } from '@vicons/antd'
+import { User } from '@vicons/carbon'
+import { Desktop, Home, LogIn, Search, Share } from '@vicons/ionicons5'
+import { createRouter, createWebHistory } from 'vue-router'
 
 export type RouteRecordRawPlus = BaseRouteRecordRawPlus &
   (
     | {
-        component: RouteRecordRaw['component']
-        children?: never
-      }
-    | {
-        component: RouteRecordRaw['component']
         children: RouteRecordRawPlus[]
+        component: RouteRecordRaw['component']
       }
     | {
-        component?: never
+        children?: never
+        component: RouteRecordRaw['component']
+      }
+    | {
         children?: RouteRecordRawPlus[]
+        component?: never
       }
   )
 
+type BaseRouteRecordRawPlus = Omit<RouteRecordRaw, 'children' | 'component' | 'meta'> & {
+  meta: {
+    icon?: ReturnType<typeof renderIcon>
+    title: string
+  }
+}
+
 export const ADMIN_ROUTES: RouteRecordRawPlus[] = [
   {
-    path: '/admin/dashboard',
-    meta: { title: '仪表盘', icon: renderIcon(DashboardFilled) },
     component: () => import('@frontend/views/Admin/Dashboard.vue'),
+    meta: { icon: renderIcon(DashboardFilled), title: '仪表盘' },
+    path: '/admin/dashboard',
   },
   {
-    path: '/admin/users',
-    meta: { title: '用户管理', icon: renderIcon(User) },
     component: () => import('@frontend/views/Admin/Users/Index.vue'),
+    meta: { icon: renderIcon(User), title: '用户管理' },
+    path: '/admin/users',
   },
 ]
 
 export const routes: RouteRecordRawPlus[] = [
   {
-    path: '/',
-    component: () => import('@frontend/layouts/AppLayout.vue'),
-    meta: { title: '首页', icon: renderIcon(Home) },
     children: [
       {
-        path: '/parse',
-        meta: { title: '解析页', icon: renderIcon(Share) },
         component: () => import('@frontend/views/User/Parse.vue'),
+        meta: { icon: renderIcon(Share), title: '解析页' },
+        path: '/parse',
       },
     ],
+    component: () => import('@frontend/layouts/AppLayout.vue'),
+    meta: { icon: renderIcon(Home), title: '首页' },
+    path: '/',
   },
   {
-    path: '/sign_in',
-    meta: { title: '登录', icon: renderIcon(LogIn) },
     component: () => import('@frontend/views/SignIn.vue'),
+    meta: { icon: renderIcon(LogIn), title: '登录' },
+    path: '/sign_in',
   },
   {
-    path: '/admin',
-    component: () => import('@frontend/layouts/AdminLayout/index.vue'),
-    meta: { title: '管理后台首页', icon: renderIcon(Desktop) },
-    redirect: '/admin/dashboard',
     children: ADMIN_ROUTES,
+    component: () => import('@frontend/layouts/AdminLayout/index.vue'),
+    meta: { icon: renderIcon(Desktop), title: '管理后台首页' },
+    path: '/admin',
+    redirect: '/admin/dashboard',
   },
   {
-    path: '/404',
-    meta: { title: '404', icon: renderIcon(Search) },
     component: () => import('@frontend/views/NotFound.vue'),
+    meta: { icon: renderIcon(Search), title: '404' },
+    path: '/404',
   },
   {
+    meta: { icon: renderIcon(Search), title: '404' },
     path: '/:pathMatch(.*)*',
-    meta: { title: '404', icon: renderIcon(Search) },
     redirect: '/404',
   },
 ]

@@ -1,15 +1,16 @@
-import {
-  type UseProSearchFormPlusOptions,
-  useProSearchFormPlus,
-} from '@frontend/components/ProSearchFormPlus'
-import { useDataTableSection } from '@frontend/components/ProDataTablePlus/composable/sectionHook'
-import type { PaginationInfo } from 'naive-ui'
-import { useNDataTable } from 'pro-naive-ui'
-import { computed, toRaw } from 'vue'
 import type {
   UseProDataTablePlusOptions,
   UseProDataTablePlusReturn,
-} from '@frontend/components/ProDataTablePlus/types'
+} from '@frontend/components/ProDataTablePlus/types.ts'
+import type { PaginationInfo } from 'naive-ui'
+
+import { useDataTableSection } from '@frontend/components/ProDataTablePlus/composable/sectionHook.ts'
+import {
+  useProSearchFormPlus,
+  type UseProSearchFormPlusOptions,
+} from '@frontend/components/ProSearchFormPlus/index.ts'
+import { useNDataTable } from 'pro-naive-ui'
+import { computed, toRaw } from 'vue'
 
 export const useProDataTablePlus = <
   ApiParams extends object,
@@ -43,9 +44,9 @@ export const useProDataTablePlus = <
       {
         ...prevParams,
         current: pagination.current.value,
-        sorter: prevParams?.sorter ?? null,
         filters: prevParams?.filters ?? {},
         pageSize: pagination.pageSize.value,
+        sorter: prevParams?.sorter ?? null,
       },
       toRaw(prevFormValues ?? {}),
       ...restParams,
@@ -63,10 +64,10 @@ export const useProDataTablePlus = <
       ...dataTableProps.value,
       columns: options.columns ? options.columns() : [],
       pagination: {
-        showSizePicker: true,
-        showQuickJumper: true,
         pageSizes: [10, 20, 50, 100],
         prefix: ({ itemCount }: PaginationInfo) => `共 ${itemCount} 条`,
+        showQuickJumper: true,
+        showSizePicker: true,
         ...NData.table.tableProps.value?.pagination,
       },
     }
@@ -74,20 +75,20 @@ export const useProDataTablePlus = <
 
   const searchProps = useProSearchFormPlus<ApiParams>(
     searchFormPlusOptions ?? {
-      initValues: {} as ApiParams,
       columns: () => [],
+      initValues: {} as ApiParams,
     },
   )
   searchProps.formProps.value.onSearch = send
 
   return {
     ...NData,
+    search: searchProps,
     send,
     table: {
       ...NData.table,
-      tableProps,
       checkedRowKeys,
+      tableProps,
     },
-    search: searchProps,
   }
 }

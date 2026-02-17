@@ -25,16 +25,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ProFormPlus } from '@frontend/components/ProFormPlus'
-import { useAuthStore } from '@frontend/stores/authStore'
-import { renderIcon } from '@frontend/utils/renderIcon'
+import { ProFormPlus } from '@frontend/components/ProFormPlus/index.ts'
+import { useAuthStore } from '@frontend/stores/authStore.ts'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { LogIn } from '@vicons/ionicons5'
-import { NCard, NFlex, NButton } from 'naive-ui'
+import { NButton, NCard, NFlex } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { ProInput, ProCheckbox, ProPassword } from 'pro-naive-ui'
+import { ProCheckbox, ProInput, ProPassword } from 'pro-naive-ui'
 
 const authStore = useAuthStore()
-const { signInLoading, signInFormRules, signInForm } = storeToRefs(authStore)
+const { signInForm, signInFormRules, signInLoading } = storeToRefs(authStore)
 </script>
 
 <style lang="scss" scoped>

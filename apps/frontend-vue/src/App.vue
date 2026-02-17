@@ -6,10 +6,10 @@
 </template>
 
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { configProviderProps } from '@frontend/components/ThemeSwitcher/index.ts'
 import { NGlobalStyle } from 'naive-ui'
-import { configProviderProps } from '@frontend/components/ThemeSwitcher'
 import { ProConfigProvider } from 'pro-naive-ui'
+import { RouterView } from 'vue-router'
 </script>
 
 <style lang="scss" scoped></style>
