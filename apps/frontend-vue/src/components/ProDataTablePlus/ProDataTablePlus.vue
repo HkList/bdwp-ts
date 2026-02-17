@@ -1,8 +1,8 @@
 <template>
   <ProCard :title="props.cardTitle">
     <ProDataTable v-bind="selectRowOnClickProps">
-      <template v-for="(_, name) in slotsWithOutToolbar" :key="name" #[name]="slotProps">
-        <slot :name="name" v-bind="slotProps || {}"></slot>
+      <template v-for="(_, name) in slots" :key="name" #[name]="slotProps">
+        <slot v-if="name !== 'toolbar'" :name="name" v-bind="slotProps || {}"></slot>
       </template>
     </ProDataTable>
 
@@ -20,9 +20,6 @@ import { type ProDataTablePlusProps } from '@frontend/components/ProDataTablePlu
 import { computed } from 'vue'
 
 const slots = defineSlots<ProDataTableSlots>()
-const slotsWithOutToolbar = Object.fromEntries(
-  Object.entries(slots).filter(([name]) => name !== 'toolbar'),
-) as Omit<ProDataTableSlots, 'toolbar'>
 
 const props = withDefaults(defineProps<ProDataTablePlusProps>(), {
   bottomBordered: true,
@@ -33,6 +30,40 @@ const props = withDefaults(defineProps<ProDataTablePlusProps>(), {
   selectRowTagNames: () => ['td'],
 })
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const onClick = (event: PointerEvent, row: any) => {
+  const target = event.target
+  if (!target || !(target instanceof HTMLElement)) return
+  const tagName = target.tagName.toLowerCase()
+
+  if (!props.selectRowTagNames.includes(tagName)) return
+
+  // 取出当前行的ID
+  const rowKey = typeof props.rowKey === 'function' ? props.rowKey(row) : row[props.rowKey ?? 'id']
+  if (rowKey === undefined) return
+
+  // 触发选择事件
+  if (props.checkedRowKeys && props['onUpdate:checkedRowKeys']) {
+    const isSelected = props.checkedRowKeys.includes(rowKey)
+    const newKeys = isSelected
+      ? props.checkedRowKeys.filter((key) => key !== rowKey)
+      : [...props.checkedRowKeys, rowKey]
+    if (Array.isArray(props['onUpdate:checkedRowKeys'])) {
+      props['onUpdate:checkedRowKeys'].forEach((fn) =>
+        fn(newKeys, props.data ?? [], {
+          row,
+          action: isSelected ? 'uncheck' : 'check',
+        }),
+      )
+    } else if (props['onUpdate:checkedRowKeys']) {
+      props['onUpdate:checkedRowKeys'](newKeys, props.data ?? [], {
+        row,
+        action: isSelected ? 'uncheck' : 'check',
+      })
+    }
+  }
+}
+
 const selectRowOnClickProps = computed<ProDataTablePlusProps>(() => ({
   ...props,
   rowProps: props.disableSelectOnRowClick
@@ -42,42 +73,9 @@ const selectRowOnClickProps = computed<ProDataTablePlusProps>(() => ({
 
         return {
           ...rawProps,
-          onClick: (event) => {
+          onClick: (event: PointerEvent) => {
             if (rawProps.onClick) rawProps.onClick(event)
-
-            const target = event.target
-            if (!target || !(target instanceof HTMLElement)) return
-            const tagName = target.tagName.toLowerCase()
-
-            if (!props.selectRowTagNames.includes(tagName)) return
-
-            // 取出当前行的ID
-            const rowKey =
-              typeof props.rowKey === 'function' ? props.rowKey(row) : row[props.rowKey ?? 'id']
-            if (rowKey === undefined) return
-
-            // 触发选择事件
-            if (props.checkedRowKeys && props['onUpdate:checkedRowKeys']) {
-              const isSelected = props.checkedRowKeys.includes(rowKey)
-
-              const newKeys = isSelected
-                ? props.checkedRowKeys.filter((key) => key !== rowKey)
-                : [...props.checkedRowKeys, rowKey]
-
-              if (Array.isArray(props['onUpdate:checkedRowKeys'])) {
-                props['onUpdate:checkedRowKeys'].forEach((fn) =>
-                  fn(newKeys, props.data ?? [], {
-                    row,
-                    action: isSelected ? 'uncheck' : 'check',
-                  }),
-                )
-              } else if (props['onUpdate:checkedRowKeys']) {
-                props['onUpdate:checkedRowKeys'](newKeys, props.data ?? [], {
-                  row,
-                  action: isSelected ? 'uncheck' : 'check',
-                })
-              }
-            }
+            onClick(event, row)
           },
         }
       },

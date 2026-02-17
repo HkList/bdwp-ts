@@ -1,18 +1,33 @@
 import { computed, nextTick } from 'vue'
-import { useColorMode, useMouse } from '@vueuse/core'
+import { useColorMode } from '@vueuse/core'
 import { darkTheme, dateZhCN, type DropdownOption } from 'naive-ui'
 import { renderIcon } from '@frontend/utils/renderIcon'
 import { DesktopOutline, Moon, Sunny } from '@vicons/ionicons5'
 import { zhCN, type ProConfigProviderProps } from 'pro-naive-ui'
+import type { ThemeModeType } from '@frontend/components/ThemeSwitcher/types'
 
 export const ThemeMode = ['light', 'dark', 'auto'] as const
-export type ThemeMode = (typeof ThemeMode)[number]
 
 export const DropdownThemeOptions = [
-  { label: '浅色', key: 'light', icon: renderIcon(Sunny) },
-  { label: '深色', key: 'dark', icon: renderIcon(Moon) },
-  { label: '跟随系统', key: 'auto', icon: renderIcon(DesktopOutline) },
-] satisfies (DropdownOption & { key: ThemeMode })[]
+  {
+    label: '浅色',
+    key: 'light',
+    icon: renderIcon(Sunny),
+    props: { onClick: (event) => setModeWithTransition(event, 'light') },
+  },
+  {
+    label: '深色',
+    key: 'dark',
+    icon: renderIcon(Moon),
+    props: { onClick: (event) => setModeWithTransition(event, 'dark') },
+  },
+  {
+    label: '跟随系统',
+    key: 'auto',
+    icon: renderIcon(DesktopOutline),
+    props: { onClick: (event) => setModeWithTransition(event, 'auto') },
+  },
+] satisfies (DropdownOption & { key: ThemeModeType })[]
 
 export const colorMode = useColorMode()
 
@@ -29,12 +44,14 @@ export const configProviderProps = computed<ProConfigProviderProps>(() => ({
   dateLocale: dateZhCN,
 }))
 
-export const setMode = (next: ThemeMode) => {
+export const setMode = (next: ThemeModeType) => {
   colorMode.store.value = next
 }
 
-const { x, y } = useMouse()
-export const setModeWithTransition = (next: ThemeMode) => {
+export const setModeWithTransition = (
+  event: { clientX: number; clientY: number },
+  next: ThemeModeType,
+) => {
   // 判断是否是一样的mode
   if (next === colorMode.store.value) return
 
@@ -46,19 +63,17 @@ export const setModeWithTransition = (next: ThemeMode) => {
     return
   }
 
-  const endRadius = Math.hypot(
-    Math.max(x.value, innerWidth - x.value),
-    Math.max(y.value, innerHeight - y.value),
-  )
+  // 懒加载鼠标位置，仅在需要时获取，避免持续监听
+  const x = event.clientX
+  const y = event.clientY
+
+  const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
   const transition = document.startViewTransition(async () => {
     setMode(next)
     return nextTick()
   })
   transition.ready.then(() => {
-    const clipPath = [
-      `circle(0 at ${x.value}px ${y.value}px)`,
-      `circle(${endRadius}px at ${x.value}px ${y.value}px)`,
-    ]
+    const clipPath = [`circle(0 at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`]
     document.documentElement.animate(
       {
         clipPath: isDark.value ? clipPath : [...clipPath].reverse(),

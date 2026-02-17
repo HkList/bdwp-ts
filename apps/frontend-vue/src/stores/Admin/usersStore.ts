@@ -1,24 +1,20 @@
-import { api } from '@frontend/api'
+import { api, useRequest } from '@frontend/api'
 import { defineStore } from 'pinia'
 import type { UserModelType } from '@backend/modules/admin/user/model'
-import { ref } from 'vue'
 import {
   useProDataTablePlus,
   type UseProDataTablePlusService,
 } from '@frontend/components/ProDataTablePlus'
-import { useDataTableSection } from '@frontend/utils/useDataTableSection'
 import type { TypeboxTypes } from '@backend/db'
+import { renderProDateText } from 'pro-naive-ui'
+import { NButton, NFlex } from 'naive-ui'
+import { h } from 'vue'
 
 export const useUsersStore = defineStore('admin_users', () => {
-  const searchForm = ref<UserModelType['getAllUsersQuery']>({
-    page: 1,
-    page_size: 10,
-  })
-
-  const warpedGetUsers: UseProDataTablePlusService = async ({ current, pageSize }) => {
+  const service: UseProDataTablePlusService = async ({ current, pageSize }) => {
     const { data, error } = await api.admin.users.get({
       query: {
-        ...searchForm.value,
+        ...formValues.value,
         page: current,
         page_size: pageSize,
       },
@@ -38,36 +34,92 @@ export const useUsersStore = defineStore('admin_users', () => {
   }
 
   const {
-    table: { tableProps: getUsersTableProps, onChange: getUsers },
-    search: {
-      proSearchFormProps: searchFormProps,
-      rules: searchFormRules,
-      columns: searchFormColumns,
-    },
-  } = useProDataTablePlus<UserModelType['getAllUsersQuery']>(
-    warpedGetUsers,
-    [
-      {
-        title: '用户名',
-        key: 'username',
+    send: getUsers,
+    table: { tableProps, checkedRowKeys },
+    search: { formProps, formValues },
+  } = useProDataTablePlus<UserModelType['getAllUsersQuery'], TypeboxTypes['UserTypeboxSchemaType']>(
+    {
+      service,
+      options: {
+        rowKey: (row) => row.id,
+        customProps: {
+          cardTitle: '用户列表',
+        },
       },
-    ],
-    {},
+      columns: () => [
+        {
+          title: '选择',
+          type: 'selection',
+        },
+        {
+          title: 'ID',
+          key: 'id',
+          width: 80,
+        },
+        {
+          title: '用户名',
+          key: 'username',
+        },
+        {
+          title: '创建时间',
+          key: 'created_at',
+          render: (row) => renderProDateText(row.created_at),
+        },
+        {
+          title: '操作',
+          key: 'actions',
+          render: (_row) =>
+            h(NFlex, null, {
+              default: () => [
+                h(
+                  NButton,
+                  {
+                    type: 'primary',
+                    size: 'small',
+                  },
+                  { default: () => '编辑' },
+                ),
+                h(
+                  NButton,
+                  {
+                    type: 'error',
+                    size: 'small',
+                  },
+                  { default: () => '删除' },
+                ),
+              ],
+            }),
+        },
+      ],
+    },
+    {
+      initValues: {},
+      columns: () => [
+        {
+          title: '用户名',
+          key: 'username',
+        },
+      ],
+      rules: () => ({}),
+    },
   )
 
-  const dataTableSectionAttrs = useDataTableSection<TypeboxTypes['UserTypeboxSchemaType']>(
-    (row) => row.id,
-  )
+  const { send: _deleteUsers, loading: deleteUsersLoading } = useRequest(api.admin.users.delete)
+  const deleteUsers = async (ids: number[]) => {
+    await _deleteUsers({
+      ids,
+    })
+    await getUsers()
+  }
 
   return {
-    searchForm,
-    searchFormProps,
-    searchFormRules,
-    searchFormColumns,
-
     getUsers,
-    getUsersTableProps,
+    tableProps,
+    formProps,
+    formValues,
+    checkedRowKeys,
 
-    dataTableSectionAttrs,
+    deleteUsers,
+    deleteUsersLoading,
   }
 })

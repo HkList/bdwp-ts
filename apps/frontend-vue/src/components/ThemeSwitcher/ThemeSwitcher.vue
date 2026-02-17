@@ -1,5 +1,5 @@
 <template>
-  <NDropdown :options="DropdownThemeOptions" @select="setModeWithTransition">
+  <NDropdown :options="DropdownThemeOptions">
     <NButton quaternary circle :render-icon="renderIcon(isDark ? Moon : Sunny)" />
   </NDropdown>
 </template>
@@ -8,9 +8,5 @@
 import { NButton, NDropdown } from 'naive-ui'
 import { Moon, Sunny } from '@vicons/ionicons5'
 import { renderIcon } from '@frontend/utils/renderIcon'
-import {
-  DropdownThemeOptions,
-  isDark,
-  setModeWithTransition,
-} from '@frontend/components/ThemeSwitcher/composable'
+import { DropdownThemeOptions, isDark } from '@frontend/components/ThemeSwitcher/composable'
 </script>

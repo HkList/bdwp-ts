@@ -51,7 +51,6 @@
 
 <script lang="ts" setup generic="T extends Record<string, any>">
 import type { ProSearchFormPlusProps } from '@frontend/components/ProSearchFormPlus'
-import { ref } from 'vue'
 import { ProFormPlus } from '@frontend/components/ProFormPlus'
 import {
   createProForm,
@@ -75,17 +74,14 @@ const emit = defineEmits<{
   reset: []
 }>()
 
-// 保存初始值
-const initialValues = ref<T>({ ...data.value })
 const searchForm = createProForm({
   initialValues: data.value,
   onSubmit() {
     emit('search')
   },
   onReset() {
-    for (const key in data.value) {
-      data.value[key] = initialValues.value[key]
-    }
+    // 使用对象替换而非属性修改，确保响应式更新
+    data.value = structuredClone(props.initValues)
 
     emit('reset')
   },
