@@ -2,26 +2,31 @@
   <ProCard :title="props.cardTitle">
     <ProDataTable v-bind="selectRowOnClickProps">
       <template v-for="(_, name) in slots" :key="name" #[name]="slotProps">
-        <slot v-if="name !== 'toolbar'" :name="name" v-bind="slotProps || {}"></slot>
+        <slot :name="name" v-bind="slotProps || {}"></slot>
       </template>
     </ProDataTable>
 
     <template #header-extra>
       <div class="header-extra-warper">
-        <slot name="toolbar" />
+        <slot name="header-extra" />
       </div>
     </template>
   </ProCard>
 </template>
 
 <script lang="ts" setup>
-import type { ProDataTablePlusProps } from '@frontend/components/ProDataTablePlus/types.ts'
-import type { ProDataTableSlots } from 'pro-naive-ui'
+import type {
+  ProDataTablePlusProps,
+  ProDataTablePlusSlots,
+} from '@frontend/components/ProDataTablePlus/types.ts'
 
 import { ProCard, ProDataTable } from 'pro-naive-ui'
 import { computed } from 'vue'
 
-const slots = defineSlots<ProDataTableSlots>()
+const slots = defineSlots<ProDataTablePlusSlots>()
+if ('toolbar' in slots) {
+  throw new Error('ProDataTablePlus 已废弃 toolbar 插槽，请使用 header-extra 插槽替代')
+}
 
 const props = withDefaults(defineProps<ProDataTablePlusProps>(), {
   bordered: true,

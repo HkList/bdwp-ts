@@ -3,9 +3,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@frontend/stores/authStore.ts'
 import { loadingBar } from '@frontend/utils/discreteApi.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import { DashboardFilled } from '@vicons/antd'
-import { User } from '@vicons/carbon'
-import { Desktop, Home, LogIn, Search, Share } from '@vicons/ionicons5'
+import { Desktop, Earth, Home, LogIn, People, Search, Share } from '@vicons/ionicons5'
 import { createRouter, createWebHistory } from 'vue-router'
 
 export type RouteRecordRawPlus = BaseRouteRecordRawPlus &
@@ -34,12 +32,12 @@ type BaseRouteRecordRawPlus = Omit<RouteRecordRaw, 'children' | 'component' | 'm
 export const ADMIN_ROUTES: RouteRecordRawPlus[] = [
   {
     component: () => import('@frontend/views/Admin/Dashboard.vue'),
-    meta: { icon: renderIcon(DashboardFilled), title: '仪表盘' },
+    meta: { icon: renderIcon(Earth), title: '仪表盘' },
     path: '/admin/dashboard',
   },
   {
     component: () => import('@frontend/views/Admin/Users/Index.vue'),
-    meta: { icon: renderIcon(User), title: '用户管理' },
+    meta: { icon: renderIcon(People), title: '用户管理' },
     path: '/admin/users',
   },
 ]

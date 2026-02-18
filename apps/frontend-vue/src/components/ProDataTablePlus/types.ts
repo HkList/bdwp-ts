@@ -5,6 +5,7 @@ import type {
   UseNDataTableParams as Params,
   ProDataTableColumns,
   ProDataTableProps,
+  ProDataTableSlots,
   UseNDataTableOptions,
   UseNDataTableReturn,
   UseNDataTableService,
@@ -20,6 +21,11 @@ export interface ProDataTablePlusProps<RowKeyType extends number | string = RowK
   checkedRowKeys?: RowKeyType[]
   disableSelectOnRowClick?: boolean
   selectRowTagNames?: string[]
+}
+
+export interface ProDataTablePlusSlots extends Omit<ProDataTableSlots, 'toolbar'> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'header-extra': any
 }
 
 export interface UseProDataTablePlusOptions<T extends object> {

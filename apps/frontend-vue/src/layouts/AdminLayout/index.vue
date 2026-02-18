@@ -60,7 +60,7 @@
             quaternary
             circle
             @click="toggle"
-            :render-icon="renderIcon(isFullscreen ? FullscreenExitOutlined : FullscreenOutlined)"
+            :render-icon="renderIcon(isFullscreen ? Contract : Expand)"
           />
 
           <!-- 退出登陆 -->
@@ -69,7 +69,7 @@
               <NButton
                 quaternary
                 circle
-                :render-icon="renderIcon(LogoutOutlined)"
+                :render-icon="renderIcon(LogOut)"
                 :loading="signOutLoading"
               />
             </template>
@@ -113,8 +113,7 @@ import Tabs from '@frontend/layouts/AdminLayout/components/Tabs.vue'
 import { useAuthStore } from '@frontend/stores/authStore.ts'
 import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import { FullscreenExitOutlined, FullscreenOutlined, LogoutOutlined } from '@vicons/antd'
-import { Menu } from '@vicons/ionicons5'
+import { Contract, Expand, LogOut, Menu } from '@vicons/ionicons5'
 import { useFullscreen } from '@vueuse/core'
 import {
   NBreadcrumb,

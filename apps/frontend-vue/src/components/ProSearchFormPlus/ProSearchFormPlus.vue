@@ -30,7 +30,7 @@
           attr-type="reset"
           v-if="!props.hideResetButton"
           v-bind="props.resetButtonProps"
-          :render-icon="renderIcon(Reset)"
+          :render-icon="renderIcon(Refresh)"
         >
           重置
         </ProButton>
@@ -55,7 +55,7 @@ import type { FormRules } from 'naive-ui'
 
 import { ProFormPlus } from '@frontend/components/ProFormPlus/index.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import { Reset, Search } from '@vicons/carbon'
+import { Refresh, Search } from '@vicons/ionicons5'
 import {
   createProForm,
   ProButton,

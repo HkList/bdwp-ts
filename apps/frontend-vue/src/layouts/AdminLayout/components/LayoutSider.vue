@@ -22,7 +22,7 @@
       <NButton
         quaternary
         @click="toggleCollapsed"
-        :render-icon="renderIcon(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined)"
+        :render-icon="renderIcon(collapsed ? ChevronForward : ChevronBack)"
       />
     </div>
   </NLayoutSider>
@@ -32,7 +32,7 @@
 import Logo from '@frontend/layouts/AdminLayout/components/Logo.vue'
 import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@vicons/antd'
+import { ChevronBack, ChevronForward } from '@vicons/ionicons5'
 import { NButton, NLayoutSider, NMenu } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
