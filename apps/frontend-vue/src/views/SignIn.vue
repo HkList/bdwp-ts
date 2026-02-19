@@ -3,7 +3,7 @@
     <NFlex vertical :size="24">
       <h1>欢迎登录</h1>
 
-      <ProFormPlus :form="signInForm" :rules="signInFormRules">
+      <ProForm :form="signInForm" :rules="signInFormRules">
         <ProInput title="用户名" path="username" />
 
         <ProPassword title="密码" path="password" />
@@ -19,19 +19,18 @@
         >
           登录
         </NButton>
-      </ProFormPlus>
+      </ProForm>
     </NFlex>
   </NCard>
 </template>
 
 <script lang="ts" setup>
-import { ProFormPlus } from '@frontend/components/ProFormPlus/index.ts'
 import { useAuthStore } from '@frontend/stores/authStore.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { LogIn } from '@vicons/ionicons5'
 import { NButton, NCard, NFlex } from 'naive-ui'
 import { storeToRefs } from 'pinia'
-import { ProCheckbox, ProInput, ProPassword } from 'pro-naive-ui'
+import { ProCheckbox, ProInput, ProPassword, ProForm } from 'pro-naive-ui'
 
 const authStore = useAuthStore()
 const { signInForm, signInFormRules, signInLoading } = storeToRefs(authStore)

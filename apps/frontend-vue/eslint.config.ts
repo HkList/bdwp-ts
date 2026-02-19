@@ -1,7 +1,6 @@
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
 import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import pluginOxlint from 'eslint-plugin-oxlint'
-import perfectionist from 'eslint-plugin-perfectionist'
 import pluginVue from 'eslint-plugin-vue'
 import { globalIgnores } from 'eslint/config'
 
@@ -20,8 +19,6 @@ export default defineConfigWithVueTs(
 
   ...pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
-
-  perfectionist.configs['recommended-natural'],
 
   ...pluginOxlint.buildFromOxlintConfigFile('.oxlintrc.json'),
 

@@ -6,16 +6,18 @@ import {
   useProDataTablePlus,
   type UseProDataTablePlusService,
 } from '@frontend/components/ProDataTablePlus/index.ts'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { Trash } from '@vicons/ionicons5'
 import { NButton, NFlex } from 'naive-ui'
 import { defineStore } from 'pinia'
-import { renderProDateText } from 'pro-naive-ui'
-import { h } from 'vue'
+import { createProModalForm, renderProDateText } from 'pro-naive-ui'
+import { computed, h } from 'vue'
 
 export const useUsersStore = defineStore('admin_users', () => {
   const service: UseProDataTablePlusService = async ({ current, pageSize }) => {
     const { data, error } = await api.admin.users.get({
       query: {
-        ...formValues.value,
+        ...userSearchFormValues.value,
         page: current,
         page_size: pageSize,
       },
@@ -35,9 +37,9 @@ export const useUsersStore = defineStore('admin_users', () => {
   }
 
   const {
-    search: { formProps, formValues },
+    search: { formProps: userSearchFormProps, formValues: userSearchFormValues },
     send: getUsers,
-    table: { checkedRowKeys, tableProps },
+    table: { checkedRowKeys: userCheckedRowKeys, tableProps: userDataTableProps },
   } = useProDataTablePlus<UserModelType['getAllUsersQuery'], TypeboxTypes['UserTypeboxSchemaType']>(
     {
       columns: () => [
@@ -61,7 +63,7 @@ export const useUsersStore = defineStore('admin_users', () => {
         },
         {
           key: 'actions',
-          render: (_row) =>
+          render: (row) =>
             h(NFlex, null, {
               default: () => [
                 h(
@@ -75,6 +77,8 @@ export const useUsersStore = defineStore('admin_users', () => {
                 h(
                   NButton,
                   {
+                    onClick: () => deleteUsers([row.id]),
+                    renderIcon: renderIcon(Trash),
                     size: 'small',
                     type: 'error',
                   },
@@ -113,14 +117,29 @@ export const useUsersStore = defineStore('admin_users', () => {
     await getUsers()
   }
 
+  const { loading: addUserLoading, send: _addUser } = useRequest(api.admin.users.post)
+  const addUser = async (values: UserModelType['createUserBody']) => {
+    await _addUser(values)
+    await getUsers()
+  }
+  const addUserModalForm = computed(() =>
+    createProModalForm<UserModelType['createUserBody']>({
+      onSubmit: addUser,
+    }),
+  )
+
   return {
-    checkedRowKeys,
+    addUser,
+    addUserLoading,
+    addUserModalForm,
+
     deleteUsers,
     deleteUsersLoading,
-    formProps,
-    formValues,
 
     getUsers,
-    tableProps,
+    userCheckedRowKeys,
+    userDataTableProps,
+    userSearchFormProps,
+    userSearchFormValues,
   }
 })

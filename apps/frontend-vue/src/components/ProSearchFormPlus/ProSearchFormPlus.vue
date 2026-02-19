@@ -1,6 +1,6 @@
 <template>
   <ProCard :title="props.title">
-    <ProFormPlus :form="searchForm" :rules="props.rules as FormRules">
+    <ProForm :form="searchForm" :rules="props.rules as FormRules">
       <div class="searchFormWarpper" ref="searchFormWarpperDiv">
         <div v-for="column in columns" :key="column.key" class="searchFormItem">
           <component v-if="column.render" :is="column.render(data[column.key])" />
@@ -48,7 +48,7 @@
           查询
         </ProButton>
       </div>
-    </ProFormPlus>
+    </ProForm>
   </ProCard>
 </template>
 
@@ -56,7 +56,6 @@
 import type { ProSearchFormPlusProps } from '@frontend/components/ProSearchFormPlus/types.ts'
 import type { FormRules } from 'naive-ui'
 
-import { ProFormPlus } from '@frontend/components/ProFormPlus/index.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { Refresh, Search } from '@vicons/ionicons5'
 import {
@@ -67,6 +66,7 @@ import {
   ProDigit,
   ProInput,
   ProSelect,
+  ProForm,
 } from 'pro-naive-ui'
 
 const data = defineModel<T>('value', { required: true })

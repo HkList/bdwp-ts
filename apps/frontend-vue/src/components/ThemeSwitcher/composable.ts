@@ -47,6 +47,21 @@ export const configProviderProps = computed<ProConfigProviderProps>(() => ({
   theme: isDark.value ? darkTheme : null,
 }))
 
+export const proConfigProviderProps = computed<ProConfigProviderProps>(() => ({
+  ...configProviderProps.value,
+  propOverrides: {
+    ProForm: {
+      labelPlacement: 'left',
+      labelWidth: '100px',
+    },
+    ProModalForm: {
+      preset: 'card',
+      labelPlacement: 'left',
+      labelWidth: '100px',
+    },
+  },
+}))
+
 export const setMode = (next: ThemeModeType) => {
   colorMode.store.value = next
 }

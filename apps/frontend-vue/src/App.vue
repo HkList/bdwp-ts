@@ -1,12 +1,12 @@
 <template>
-  <ProConfigProvider v-bind="configProviderProps">
+  <ProConfigProvider v-bind="proConfigProviderProps">
     <NGlobalStyle />
     <RouterView />
   </ProConfigProvider>
 </template>
 
 <script setup lang="ts">
-import { configProviderProps } from '@frontend/components/ThemeSwitcher/index.ts'
+import { proConfigProviderProps } from '@frontend/components/ThemeSwitcher/index.ts'
 import { NGlobalStyle } from 'naive-ui'
 import { ProConfigProvider } from 'pro-naive-ui'
 import { RouterView } from 'vue-router'
