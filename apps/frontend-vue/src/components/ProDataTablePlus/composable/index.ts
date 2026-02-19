@@ -1,2 +1,2 @@
-export * from '@frontend/components/ProDataTablePlus/composable/mainHook.ts'
-export * from '@frontend/components/ProDataTablePlus/composable/sectionHook.ts'
+export * from '@frontend/components/ProDataTablePlus/composable/useDataTableSection.ts'
+export * from '@frontend/components/ProDataTablePlus/composable/useProDataTablePlus.ts'

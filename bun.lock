@@ -71,7 +71,6 @@
         "jiti": "^2.6.1",
         "npm-run-all2": "^8.0.4",
         "oxlint": "^1.47.0",
-        "prettier": "3.8.1",
         "rollup-plugin-visualizer": "^6.0.5",
         "sass-embedded": "^1.97.3",
         "type-fest": "^5.4.4",
@@ -1176,8 +1175,6 @@
     "postgres-interval": ["postgres-interval@1.2.0", "", { "dependencies": { "xtend": "^4.0.0" } }, "sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ=="],
 
     "prelude-ls": ["prelude-ls@1.2.1", "", {}, "sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g=="],
-
-    "prettier": ["prettier@3.8.1", "", { "bin": { "prettier": "bin/prettier.cjs" } }, "sha512-UOnG6LftzbdaHZcKoPFtOcCKztrQ57WkHDeRD9t/PTQtmT0NHSeWWepj6pS0z/N7+08BHFDQVUrfmfMRcZwbMg=="],
 
     "pro-composables": ["pro-composables@3.3.3", "", { "dependencies": { "@types/lodash-es": "^4.17.12", "@vueuse/core": "^11.3.0", "lodash-es": "^4.17.21", "type-fest": "^4.30.2" }, "peerDependencies": { "vue": ">= 3.3.0" } }, "sha512-1e7Od/pTdJyhBZOeWAAVuZW7MlOLSX7BCIJRSYnJyIX11MDusyVY5bCcKTGgsxo1Huau76ezxmpIXh1zgEpDhg=="],
 

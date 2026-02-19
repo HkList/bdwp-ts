@@ -55,4 +55,4 @@ export const api = treaty<App>(`${window?.location?.origin}`, {
   },
 }).api
 
-export * from '@frontend/api/client'
+export * from '@frontend/api/client.ts'

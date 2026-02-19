@@ -4,7 +4,7 @@ import type {
 } from '@frontend/components/ProDataTablePlus/types.ts'
 import type { PaginationInfo } from 'naive-ui'
 
-import { useDataTableSection } from '@frontend/components/ProDataTablePlus/composable/sectionHook.ts'
+import { useDataTableSection } from '@frontend/components/ProDataTablePlus/composable/useDataTableSection.ts'
 import {
   useProSearchFormPlus,
   type UseProSearchFormPlusOptions,
