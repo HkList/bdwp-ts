@@ -5,7 +5,8 @@
     <ProDataTablePlus v-bind="tableProps">
       <template #header-extra>
         <NFlex :size="8">
-          <NButton type="primary" :render-icon="renderIcon(Create)">新建用户</NButton>
+          <NButton type="primary" :render-icon="renderIcon(Create)"> 新建用户 </NButton>
+
           <NButton
             type="error"
             :render-icon="renderIcon(Trash)"

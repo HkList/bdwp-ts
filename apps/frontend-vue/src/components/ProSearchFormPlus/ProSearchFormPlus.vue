@@ -17,7 +17,10 @@
             v-else-if="column.type === 'select'"
             :title="column.title"
             :path="column.key"
-            :options="column.selectOptions"
+            :field-props="{
+              options: column.options,
+              multiple: column.multiple,
+            }"
           />
 
           <ProDate v-else-if="column.type === 'date'" :title="column.title" :path="column.key" />

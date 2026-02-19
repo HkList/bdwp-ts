@@ -1,5 +1,6 @@
 import type { StringKeys } from '@frontend/utils/types.ts'
-import type { FormItemRule, SelectOption } from 'naive-ui'
+import type { FormItemRule } from 'naive-ui'
+import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import type { ProButtonProps } from 'pro-naive-ui'
 import type { ComputedRef, Ref, VNode } from 'vue'
 
@@ -18,7 +19,7 @@ export type ProSearchFormPlusColumn<T extends object, K extends StringKeys<T> = 
   /** 显示的标题 */
   title: string
 } & (
-  | { selectOptions: SelectOption[]; type: 'select' }
+  | { multiple?: boolean; options: SelectMixedOption[]; type: 'select' }
   | { type: 'date' }
   | { type: 'number' }
   | { type?: 'string' | undefined }
