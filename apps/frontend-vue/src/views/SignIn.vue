@@ -3,7 +3,7 @@
     <NFlex vertical :size="24">
       <h1>欢迎登录</h1>
 
-      <ProForm :form="signInForm" :rules="signInFormRules">
+      <ProForm v-bind="signInForm">
         <ProInput title="用户名" path="username" />
 
         <ProPassword title="密码" path="password" />
@@ -33,7 +33,7 @@ import { storeToRefs } from 'pinia'
 import { ProCheckbox, ProInput, ProPassword, ProForm } from 'pro-naive-ui'
 
 const authStore = useAuthStore()
-const { signInForm, signInFormRules, signInLoading } = storeToRefs(authStore)
+const { signInForm, signInLoading } = storeToRefs(authStore)
 </script>
 
 <style lang="scss" scoped>

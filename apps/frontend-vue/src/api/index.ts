@@ -38,11 +38,11 @@ export const api = treaty<App>(`${window?.location?.origin}`, {
           title: json.message,
         })
 
-        setTimeout(() => {
+        setTimeout(async () => {
           const authStore = useAuthStore()
           authStore.setToken(null)
 
-          router.push('/sign_in')
+          await router.push('/sign_in')
         }, 1000)
         return
       }

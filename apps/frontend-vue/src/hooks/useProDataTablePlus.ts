@@ -1,16 +1,47 @@
-import type {
-  UseProDataTablePlusOptions,
-  UseProDataTablePlusReturn,
-} from '@frontend/components/ProDataTablePlus/types.ts'
+import type { ProDataTablePlusProps } from '@frontend/components/ProDataTablePlus/types.ts'
 import type { PaginationInfo } from 'naive-ui'
+import type { ProSearchFormPlusReturn } from '@frontend/hooks/useProSearchFormPlus.ts'
+import type { CreateRowKey } from 'naive-ui/es/data-table/src/interface.d.ts'
+import type {
+  UseNDataTableData as Data,
+  UseNDataTableParams as Params,
+  ProDataTableColumns,
+  UseNDataTableOptions,
+  UseNDataTableReturn,
+  UseNDataTableService,
+  UseRequestPlugin,
+} from 'pro-naive-ui'
+import type { ComputedRef, Ref } from 'vue'
+import type { UseProSearchFormPlusOptions } from '@frontend/hooks/useProSearchFormPlus.ts'
 
-import { useDataTableSection } from '@frontend/components/ProDataTablePlus/composable/useDataTableSection.ts'
-import {
-  useProSearchFormPlus,
-  type UseProSearchFormPlusOptions,
-} from '@frontend/components/ProSearchFormPlus/index.ts'
+import { useDataTableSection } from '@frontend/hooks/useDataTableSection.ts'
+import { useProSearchFormPlus } from '@frontend/hooks/useProSearchFormPlus.ts'
 import { useNDataTable } from 'pro-naive-ui'
 import { computed, toRaw } from 'vue'
+
+export interface UseProDataTablePlusOptions<T extends object> {
+  columns?: () => ProDataTableColumns<T>
+  options: UseNDataTableOptions<Data, Params> & {
+    customProps?: ProDataTablePlusProps
+    rowKey: CreateRowKey<T>
+  }
+  plugins?: UseRequestPlugin<Data, Params>[]
+  service: UseNDataTableService<Data, Params>
+}
+
+export type UseProDataTablePlusReturn<
+  ApiParams extends object,
+  RowKeyType extends number | string = number,
+> = {
+  search: ProSearchFormPlusReturn<ApiParams>
+  send: () => Promise<void>
+  table: Omit<UseNDataTableReturn<Data, Params>['table'], 'tableProps'> & {
+    checkedRowKeys: Ref<RowKeyType[]>
+    tableProps: ComputedRef<ProDataTablePlusProps<RowKeyType>>
+  }
+}
+
+export type UseProDataTablePlusService = UseNDataTableService<Data, Params>
 
 export const useProDataTablePlus = <
   ApiParams extends object,

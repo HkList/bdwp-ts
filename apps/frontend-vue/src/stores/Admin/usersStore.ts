@@ -1,17 +1,16 @@
 import type { TypeboxTypes } from '@backend/db'
 import type { UserModelType } from '@backend/modules/admin/user/model.ts'
+import type { UseProDataTablePlusService } from '@frontend/hooks/useProDataTablePlus.ts'
 
 import { api, useRequest } from '@frontend/api/index.ts'
-import {
-  useProDataTablePlus,
-  type UseProDataTablePlusService,
-} from '@frontend/components/ProDataTablePlus/index.ts'
+import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { useProModalForm } from '@frontend/hooks/useProModalForm.ts'
 import { Trash } from '@vicons/ionicons5'
 import { NButton, NFlex } from 'naive-ui'
 import { defineStore } from 'pinia'
-import { createProModalForm, renderProDateText } from 'pro-naive-ui'
-import { computed, h } from 'vue'
+import { renderProDateText } from 'pro-naive-ui'
+import { h } from 'vue'
 
 export const useUsersStore = defineStore('admin_users', () => {
   const service: UseProDataTablePlusService = async ({ current, pageSize }) => {
@@ -122,11 +121,18 @@ export const useUsersStore = defineStore('admin_users', () => {
     await _addUser(values)
     await getUsers()
   }
-  const addUserModalForm = computed(() =>
-    createProModalForm<UserModelType['createUserBody']>({
-      onSubmit: addUser,
+  const addUserModalForm = useProModalForm<UserModelType['createUserBody']>({
+    initialValues: {
+      username: '',
+      password: '',
+    },
+    rules: () => ({
+      username: { required: true },
+      password: { required: true },
     }),
-  )
+    loading: addUserLoading,
+    onSubmit: addUser,
+  })
 
   return {
     addUser,

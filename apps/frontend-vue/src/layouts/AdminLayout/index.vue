@@ -147,8 +147,8 @@ router.beforeEach(() => {
   collapsedMobileDrawer.value = false
 })
 
-const handleClickCrumb = (item: Breadcrumb) => {
-  router.push(item.path)
+const handleClickCrumb = async (item: Breadcrumb) => {
+  await router.push(item.path)
 }
 </script>
 

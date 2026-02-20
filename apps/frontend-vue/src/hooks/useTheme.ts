@@ -1,36 +1,12 @@
-import type { ThemeModeType } from '@frontend/components/ThemeSwitcher/types.ts'
-import type { DropdownOption } from 'naive-ui'
 import type { ProConfigProviderProps } from 'pro-naive-ui'
 
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import { DesktopOutline, Moon, Sunny } from '@vicons/ionicons5'
 import { useColorMode } from '@vueuse/core'
 import { darkTheme, dateZhCN } from 'naive-ui'
 import { zhCN } from 'pro-naive-ui'
 import { computed, nextTick } from 'vue'
 
 export const ThemeMode = ['light', 'dark', 'auto'] as const
-
-export const DropdownThemeOptions = [
-  {
-    icon: renderIcon(Sunny),
-    key: 'light',
-    label: '浅色',
-    props: { onClick: (event) => setModeWithTransition(event, 'light') },
-  },
-  {
-    icon: renderIcon(Moon),
-    key: 'dark',
-    label: '深色',
-    props: { onClick: (event) => setModeWithTransition(event, 'dark') },
-  },
-  {
-    icon: renderIcon(DesktopOutline),
-    key: 'auto',
-    label: '跟随系统',
-    props: { onClick: (event) => setModeWithTransition(event, 'auto') },
-  },
-] satisfies (DropdownOption & { key: ThemeModeType })[]
+export type ThemeModeType = (typeof ThemeMode)[number]
 
 export const colorMode = useColorMode()
 

@@ -3,7 +3,7 @@ import type { renderIcon } from '@frontend/utils/renderIcon.ts'
 import type { MenuOption } from 'naive-ui'
 
 import { ADMIN_ROUTES } from '@frontend/router/index.ts'
-import { useMobile } from '@frontend/utils/useMobile.ts'
+import { useMobile } from '@frontend/hooks/useMobile.ts'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -61,8 +61,8 @@ export const useLayoutStore = defineStore('layout', () => {
   })
 
   // 菜单选择处理
-  const handleMenuSelect = (key: string) => {
-    router.push(key)
+  const handleMenuSelect = async (key: string) => {
+    await router.push(key)
   }
 
   // 面包屑导航

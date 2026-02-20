@@ -1,11 +1,12 @@
-import { configProviderProps } from '@frontend/components/ThemeSwitcher/index.ts'
-import {
-  createDiscreteApi,
-  type DialogProviderInst,
-  type LoadingBarProviderInst,
-  type MessageProviderInst,
-  type NotificationProviderInst,
+import type {
+  DialogProviderInst,
+  LoadingBarProviderInst,
+  MessageProviderInst,
+  NotificationProviderInst,
 } from 'naive-ui'
+
+import { configProviderProps } from '@frontend/hooks/useTheme.ts'
+import { createDiscreteApi } from 'naive-ui'
 
 let notification: NotificationProviderInst
 let message: MessageProviderInst

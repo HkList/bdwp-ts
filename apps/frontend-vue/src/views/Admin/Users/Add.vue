@@ -1,5 +1,5 @@
 <template>
-  <ProModalForm title="新建用户" :form="addUserModalForm" :loading="addUserLoading">
+  <ProModalForm title="新建用户" v-bind="addUserModalForm">
     <ProInput title="用户名" path="username" />
   </ProModalForm>
 </template>
@@ -10,7 +10,7 @@ import { storeToRefs } from 'pinia'
 import { ProInput, ProModalForm } from 'pro-naive-ui'
 
 const usersStore = useUsersStore()
-const { addUserLoading, addUserModalForm } = storeToRefs(usersStore)
+const { addUserModalForm } = storeToRefs(usersStore)
 </script>
 
 <style lang="scss" scoped></style>

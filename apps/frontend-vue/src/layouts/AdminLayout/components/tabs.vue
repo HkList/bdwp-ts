@@ -49,7 +49,7 @@ import {
   tabs,
   tabsOrder,
   updateTabsOrder,
-} from '@frontend/utils/useRouteTabs.ts'
+} from '@frontend/hooks/useRouteTabs.ts'
 import { Close } from '@vicons/ionicons5'
 import { NCard, NScrollbar } from 'naive-ui'
 import { nextTick, ref, useTemplateRef, watch } from 'vue'
@@ -65,9 +65,9 @@ setTimeout(() => {
   closeAble.value = tabsOrder.value.length > 1
 }, 1000)
 
-const handleCardClick = (path: string) => {
+const handleCardClick = async (path: string) => {
   if (path === activeTab.value) return
-  router.push(path)
+  await router.push(path)
 }
 
 const scrollbar = useTemplateRef('scrollbar')

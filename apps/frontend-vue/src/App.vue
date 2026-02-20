@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { proConfigProviderProps } from '@frontend/components/ThemeSwitcher/index.ts'
+import { proConfigProviderProps } from '@frontend/hooks/useTheme.ts'
 import { NGlobalStyle } from 'naive-ui'
 import { ProConfigProvider } from 'pro-naive-ui'
 import { RouterView } from 'vue-router'

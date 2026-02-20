@@ -21,8 +21,8 @@ import { NButton, NCard, NFlex, NResult } from 'naive-ui'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const goHome = () => router.push('/')
-const goBack = () => router.back()
+const goHome = async () => await router.push('/')
+const goBack = async () => router.back()
 </script>
 
 <style lang="scss" scoped>
