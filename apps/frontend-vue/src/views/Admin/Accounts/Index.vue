@@ -1,26 +1,26 @@
 <template>
   <NFlex vertical :size="20">
     <Add />
-    <Edit />
+    <!-- <Edit /> -->
 
-    <ProSearchFormPlus v-bind="userSearchFormProps" />
+    <ProSearchFormPlus v-bind="accountSearchFormProps" />
 
-    <ProDataTablePlus v-bind="userDataTableProps">
+    <ProDataTablePlus v-bind="accountDataTableProps">
       <template #header-extra>
         <NFlex :size="8">
           <NButton
             type="primary"
             :render-icon="renderIcon(Create)"
-            @click="addUserModalForm.open()"
+            @click="addAccountModalForm.open()"
           >
-            新建用户
+            新建账号
           </NButton>
 
           <NButton
             type="error"
             :render-icon="renderIcon(Trash)"
-            :loading="deleteUsersLoading"
-            @click="deleteUsers(userCheckedRowKeys)"
+            :loading="deleteAccountsLoading"
+            @click="deleteAccounts(accountCheckedRowKeys)"
           >
             批量删除
           </NButton>
@@ -33,24 +33,24 @@
 <script lang="ts" setup>
 import { ProDataTablePlus } from '@frontend/components/ProDataTablePlus/index.ts'
 import { ProSearchFormPlus } from '@frontend/components/ProSearchFormPlus/index.ts'
-import { useUsersStore } from '@frontend/stores/Admin/usersStore.ts'
+import { useAccountsStore } from '@frontend/stores/Admin/accountsStore.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import Add from '@frontend/views/Admin/Users/Add.vue'
-import Edit from '@frontend/views/Admin/Users/Edit.vue'
+import Add from '@frontend/views/Admin/Accounts/Add.vue'
+// import Edit from '@frontend/views/Admin/Users/Edit.vue'
 import { Create, Trash } from '@vicons/ionicons5'
 import { NButton, NFlex } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 
-const usersStore = useUsersStore()
+const accountsStore = useAccountsStore()
 
-const { deleteUsers } = usersStore
+const { deleteAccounts } = accountsStore
 const {
-  addUserModalForm,
-  userCheckedRowKeys,
-  userDataTableProps,
-  userSearchFormProps,
-  deleteUsersLoading,
-} = storeToRefs(usersStore)
+  addAccountModalForm,
+  accountCheckedRowKeys,
+  accountDataTableProps,
+  accountSearchFormProps,
+  deleteAccountsLoading,
+} = storeToRefs(accountsStore)
 </script>
 
 <style lang="scss" scoped></style>

@@ -20,6 +20,7 @@ export const AccountModule = new Elysia({ prefix: '/accounts' })
     body: AccountModel.createAccountBody,
     response: {
       201: AccountModel.createAccountSuccess,
+      409: AccountModel.createAccountFailedConflict,
       500: AccountModel.createAccountFailed,
     },
     detail: {

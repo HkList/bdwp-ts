@@ -1,7 +1,8 @@
 import type { TypeboxTypes } from '@backend/db'
 import type { UserModelType } from '@backend/modules/admin/user/model.ts'
+import type { Oneof } from '@frontend/utils/types.ts'
 
-import { api, useRequest } from '@frontend/api/index.ts'
+import { api } from '@frontend/api/index.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { useProModalForm } from '@frontend/hooks/useProModalForm.ts'
@@ -10,7 +11,7 @@ import { NButton, NFlex } from 'naive-ui'
 import { defineStore } from 'pinia'
 import { renderProDateText } from 'pro-naive-ui'
 import { h } from 'vue'
-import type { Oneof } from '@frontend/utils/types.ts'
+import { useRequest } from '@frontend/hooks/useRequest.ts'
 
 export const useUsersStore = defineStore('admin_users', () => {
   const {
@@ -123,10 +124,6 @@ export const useUsersStore = defineStore('admin_users', () => {
     await getUsers()
   }
   const addUserModalForm = useProModalForm<UserModelType['createUserBody']>({
-    initialValues: {
-      username: '',
-      password: '',
-    },
     rules: () => ({
       username: [{ required: true }, { min: 3, max: 30 }],
       password: [{ required: true }, { min: 6, max: 100 }],
@@ -150,7 +147,6 @@ export const useUsersStore = defineStore('admin_users', () => {
     [Oneof<UserModelType['updateUsersBody']>]
   >(
     {
-      initialValues: { id: 0, username: '', password: '' },
       rules: () => ({
         username: [{ required: true }, { min: 3, max: 30 }],
       }),

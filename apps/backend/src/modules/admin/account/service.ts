@@ -27,6 +27,21 @@ export class AccountService {
     user: TypeboxTypes['UserTypeboxSchemaType'],
     body: AccountModelType['createAccountBody'],
   ) {
+    // 判断是否已存在相同 cid 的账号
+    const existingAccount = await Drizzle.query.Account.findFirst({
+      where: {
+        cid: body.cid.toString(),
+        user_id: user.id,
+      },
+    })
+
+    if (existingAccount) {
+      return status(409, {
+        message: '已存在相同 CID 的账号, 创建失败',
+        data: null,
+      })
+    }
+
     const job = await createOrUpdateAccountQueue.add(
       'createOrUpdateAccount',
       {
@@ -49,7 +64,7 @@ export class AccountService {
     return status(201, {
       message: '创建异步任务成功',
       data: {
-        job_id: job.id,
+        task_id: job.id,
       },
     })
   }

@@ -1,9 +1,9 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "36a2c45c-e160-4b60-b8e4-1628dc59574c",
+  "id": "ff7e7ac5-d368-47fd-93cd-abfd3d65aff4",
   "prevIds": [
-    "99fc3f62-93de-4450-a93d-2c7c730953a9"
+    "00000000-0000-0000-0000-000000000000"
   ],
   "ddl": [
     {
@@ -642,6 +642,34 @@
       "nameExplicit": true,
       "columns": [
         {
+          "value": "user_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "cid",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "user_id_cid_unique_idx",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "accounts"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
           "value": "surl",
           "isExpression": false,
           "asc": true,
@@ -790,17 +818,6 @@
       "schema": "public",
       "table": "users",
       "entityType": "pks"
-    },
-    {
-      "nameExplicit": false,
-      "columns": [
-        "uk"
-      ],
-      "nullsNotDistinct": false,
-      "name": "accounts_uk_key",
-      "schema": "public",
-      "table": "accounts",
-      "entityType": "uniques"
     },
     {
       "nameExplicit": false,

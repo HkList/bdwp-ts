@@ -1,10 +1,11 @@
 import type { AuthModelType } from '@backend/modules/auth/model.ts'
 
-import { api, useRequest } from '@frontend/api/index.ts'
+import { api } from '@frontend/api/index.ts'
 import { useProForm } from '@frontend/hooks/useProForm.ts'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useRequest } from '@frontend/hooks/useRequest.ts'
 
 export const TOKEN_STORAGE_KEY = 'BDWP_TOKEN'
 
@@ -30,11 +31,6 @@ export const useAuthStore = defineStore('auth', () => {
     await router.push('/admin')
   }
   const signInForm = useProForm<AuthModelType['signInBody']>({
-    initialValues: {
-      password: '',
-      remember_me: false,
-      username: '',
-    },
     rules: () => ({
       password: { required: true },
       username: { required: true },

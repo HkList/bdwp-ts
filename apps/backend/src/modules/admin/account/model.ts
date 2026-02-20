@@ -29,11 +29,15 @@ export const AccountModel = {
   createAccountSuccess: t.Object({
     message: t.Literal('创建异步任务成功'),
     data: t.Object({
-      job_id: t.String(),
+      task_id: t.String(),
     }),
   }),
   createAccountFailed: t.Object({
     message: t.Literal('创建异步任务失败'),
+    data: t.Null(),
+  }),
+  createAccountFailedConflict: t.Object({
+    message: t.Literal('已存在相同 CID 的账号, 创建失败'),
     data: t.Null(),
   }),
 

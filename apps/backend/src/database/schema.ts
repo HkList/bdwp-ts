@@ -33,7 +33,7 @@ export const Account = pgTable(
     reason: text().notNull().default(''),
     ...timestamps,
   },
-  (table) => [uniqueIndex('uk_cid_unique_idx').on(table.uk, table.cid)],
+  (table) => [uniqueIndex('user_id_cid_unique_idx').on(table.user_id, table.cid)],
 )
 
 export const ShareLink = pgTable(

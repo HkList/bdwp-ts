@@ -5,6 +5,8 @@ import { router } from '@frontend/router/index.ts'
 import { useAuthStore } from '@frontend/stores/authStore.ts'
 import { loadingBar, notification } from '@frontend/utils/discreteApi.ts'
 
+export const DO_NOT_SHOWN_MESSAGE = ['获取任务状态成功']
+
 export const api = treaty<App>(`${window?.location?.origin}`, {
   headers(path) {
     if (path.startsWith('/api/admin') || path === '/api/auth/sign_out') {
@@ -24,10 +26,12 @@ export const api = treaty<App>(`${window?.location?.origin}`, {
     if (response.ok) {
       loadingBar.finish()
 
-      notification.success({
-        duration: 1000,
-        title: json.message,
-      })
+      if (!DO_NOT_SHOWN_MESSAGE.includes(json.message)) {
+        notification.success({
+          duration: 1000,
+          title: json.message,
+        })
+      }
     } else {
       loadingBar.error()
 
@@ -54,5 +58,3 @@ export const api = treaty<App>(`${window?.location?.origin}`, {
     }
   },
 }).api
-
-export * from '@frontend/api/client.ts'

@@ -3,7 +3,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@frontend/stores/authStore.ts'
 import { loadingBar } from '@frontend/utils/discreteApi.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import { Desktop, Earth, Home, LogIn, People, Search, Share } from '@vicons/ionicons5'
+import { Desktop, Earth, Home, LogIn, People, Person, Search, Share } from '@vicons/ionicons5'
 import { createRouter, createWebHistory } from 'vue-router'
 
 export type RouteRecordRawPlus = BaseRouteRecordRawPlus &
@@ -39,6 +39,11 @@ export const ADMIN_ROUTES: RouteRecordRawPlus[] = [
     component: () => import('@frontend/views/Admin/Users/Index.vue'),
     meta: { icon: renderIcon(People), title: '用户管理' },
     path: '/admin/users',
+  },
+  {
+    component: () => import('@frontend/views/Admin/Accounts/Index.vue'),
+    meta: { icon: renderIcon(Person), title: '账号管理' },
+    path: '/admin/accounts',
   },
 ]
 

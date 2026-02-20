@@ -67,7 +67,7 @@ export async function getEnterpriseTicketList(
   >('https://pan.baidu.com/mid_enterprise_v2/ticket/api/list', {
     method: 'post',
     headers: {
-      'User-Agent': bdwp_config.PC_USERAGENT,
+      'User-Agent': bdwp_config.BROWSER_USERAGENT,
       Cookie: options.cookie,
     },
     searchParams: {
@@ -101,6 +101,6 @@ export async function getEnterpriseTicketList(
 
   return status(200, {
     message: '获取企业票据列表成功',
-    data: typedResponse.data.package_list,
+    data: typedResponse.data.package_list ?? [],
   })
 }

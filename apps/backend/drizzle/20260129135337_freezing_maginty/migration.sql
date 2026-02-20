@@ -1,1 +1,0 @@
-ALTER TABLE "share_links" ADD CONSTRAINT "share_links_shareid_key" UNIQUE("shareid");

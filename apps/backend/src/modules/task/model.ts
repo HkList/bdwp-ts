@@ -6,7 +6,16 @@ export const TaskModel = {
   }),
   GetTaskStatusSuccess: t.Object({
     message: t.String(),
-    data: t.Nullable(t.Any()),
+    data: t.Object({
+      progress: t.Number(),
+      status: t.Enum({
+        processing: 'processing',
+        completed: 'completed',
+        failed: 'failed',
+      }),
+      message: t.String(),
+      data: t.Nullable(t.Any()),
+    }),
   }),
   GetTaskStatusFailedNotFound: t.Object({
     message: t.String(),

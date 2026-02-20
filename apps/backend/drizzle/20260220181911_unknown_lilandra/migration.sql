@@ -37,7 +37,7 @@ CREATE TABLE "share_links" (
 	"surl" text NOT NULL UNIQUE,
 	"pwd" text NOT NULL,
 	"randsk" text NOT NULL,
-	"shareid" text NOT NULL,
+	"shareid" text NOT NULL UNIQUE,
 	"uk" text NOT NULL,
 	"share_info" jsonb NOT NULL,
 	"path" text NOT NULL,
@@ -54,6 +54,8 @@ CREATE TABLE "users" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE UNIQUE INDEX "user_id_cid_unique_idx" ON "accounts" ("user_id","cid");--> statement-breakpoint
+CREATE UNIQUE INDEX "surl_shareid_unique_idx" ON "share_links" ("surl","shareid");--> statement-breakpoint
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id");--> statement-breakpoint
 ALTER TABLE "keys" ADD CONSTRAINT "keys_user_id_users_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id");--> statement-breakpoint
 ALTER TABLE "keys" ADD CONSTRAINT "keys_account_id_accounts_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id");--> statement-breakpoint
