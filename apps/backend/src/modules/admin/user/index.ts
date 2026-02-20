@@ -19,6 +19,7 @@ export const UserModule = new Elysia({ prefix: '/users' })
     response: {
       200: UserModel.deleteUsersSuccess,
       404: UserModel.deleteUsersFailedNotFound,
+      500: UserModel.deleteUsersFailedReferenceError,
     },
     detail: {
       summary: '删除用户',

@@ -1,5 +1,6 @@
 import type { UserModelType } from '@backend/modules/admin/user/model.ts'
 import { Drizzle, Schemas } from '@backend/db'
+import { isDuplicateError, isReferenceError } from '@backend/utils/errorCheckers.ts'
 import { and, count, eq, inArray, like } from 'drizzle-orm'
 import { status } from 'elysia'
 
@@ -22,7 +23,9 @@ export class UserService {
         },
       })
     } catch (error) {
-      if (error instanceof Error && error.message.includes('UNIQUE')) {
+      console.error('创建用户失败:', error)
+
+      if (isDuplicateError(error)) {
         return status(409, {
           message: '用户名已存在',
           data: null,
@@ -56,6 +59,14 @@ export class UserService {
           data: null,
         })
       }
+
+      if (isReferenceError(error)) {
+        return status(500, {
+          message: '用户无法删除, 存在绑定的数据, 请先删除相关数据',
+          data: null,
+        })
+      }
+
       throw error
     }
 
@@ -94,7 +105,7 @@ export class UserService {
               })
               .where(eq(Schemas.User.id, item.id))
           } catch (error) {
-            if (error instanceof Error && error.message.includes('UNIQUE')) {
+            if (isDuplicateError(error)) {
               throw new Error('USERNAME_EXISTS')
             }
 

@@ -28,6 +28,10 @@ export const UserModel = {
     message: t.Literal('部分用户不存在, 删除失败'),
     data: t.Null(),
   }),
+  deleteUsersFailedReferenceError: t.Object({
+    message: t.Literal('用户无法删除, 存在绑定的数据, 请先删除相关数据'),
+    data: t.Null(),
+  }),
 
   updateUsersBody: t.Array(
     t.Object({

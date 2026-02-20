@@ -1,5 +1,6 @@
 import type { GetTaskInfoResponse } from '@backend/api'
-import type { ElysiaCustomStatusResponse, MaybePromise } from 'elysia'
+import type { MaybePromise } from 'bun'
+import type { ElysiaCustomStatusResponse } from 'elysia'
 import { waitForTaskComplete } from '@backend/api'
 import { bdwp_config } from '@backend/config.ts'
 import { request } from '@backend/utils/request.ts'

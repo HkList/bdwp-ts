@@ -1,46 +1,45 @@
 import type { TypeboxTypes } from '@backend/db'
 import type { UserModelType } from '@backend/modules/admin/user/model.ts'
-import type { UseProDataTablePlusService } from '@frontend/hooks/useProDataTablePlus.ts'
 
 import { api, useRequest } from '@frontend/api/index.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { useProModalForm } from '@frontend/hooks/useProModalForm.ts'
-import { Trash } from '@vicons/ionicons5'
+import { Pencil, Trash } from '@vicons/ionicons5'
 import { NButton, NFlex } from 'naive-ui'
 import { defineStore } from 'pinia'
 import { renderProDateText } from 'pro-naive-ui'
 import { h } from 'vue'
+import type { Oneof } from '@frontend/utils/types.ts'
 
 export const useUsersStore = defineStore('admin_users', () => {
-  const service: UseProDataTablePlusService = async ({ current, pageSize }) => {
-    const { data, error } = await api.admin.users.get({
-      query: {
-        ...userSearchFormValues.value,
-        page: current,
-        page_size: pageSize,
-      },
-    })
-
-    if (error) {
-      return {
-        list: [],
-        total: 0,
-      }
-    }
-
-    return {
-      list: data.data.data,
-      total: data.data.total,
-    }
-  }
-
   const {
     search: { formProps: userSearchFormProps, formValues: userSearchFormValues },
     send: getUsers,
     table: { checkedRowKeys: userCheckedRowKeys, tableProps: userDataTableProps },
   } = useProDataTablePlus<UserModelType['getAllUsersQuery'], TypeboxTypes['UserTypeboxSchemaType']>(
     {
+      service: async ({ current, pageSize }) => {
+        const response = await api.admin.users.get({
+          query: {
+            ...userSearchFormValues.value,
+            page: current,
+            page_size: pageSize,
+          },
+        })
+
+        if (response.error) {
+          return {
+            list: [],
+            total: 0,
+          }
+        }
+
+        return {
+          list: response.data.data.data,
+          total: response.data.data.total,
+        }
+      },
       columns: () => [
         {
           title: '选择',
@@ -70,16 +69,18 @@ export const useUsersStore = defineStore('admin_users', () => {
                   {
                     size: 'small',
                     type: 'primary',
+                    renderIcon: renderIcon(Pencil),
+                    onClick: () => updateUsersModalForm.value.open(row),
                   },
                   { default: () => '编辑' },
                 ),
                 h(
                   NButton,
                   {
-                    onClick: () => deleteUsers([row.id]),
-                    renderIcon: renderIcon(Trash),
                     size: 'small',
                     type: 'error',
+                    renderIcon: renderIcon(Trash),
+                    onClick: () => deleteUsers([row.id]),
                   },
                   { default: () => '删除' },
                 ),
@@ -94,7 +95,6 @@ export const useUsersStore = defineStore('admin_users', () => {
         },
         rowKey: (row) => row.id,
       },
-      service,
     },
     {
       columns: () => [
@@ -118,7 +118,8 @@ export const useUsersStore = defineStore('admin_users', () => {
 
   const { loading: addUserLoading, send: _addUser } = useRequest(api.admin.users.post)
   const addUser = async (values: UserModelType['createUserBody']) => {
-    await _addUser(values)
+    const res = await _addUser(values)
+    if (res.error) return false
     await getUsers()
   }
   const addUserModalForm = useProModalForm<UserModelType['createUserBody']>({
@@ -127,12 +128,42 @@ export const useUsersStore = defineStore('admin_users', () => {
       password: '',
     },
     rules: () => ({
-      username: { required: true },
-      password: { required: true },
+      username: [{ required: true }, { min: 3, max: 30 }],
+      password: [{ required: true }, { min: 6, max: 100 }],
     }),
     loading: addUserLoading,
-    onSubmit: addUser,
+    onSubmit: async (value) => {
+      const res = await addUser(value)
+      if (res !== false) addUserModalForm.value.close()
+    },
   })
+
+  const { loading: updateUserLoading, send: _updateUsers } = useRequest(api.admin.users.patch)
+  const updateUsers = async (values: UserModelType['updateUsersBody']) => {
+    const res = await _updateUsers(values)
+    if (res.error) return false
+    await getUsers()
+  }
+  const updateUsersModalForm = useProModalForm<
+    Oneof<UserModelType['updateUsersBody']>,
+    Oneof<UserModelType['updateUsersBody']>,
+    [Oneof<UserModelType['updateUsersBody']>]
+  >(
+    {
+      initialValues: { id: 0, username: '', password: '' },
+      rules: () => ({
+        username: [{ required: true }, { min: 3, max: 30 }],
+      }),
+      loading: updateUserLoading,
+      onSubmit: async (value) => {
+        const res = await updateUsers([value])
+        if (res !== false) updateUsersModalForm.value.close()
+      },
+    },
+    ({ password: _, ...rest }) => {
+      updateUsersModalForm.value.form.values.value = rest
+    },
+  )
 
   return {
     addUser,
@@ -141,6 +172,9 @@ export const useUsersStore = defineStore('admin_users', () => {
 
     deleteUsers,
     deleteUsersLoading,
+
+    updateUsers,
+    updateUsersModalForm,
 
     getUsers,
     userCheckedRowKeys,
