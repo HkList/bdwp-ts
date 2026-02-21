@@ -34,21 +34,21 @@ export interface EnterpriseShareBindListResponseData {
   shareid: string
 }
 
-export type EnterpriseShareBindListResponse =
+export type EnterpriseShareBindListResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '获取企业分享绑定列表成功'
+      data: EnterpriseShareBindListResponseData
+    }
+  >
   | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '获取企业分享绑定列表成功'
-        data: EnterpriseShareBindListResponseData
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export interface GetEnterpriseShareBindListOptions {
   cookie: string
@@ -66,7 +66,7 @@ export async function getEnterpriseShareBindList(
     method: 'get',
     headers: {
       'User-Agent': bdwp_config.BROWSER_USERAGENT,
-      Cookie: options.cookie,
+      'Cookie': options.cookie,
     },
     searchParams: {
       tkappid: bdwp_config.ENTERPRISE_TK_APP_ID,

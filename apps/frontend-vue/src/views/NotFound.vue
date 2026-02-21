@@ -1,20 +1,3 @@
-<template>
-  <NCard class="notFound">
-    <template #header>
-      <ThemeSwitcher />
-    </template>
-
-    <NResult status="404" title="页面走丢了" description="你访问的页面不存在或已被移除">
-      <template #footer>
-        <NFlex justify="center">
-          <NButton type="success" @click="goHome">返回首页</NButton>
-          <NButton type="info" @click="goBack">返回上一页</NButton>
-        </NFlex>
-      </template>
-    </NResult>
-  </NCard>
-</template>
-
 <script lang="ts" setup>
 import { ThemeSwitcher } from '@frontend/components/ThemeSwitcher/index.ts'
 import { NButton, NCard, NFlex, NResult } from 'naive-ui'
@@ -24,6 +7,27 @@ const router = useRouter()
 const goHome = async () => await router.push('/')
 const goBack = async () => router.back()
 </script>
+
+<template>
+  <NCard class="notFound">
+    <template #header>
+      <ThemeSwitcher />
+    </template>
+
+    <NResult status="404" title="页面走丢了" description="你访问的页面不存在或已被移除">
+      <template #footer>
+        <NFlex justify="center">
+          <NButton type="success" @click="goHome">
+            返回首页
+          </NButton>
+          <NButton type="info" @click="goBack">
+            返回上一页
+          </NButton>
+        </NFlex>
+      </template>
+    </NResult>
+  </NCard>
+</template>
 
 <style lang="scss" scoped>
 .notFound {

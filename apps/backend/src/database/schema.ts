@@ -33,7 +33,7 @@ export const Account = pgTable(
     reason: text().notNull().default(''),
     ...timestamps,
   },
-  (table) => [uniqueIndex('user_id_cid_unique_idx').on(table.user_id, table.cid)],
+  table => [uniqueIndex('user_id_cid_unique_idx').on(table.user_id, table.cid)],
 )
 
 export const ShareLink = pgTable(
@@ -56,7 +56,7 @@ export const ShareLink = pgTable(
     ctime: timestamp().notNull(),
     ...timestamps,
   },
-  (table) => [uniqueIndex('surl_shareid_unique_idx').on(table.surl, table.shareid)],
+  table => [uniqueIndex('surl_shareid_unique_idx').on(table.surl, table.shareid)],
 )
 
 export const Key = pgTable('keys', {

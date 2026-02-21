@@ -21,21 +21,21 @@ export interface AccountInfoApiFailedResponse {
   errmsg: string
 }
 
-export type AccountInfoResponse =
+export type AccountInfoResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '获取账号信息成功'
+      data: AccountInfo
+    }
+  >
   | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '获取账号信息成功'
-        data: AccountInfo
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export interface GetAccountInfoOptions {
   cookie: string
@@ -48,7 +48,7 @@ export async function getAccountInfo(options: GetAccountInfoOptions): Promise<Ac
       method: 'get',
       headers: {
         'User-Agent': bdwp_config.BROWSER_USERAGENT,
-        Cookie: options.cookie,
+        'Cookie': options.cookie,
       },
       searchParams: {
         method: 'uinfo',

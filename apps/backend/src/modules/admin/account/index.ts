@@ -19,7 +19,7 @@ export const AccountModule = new Elysia({ prefix: '/accounts' })
   .post('/', async ({ user, body }) => await AccountService.createAccount(user, body), {
     body: AccountModel.createAccountBody,
     response: {
-      201: AccountModel.createAccountSuccess,
+      200: AccountModel.createAccountSuccess,
       409: AccountModel.createAccountFailedConflict,
       500: AccountModel.createAccountFailed,
     },
@@ -42,7 +42,7 @@ export const AccountModule = new Elysia({ prefix: '/accounts' })
   .patch('/', async ({ user, body }) => await AccountService.updateAccounts(user, body), {
     body: AccountModel.updateAccountsBody,
     response: {
-      201: AccountModel.updateAccountsSuccess,
+      200: AccountModel.updateAccountsSuccess,
       500: AccountModel.updateAccountsFailed,
       404: AccountModel.updateAccountsFailedNotFound,
     },

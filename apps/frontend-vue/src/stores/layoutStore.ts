@@ -2,8 +2,8 @@ import type { RouteRecordRawPlus } from '@frontend/router/index.ts'
 import type { renderIcon } from '@frontend/utils/renderIcon.ts'
 import type { MenuOption } from 'naive-ui'
 
-import { ADMIN_ROUTES } from '@frontend/router/index.ts'
 import { useMobile } from '@frontend/hooks/useMobile.ts'
+import { ADMIN_ROUTES } from '@frontend/router/index.ts'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -16,7 +16,7 @@ export interface Breadcrumb {
 }
 
 // 将路由转换为菜单选项（支持嵌套）
-const routeToMenuOption = (route: RouteRecordRawPlus): MenuOption => {
+function routeToMenuOption(route: RouteRecordRawPlus): MenuOption {
   const menuOption: MenuOption = {
     icon: route.meta.icon,
     key: route.path,
@@ -25,7 +25,7 @@ const routeToMenuOption = (route: RouteRecordRawPlus): MenuOption => {
 
   // 如果有子路由，递归处理
   if (route.children && route.children.length > 0) {
-    menuOption.children = route.children.map((child) =>
+    menuOption.children = route.children.map(child =>
       routeToMenuOption(child as RouteRecordRawPlus),
     )
   }
@@ -57,7 +57,7 @@ export const useLayoutStore = defineStore('layout', () => {
 
   // 菜单选项
   const menuOptions = computed<MenuOption[]>(() => {
-    return ADMIN_ROUTES.map((route) => routeToMenuOption(route))
+    return ADMIN_ROUTES.map(route => routeToMenuOption(route))
   })
 
   // 菜单选择处理

@@ -6,25 +6,23 @@ import { computed, ref } from 'vue'
 export interface UseDataTableSectionReturn<T extends object, K extends RowKey = RowKey> {
   checkedRowKeys: Ref<K[]>
   dataTableProps: ComputedRef<{
-    checkedRowKeys: K[]
+    'checkedRowKeys': K[]
     'onUpdate:checkedRowKeys': (keys: RowKey[]) => void
-    rowKey: CreateRowKey<T>
+    'rowKey': CreateRowKey<T>
   }>
 }
 
-export const useDataTableSection = <T extends object, K extends RowKey = RowKey>(
-  rowKey: CreateRowKey<T>,
-): UseDataTableSectionReturn<T, K> => {
+export function useDataTableSection<T extends object, K extends RowKey = RowKey>(rowKey: CreateRowKey<T>): UseDataTableSectionReturn<T, K> {
   const checkedRowKeys = ref<K[]>([]) as Ref<K[]>
 
   return {
     checkedRowKeys,
     dataTableProps: computed(() => ({
-      checkedRowKeys: checkedRowKeys.value,
+      'checkedRowKeys': checkedRowKeys.value,
       'onUpdate:checkedRowKeys': (keys: RowKey[]) => {
         checkedRowKeys.value = keys as K[]
       },
-      rowKey: rowKey,
+      'rowKey': rowKey,
     })),
   }
 }

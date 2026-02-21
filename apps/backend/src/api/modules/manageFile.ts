@@ -87,11 +87,11 @@ export interface DeleteFileOptions<K = object> extends ManageFileBaseOptions<K> 
 }
 
 export interface RenameFileOptions<K = object> extends ManageFileBaseOptions<K> {
-  filelist: { path: string; newname: string }[]
+  filelist: { path: string, newname: string }[]
 }
 
 export interface MoveOrCopyFileOptions<K = object> extends ManageFileBaseOptions<K> {
-  filelist: { path: string; dest: string }[]
+  filelist: { path: string, dest: string }[]
 }
 
 export interface FileOpMap<K = object> {
@@ -130,21 +130,21 @@ export interface ManageFileApiFailedResponse<T extends keyof FileOpMap> {
   info: FileOpMap[T]['failed'][]
 }
 
-export type ManageFileResponse<T extends keyof FileOpMap> =
+export type ManageFileResponse<T extends keyof FileOpMap>
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '操作文件成功'
+      data: ManageFileApiSuccessResponse<T>['info']
+    }
+  >
   | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '操作文件成功'
-        data: ManageFileApiSuccessResponse<T>['info']
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export const ondupMap = {
   delete: 'fail',
@@ -168,7 +168,7 @@ export async function manageFile<T extends keyof FileOpMap>(
       method: 'post',
       headers: {
         'User-Agent': bdwp_config.PC_USERAGENT,
-        Cookie: options.cookie,
+        'Cookie': options.cookie,
       },
       searchParams: {
         async: (options.async ?? 1).toString(),

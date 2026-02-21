@@ -36,21 +36,21 @@ export interface EnterpriseTicketListApiFailedResponse {
   show_msg: string
 }
 
-export type EnterpriseTicketListResponse =
+export type EnterpriseTicketListResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '获取企业票据列表成功'
+      data: EnterpriseTicketListItem[]
+    }
+  >
   | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '获取企业票据列表成功'
-        data: EnterpriseTicketListItem[]
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export interface GetEnterpriseTicketListOptions {
   cookie: string
@@ -68,7 +68,7 @@ export async function getEnterpriseTicketList(
     method: 'post',
     headers: {
       'User-Agent': bdwp_config.BROWSER_USERAGENT,
-      Cookie: options.cookie,
+      'Cookie': options.cookie,
     },
     searchParams: {
       clienttype: bdwp_config.PC_CLIENTTYPE,

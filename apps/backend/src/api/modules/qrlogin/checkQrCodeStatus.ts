@@ -15,30 +15,30 @@ export interface GetQrCodeStatusApiFailedResponse {
   errno: number
 }
 
-export type GetQrCodeStatusResponse =
-  | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '获取二维码状态成功'
-        data: {
-          bduss: string
-        }
+export type GetQrCodeStatusResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '获取二维码状态成功'
+      data: {
+        bduss: string
       }
-    >
+    }
+  >
   | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
   | ElysiaCustomStatusResponse<
-      202,
-      {
-        message: `获取二维码状态成功: ${'二维码等待确认中' | '二维码取消登录'}`
-        data: null
-      }
-    >
+    202,
+    {
+      message: `获取二维码状态成功: ${'二维码等待确认中' | '二维码取消登录'}`
+      data: null
+    }
+  >
 
 export interface CheckQrCodeStatusOptions {
   sign: string
@@ -62,7 +62,7 @@ export async function checkQrCodeStatus(
     method: 'get',
     headers: {
       'User-Agent': bdwp_config.BROWSER_USERAGENT,
-      Cookie: bdwp_config.UNAUTH_COOKIE,
+      'Cookie': bdwp_config.UNAUTH_COOKIE,
     },
     searchParams: {
       channel_id: options.sign,
@@ -96,12 +96,14 @@ export async function checkQrCodeStatus(
       message: '获取二维码状态成功: 二维码等待确认中',
       data: null,
     })
-  } else if (channelStatus === 2) {
+  }
+  else if (channelStatus === 2) {
     return status(202, {
       message: '获取二维码状态成功: 二维码取消登录',
       data: null,
     })
-  } else if (channelStatus !== 0) {
+  }
+  else if (channelStatus !== 0) {
     return status(500, {
       message: `获取二维码状态失败: ${channelStatus}`,
       data: null,

@@ -27,21 +27,21 @@ export interface EnterpriseShareRecordApiFailedResponse {
   show_msg: string
 }
 
-export type EnterpriseShareRecordResponse =
+export type EnterpriseShareRecordResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '获取企业分享记录成功'
+      data: ShareRecordItem[]
+    }
+  >
   | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '获取企业分享记录成功'
-        data: ShareRecordItem[]
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export interface GetEnterpriseShareRecordOptions {
   cookie: string
@@ -62,7 +62,7 @@ export async function getEnterpriseShareRecord(
       method: 'post',
       headers: {
         'User-Agent': bdwp_config.BROWSER_USERAGENT,
-        Cookie: options.cookie,
+        'Cookie': options.cookie,
       },
       searchParams: {
         channel: bdwp_config.WEB_CHANNEL,
@@ -102,9 +102,9 @@ export async function getEnterpriseShareRecord(
     page++
 
     const newList = typedResponse.list.filter(
-      (record) =>
-        !record.typicalPath.includes('分享的文件已被删除') &&
-        !record.typicalPath.includes('分享已过期'),
+      record =>
+        !record.typicalPath.includes('分享的文件已被删除')
+        && !record.typicalPath.includes('分享已过期'),
     )
 
     list.push(...newList)

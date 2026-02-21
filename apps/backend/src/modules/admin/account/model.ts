@@ -66,7 +66,9 @@ export const AccountModel = {
   ),
   updateAccountsSuccess: t.Object({
     message: t.Literal('创建异步任务成功'),
-    data: t.Array(t.String()),
+    data: t.Object({
+      task_id: t.Array(t.String()),
+    }),
   }),
   updateAccountsFailed: t.Object({
     message: t.Literal('创建异步任务失败'),

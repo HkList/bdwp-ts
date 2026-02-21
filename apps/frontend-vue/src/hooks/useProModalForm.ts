@@ -1,11 +1,11 @@
-import type { Simplify } from 'type-fest'
-import type { CreateProFormOptions } from 'pro-naive-ui'
 import type { FormRules } from '@frontend/hooks/useFormRules.ts'
+import type { CreateProFormOptions } from 'pro-naive-ui'
+import type { Simplify } from 'type-fest'
 import type { ComputedRef, Ref } from 'vue'
 
+import { useFormRules } from '@frontend/hooks/useFormRules.ts'
 import { createProModalForm } from 'pro-naive-ui'
 import { computed, ref } from 'vue'
-import { useFormRules } from '@frontend/hooks/useFormRules.ts'
 
 export interface UseProModalFormOptions<T extends object, K extends object> extends Simplify<
   CreateProFormOptions<T>
@@ -30,17 +30,15 @@ export type UseProModalFormReturnType<
   loading: boolean
 }>
 
-export const useProModalForm = <T extends object, K extends object = T, U extends unknown[] = []>(
-  options: UseProModalFormOptions<T, K>,
-  openFn?: ModifiedOpenFn<U>,
-): UseProModalFormReturnType<T, K, U> => {
+export function useProModalForm<T extends object, K extends object = T, U extends unknown[] = []>(options: UseProModalFormOptions<T, K>, openFn?: ModifiedOpenFn<U>): UseProModalFormReturnType<T, K, U> {
   const loading = options.loading ?? ref(false)
   const form = createProModalForm<T>(options)
 
   const open = (...args: U) => {
     if (openFn) {
       const r = openFn(...args)
-      if (r === false) return
+      if (r === false)
+        return
     }
     form.show.value = true
   }

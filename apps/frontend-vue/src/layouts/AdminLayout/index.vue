@@ -1,108 +1,3 @@
-<template>
-  <NLayout has-sider class="adminLayout">
-    <!-- 侧边栏 -->
-    <LayoutSider
-      v-if="!isMobile"
-      class="pcLayoutSider"
-      :class="{
-        invisable: !showMenu,
-      }"
-    />
-
-    <NDrawer v-model:show="collapsedMobileDrawer" placement="left" class="mobileDrawer">
-      <NDrawerContent>
-        <LayoutSider :is-mobile-drawer="true" />
-      </NDrawerContent>
-    </NDrawer>
-
-    <NLayout class="mainLayout">
-      <!-- 顶部导航栏 -->
-      <NLayoutHeader bordered class="header">
-        <template v-if="isMobile">
-          <div class="mobileHeader">
-            <NButton
-              quaternary
-              @click="toggleCollapsedMobileDrawer"
-              :render-icon="renderIcon(Menu, 24)"
-            />
-
-            <Logo :show-text="true" />
-          </div>
-        </template>
-
-        <template v-else>
-          <div class="pcHeader">
-            <NButton quaternary @click="toggleShowMenu" :render-icon="renderIcon(Menu, 24)" />
-
-            <NBreadcrumb class="breadcrumb">
-              <NBreadcrumbItem v-for="item in breadcrumbs" :key="item.path" :clickable="false">
-                <NButton
-                  quaternary
-                  :disabled="item.route.children?.length !== 0 && !item.route.redirect"
-                  @click="handleClickCrumb(item)"
-                >
-                  <NFlex :size="8" align="center" :wrap="false">
-                    <component :is="item.icon"></component>
-                    <span>{{ item.title }}</span>
-                  </NFlex>
-                </NButton>
-              </NBreadcrumbItem>
-            </NBreadcrumb>
-          </div>
-        </template>
-
-        <NFlex :size="16" :wrap="false" class="rightButtons">
-          <!-- 主题切换 -->
-          <ThemeSwitcher />
-
-          <!-- 全屏切换 -->
-          <NButton
-            quaternary
-            circle
-            @click="toggle"
-            :render-icon="renderIcon(isFullscreen ? Contract : Expand)"
-          />
-
-          <!-- 退出登陆 -->
-          <NPopconfirm @positive-click="signOut" :disabled="signOutLoading">
-            <template #trigger>
-              <NButton
-                quaternary
-                circle
-                :render-icon="renderIcon(LogOut)"
-                :loading="signOutLoading"
-              />
-            </template>
-
-            确定要退出登录吗？
-          </NPopconfirm>
-        </NFlex>
-      </NLayoutHeader>
-
-      <!-- 二级导航栏 -->
-      <NLayoutHeader bordered class="subHeader">
-        <Tabs />
-      </NLayoutHeader>
-
-      <!-- 内容区域 -->
-      <NLayoutContent :native-scrollbar="false" class="content">
-        <div class="content-wrapper">
-          <RouterView v-slot="{ Component }">
-            <Transition name="fade" mode="out-in">
-              <component :is="Component" />
-            </Transition>
-          </RouterView>
-        </div>
-      </NLayoutContent>
-
-      <!-- 底部 -->
-      <NLayoutFooter bordered class="footer">
-        <span>Made With ❤️ By huan_kong.</span>
-      </NLayoutFooter>
-    </NLayout>
-  </NLayout>
-</template>
-
 <script lang="ts" setup>
 import type { Breadcrumb } from '@frontend/stores/layoutStore.ts'
 
@@ -147,10 +42,115 @@ router.beforeEach(() => {
   collapsedMobileDrawer.value = false
 })
 
-const handleClickCrumb = async (item: Breadcrumb) => {
+async function handleClickCrumb(item: Breadcrumb) {
   await router.push(item.path)
 }
 </script>
+
+<template>
+  <NLayout has-sider class="adminLayout">
+    <!-- 侧边栏 -->
+    <LayoutSider
+      v-if="!isMobile"
+      class="pcLayoutSider"
+      :class="{
+        invisable: !showMenu,
+      }"
+    />
+
+    <NDrawer v-model:show="collapsedMobileDrawer" placement="left" class="mobileDrawer">
+      <NDrawerContent>
+        <LayoutSider :is-mobile-drawer="true" />
+      </NDrawerContent>
+    </NDrawer>
+
+    <NLayout class="mainLayout">
+      <!-- 顶部导航栏 -->
+      <NLayoutHeader bordered class="header">
+        <template v-if="isMobile">
+          <div class="mobileHeader">
+            <NButton
+              quaternary
+              :render-icon="renderIcon(Menu, 24)"
+              @click="toggleCollapsedMobileDrawer"
+            />
+
+            <Logo :show-text="true" />
+          </div>
+        </template>
+
+        <template v-else>
+          <div class="pcHeader">
+            <NButton quaternary :render-icon="renderIcon(Menu, 24)" @click="toggleShowMenu" />
+
+            <NBreadcrumb class="breadcrumb">
+              <NBreadcrumbItem v-for="item in breadcrumbs" :key="item.path" :clickable="false">
+                <NButton
+                  quaternary
+                  :disabled="item.route.children?.length !== 0 && !item.route.redirect"
+                  @click="handleClickCrumb(item)"
+                >
+                  <NFlex :size="8" align="center" :wrap="false">
+                    <component :is="item.icon" />
+                    <span>{{ item.title }}</span>
+                  </NFlex>
+                </NButton>
+              </NBreadcrumbItem>
+            </NBreadcrumb>
+          </div>
+        </template>
+
+        <NFlex :size="16" :wrap="false" class="rightButtons">
+          <!-- 主题切换 -->
+          <ThemeSwitcher />
+
+          <!-- 全屏切换 -->
+          <NButton
+            quaternary
+            circle
+            :render-icon="renderIcon(isFullscreen ? Contract : Expand)"
+            @click="toggle"
+          />
+
+          <!-- 退出登陆 -->
+          <NPopconfirm :disabled="signOutLoading" @positive-click="signOut">
+            <template #trigger>
+              <NButton
+                quaternary
+                circle
+                :render-icon="renderIcon(LogOut)"
+                :loading="signOutLoading"
+              />
+            </template>
+
+            确定要退出登录吗？
+          </NPopconfirm>
+        </NFlex>
+      </NLayoutHeader>
+
+      <!-- 二级导航栏 -->
+      <NLayoutHeader bordered class="subHeader">
+        <Tabs />
+      </NLayoutHeader>
+
+      <!-- 内容区域 -->
+      <NLayoutContent :native-scrollbar="false" class="content">
+        <div class="content-wrapper">
+          <RouterView v-slot="{ Component }">
+            <Transition name="fade" mode="out-in">
+              <component :is="Component" />
+            </Transition>
+          </RouterView>
+        </div>
+      </NLayoutContent>
+
+      <!-- 底部 -->
+      <NLayoutFooter bordered class="footer">
+        <span>Made With ❤️ By huan_kong.</span>
+      </NLayoutFooter>
+    </NLayout>
+  </NLayout>
+</template>
 
 <style lang="scss" scoped>
 .adminLayout {

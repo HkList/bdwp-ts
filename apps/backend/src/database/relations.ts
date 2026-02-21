@@ -1,7 +1,7 @@
 import { Schemas } from '@backend/database/schema.ts'
 import { defineRelations } from 'drizzle-orm'
 
-export const Relations = defineRelations(Schemas, (r) => ({
+export const Relations = defineRelations(Schemas, r => ({
   Account: {
     User: r.one.User({
       from: r.Account.user_id,

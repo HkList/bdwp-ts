@@ -1,3 +1,15 @@
+<script lang="ts" setup>
+import { useAuthStore } from '@frontend/stores/authStore.ts'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { LogIn } from '@vicons/ionicons5'
+import { NButton, NCard, NFlex } from 'naive-ui'
+import { storeToRefs } from 'pinia'
+import { ProCheckbox, ProForm, ProInput, ProPassword } from 'pro-naive-ui'
+
+const authStore = useAuthStore()
+const { signInForm, signInLoading } = storeToRefs(authStore)
+</script>
+
 <template>
   <NCard class="signIn">
     <NFlex vertical :size="24">
@@ -8,7 +20,9 @@
 
         <ProPassword title="密码" path="password" />
 
-        <ProCheckbox path="remember_me"> 7日内自动登录 </ProCheckbox>
+        <ProCheckbox path="remember_me">
+          7日内自动登录
+        </ProCheckbox>
 
         <NButton
           attr-type="submit"
@@ -23,18 +37,6 @@
     </NFlex>
   </NCard>
 </template>
-
-<script lang="ts" setup>
-import { useAuthStore } from '@frontend/stores/authStore.ts'
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import { LogIn } from '@vicons/ionicons5'
-import { NButton, NCard, NFlex } from 'naive-ui'
-import { storeToRefs } from 'pinia'
-import { ProCheckbox, ProInput, ProPassword, ProForm } from 'pro-naive-ui'
-
-const authStore = useAuthStore()
-const { signInForm, signInLoading } = storeToRefs(authStore)
-</script>
 
 <style lang="scss" scoped>
 .signIn {

@@ -52,11 +52,13 @@ export function useRequest<TData, TParams extends unknown[]>(
       const result = await service(...params)
       data.value = result
       return result
-    } catch (err) {
+    }
+    catch (err) {
       const errorObj = err instanceof Error ? err : new Error(String(err))
       error.value = errorObj
       throw errorObj
-    } finally {
+    }
+    finally {
       loading.value = false
     }
   }
@@ -65,9 +67,11 @@ export function useRequest<TData, TParams extends unknown[]>(
   let send: (...params: TParams) => Promise<TData>
   if (debounceWait !== undefined) {
     send = useDebounceFn(executeRequest, debounceWait)
-  } else if (throttleWait !== undefined) {
+  }
+  else if (throttleWait !== undefined) {
     send = useThrottleFn(executeRequest, throttleWait)
-  } else {
+  }
+  else {
     send = executeRequest
   }
 

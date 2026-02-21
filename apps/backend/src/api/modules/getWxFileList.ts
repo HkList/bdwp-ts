@@ -66,21 +66,21 @@ export interface FileListApiErrorResponse {
   }
 }
 
-export type FileListResponse =
+export type FileListResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '获取文件列表成功'
+      data: WxFileListData
+    }
+  >
   | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '获取文件列表成功'
-        data: WxFileListData
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 // 错误类型映射
 export const errorMessages: Record<string | number, Record<string | number, string>> = {
@@ -88,24 +88,24 @@ export const errorMessages: Record<string | number, Record<string | number, stri
     0: '请不要使用密享链接',
   },
   [-130]: {
-    0: '啊哦，你来晚了，分享的文件已经被删除了，下次要早点哟。',
-    1: '啊哦，你来晚了，分享的文件已经被删除了，下次要早点哟。',
-    2: '此链接分享内容暂时不可访问',
-    3: '此链接分享内容可能因为涉及侵权、色情、反动、低俗等信息，无法访问！',
-    5: '啊哦！链接错误没找到文件，请打开正确的分享链接!',
-    10: '啊哦，来晚了，该分享文件已过期',
-    11: '由于访问次数过多，该分享链接已失效',
-    12: '因该分享含有自动备份文件夹，暂无法查看',
-    15: '系统升级，链接暂时无法查看，升级完成后恢复正常。',
-    17: '该链接访问范围受限，请使用正常的访问方式',
-    123: '该链接已超过访问人数上限，可联系分享者重新分享',
-    124: '您访问的链接已被冻结，可联系分享者进行激活',
-    mis_105: '你所解析的文件不存在~',
-    mispw_9: '提取码错误',
+    '0': '啊哦，你来晚了，分享的文件已经被删除了，下次要早点哟。',
+    '1': '啊哦，你来晚了，分享的文件已经被删除了，下次要早点哟。',
+    '2': '此链接分享内容暂时不可访问',
+    '3': '此链接分享内容可能因为涉及侵权、色情、反动、低俗等信息，无法访问！',
+    '5': '啊哦！链接错误没找到文件，请打开正确的分享链接!',
+    '10': '啊哦，来晚了，该分享文件已过期',
+    '11': '由于访问次数过多，该分享链接已失效',
+    '12': '因该分享含有自动备份文件夹，暂无法查看',
+    '15': '系统升级，链接暂时无法查看，升级完成后恢复正常。',
+    '17': '该链接访问范围受限，请使用正常的访问方式',
+    '123': '该链接已超过访问人数上限，可联系分享者重新分享',
+    '124': '您访问的链接已被冻结，可联系分享者进行激活',
+    'mis_105': '你所解析的文件不存在~',
+    'mispw_9': '提取码错误',
     'mispwd-9': '提取码错误',
-    mis_2: '不存在此目录',
-    mis_4: '不存在此目录',
-    default: '分享的文件不存在',
+    'mis_2': '不存在此目录',
+    'mis_4': '不存在此目录',
+    'default': '分享的文件不存在',
   },
 }
 
@@ -134,13 +134,13 @@ export async function getWxFileList(options: GetWxFileListOptions): Promise<File
       method: 'post',
       headers: {
         'User-Agent': bdwp_config.WX_USERAGENT,
-        Cookie: bdwp_config.UNAUTH_COOKIE,
+        'Cookie': bdwp_config.UNAUTH_COOKIE,
       },
       searchParams: {
-        channel: bdwp_config.WX_CHANNEL,
-        version: bdwp_config.WX_VERSION,
-        clienttype: bdwp_config.WX_CLIENTTYPE,
-        web: '1',
+        'channel': bdwp_config.WX_CHANNEL,
+        'version': bdwp_config.WX_VERSION,
+        'clienttype': bdwp_config.WX_CLIENTTYPE,
+        'web': '1',
         'qq-pf-to': 'pcqq.c2c',
       },
       body: new URLSearchParams({
@@ -188,7 +188,7 @@ export async function getWxFileList(options: GetWxFileListOptions): Promise<File
     .replace(/~/g, '=')
     .replace(/_/g, '/')
 
-  const parsedList = typedResponse.data.list.map((item) => ({
+  const parsedList = typedResponse.data.list.map(item => ({
     category: Number.parseInt(item.category),
     fs_id: Number.parseInt(item.fs_id),
     is_dir: item.is_dir === '1',

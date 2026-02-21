@@ -8,26 +8,25 @@ import { sleep } from '@frontend/utils/sleep.ts'
 
 export const DO_NOT_SHOWN_MESSAGE = ['获取任务状态成功']
 
-export const retryFetch = async (
-  url: string,
-  options?: RequestInit,
-  retries = 3,
-  delay = 1000,
-): Promise<Response> => {
+export async function retryFetch(url: string, options?: RequestInit, retries = 3, delay = 1000): Promise<Response> {
   try {
     const response = await fetch(url, options)
 
-    if (!response.ok && retries > 0) {
-      if (import.meta.env.DEV) console.warn(`请求失败，正在重试... (${retries} 次剩余)`)
+    // 仅在服务器错误时重试
+    if (!response.ok && response.status === 500 && retries > 0) {
+      if (import.meta.env.DEV)
+        console.warn(`请求失败，正在重试... (${retries} 次剩余)`)
 
       await sleep(delay)
       return retryFetch(url, options, retries - 1, delay)
     }
 
     return response
-  } catch (error) {
+  }
+  catch (error) {
     if (retries > 0) {
-      if (import.meta.env.DEV) console.warn(`请求错误，正在重试... (${retries} 次剩余)`, error)
+      if (import.meta.env.DEV)
+        console.warn(`请求错误，正在重试... (${retries} 次剩余)`, error)
 
       await sleep(delay)
       return retryFetch(url, options, retries - 1, delay)
@@ -72,7 +71,8 @@ export const api = treaty<App>(window?.location?.origin, {
 
     try {
       json = await response.clone().json()
-    } catch {
+    }
+    catch {
       loadingBar.error()
       notification.error({
         duration: 3000,
@@ -92,7 +92,8 @@ export const api = treaty<App>(window?.location?.origin, {
           title: json.message,
         })
       }
-    } else {
+    }
+    else {
       loadingBar.error()
 
       if (['令牌对应用户不存在', '令牌无效', '未提供令牌'].includes(json.message)) {

@@ -21,13 +21,12 @@ export const tabs = ref<RouteTabs>({})
 export const tabsOrder = ref<string[]>([])
 export const activeTab = ref<string>('')
 
-export const useRouteTabs = async (
-  router: Router,
-  checker?: (path: string) => MaybePromise<boolean>,
-) => {
+export async function useRouteTabs(router: Router, checker?: (path: string) => MaybePromise<boolean>) {
   router.afterEach(async (to, _, failure) => {
-    if (failure) return
-    if (checker && !(await checker(to.path))) return
+    if (failure)
+      return
+    if (checker && !(await checker(to.path)))
+      return
 
     tabs.value[to.path] = {
       icon: to.meta.icon as ReturnType<typeof renderIcon>,
@@ -47,13 +46,14 @@ export const useRouteTabs = async (
 
   try {
     const routes = router.getRoutes()
-    const routesSet = Object.fromEntries(routes.map((r) => [r.path, r]))
+    const routesSet = Object.fromEntries(routes.map(r => [r.path, r]))
 
     const json_tabs = JSON.parse(localStorage.getItem(ROUTE_TABS_KEY) ?? '{}') as RouteTabs
     if (typeof json_tabs === 'object' && json_tabs !== null) {
       for (const path in json_tabs) {
         const element = json_tabs[path]
-        if (!element) continue
+        if (!element)
+          continue
 
         // 确认标签是否存在对应路由
         const route = routesSet[path]
@@ -84,33 +84,38 @@ export const useRouteTabs = async (
         (path): path is string => typeof path === 'string' && path in tabs.value,
       )
     }
-  } catch {
+  }
+  catch {
     // 无论如何解析失败都不影响正常使用
   }
 }
 
-export const switchTab = (path: string, preflight = false) => {
+export function switchTab(path: string, preflight = false) {
   const index = tabsOrder.value.indexOf(path)
-  if (index === -1) return
+  if (index === -1)
+    return
 
   let nextIndex: number
   if (preflight) {
     nextIndex = tabsOrder.value[index + 1] !== undefined ? index + 1 : index - 1
-  } else {
+  }
+  else {
     nextIndex = tabsOrder.value[index] !== undefined ? index : index - 1
   }
 
   const newTab = tabsOrder.value[nextIndex]
-  if (!newTab) throw new Error('没有可切换的标签了')
+  if (!newTab)
+    throw new Error('没有可切换的标签了')
 
   activeTab.value = newTab
   useRouter().push(activeTab.value)
 }
 
-export const closeTab = (path: string) => {
+export function closeTab(path: string) {
   // 判断标签是否存在
   const index = tabsOrder.value.indexOf(path)
-  if (index === -1) return
+  if (index === -1)
+    return
 
   delete tabs.value[path]
   tabsOrder.value.splice(index, 1)
@@ -125,7 +130,7 @@ export const closeTab = (path: string) => {
   localStorage.setItem(ROUTE_TABS_ORDER_KEY, JSON.stringify(tabsOrder.value))
 }
 
-export const updateTabsOrder = (newOrder: string[]) => {
+export function updateTabsOrder(newOrder: string[]) {
   tabsOrder.value = newOrder
 
   // 同步到 localStorage

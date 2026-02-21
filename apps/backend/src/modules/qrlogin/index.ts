@@ -7,7 +7,7 @@ export const QrloginModule = new Elysia({ prefix: '/qrlogin' })
   .use(KeyAuthPlugin())
   .get('/', async () => await QrloginService.getQrCode(), {
     response: {
-      201: QrloginModel.getQrCodeSuccess,
+      200: QrloginModel.getQrCodeSuccess,
       500: QrloginModel.getQrCodeFailed,
     },
     detail: {

@@ -16,21 +16,21 @@ export interface GetQrCodeApiFailedResponse {
   errno: number
 }
 
-export type GetQrCodeResponse =
+export type GetQrCodeResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '获取二维码成功'
+      data: GetQrCodeApiSuccessResponse
+    }
+  >
   | ElysiaCustomStatusResponse<
-      201,
-      {
-        message: '获取二维码成功'
-        data: GetQrCodeApiSuccessResponse
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export async function getQrCode(): Promise<GetQrCodeResponse> {
   const gid = crypto.randomUUID().toUpperCase()
@@ -41,7 +41,7 @@ export async function getQrCode(): Promise<GetQrCodeResponse> {
       method: 'get',
       headers: {
         'User-Agent': bdwp_config.BROWSER_USERAGENT,
-        Cookie: bdwp_config.UNAUTH_COOKIE,
+        'Cookie': bdwp_config.UNAUTH_COOKIE,
       },
       searchParams: {
         lp: 'pc',
@@ -70,7 +70,7 @@ export async function getQrCode(): Promise<GetQrCodeResponse> {
 
   await redis.set(`qrlogin:${typedResponse.sign}`, gid, 'EX', 60)
 
-  return status(201, {
+  return status(200, {
     message: '获取二维码成功',
     data: typedResponse,
   })

@@ -2,21 +2,21 @@ import type { Job } from 'bullmq'
 import type { ElysiaCustomStatusResponse } from 'elysia'
 import { redis } from '@backend/services/redis.ts'
 
-export type QueueResponse<T extends object> =
+export type QueueResponse<T extends object>
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: string
+      data: T
+    }
+  >
   | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: string
-        data: T
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export interface SaveQueueStatusOptions<T extends object> {
   job: Job

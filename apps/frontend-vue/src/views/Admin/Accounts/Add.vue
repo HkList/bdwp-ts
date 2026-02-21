@@ -1,3 +1,14 @@
+<script lang="ts" setup>
+import { useAccountsStore } from '@frontend/stores/Admin/accountsStore.ts'
+import { NFlex } from 'naive-ui'
+import { storeToRefs } from 'pinia'
+import { ProButton, ProInput, ProModalForm, ProSelect } from 'pro-naive-ui'
+
+const accountsStore = useAccountsStore()
+const { resetEnterpriseOptions, getEnterpriseInfo } = accountsStore
+const { addAccountModalForm, enterpriseOptions } = storeToRefs(accountsStore)
+</script>
+
 <template>
   <ProModalForm title="新建账号" v-bind="addAccountModalForm">
     <ProInput title="百度名称" path="baidu_name" />
@@ -14,7 +25,9 @@
 
     <template #footer>
       <NFlex justify="end">
-        <ProButton attr-type="reset" @click="addAccountModalForm.form.close"> 取消 </ProButton>
+        <ProButton attr-type="reset" @click="addAccountModalForm.form.close">
+          取消
+        </ProButton>
 
         <ProButton
           type="info"
@@ -36,16 +49,5 @@
     </template>
   </ProModalForm>
 </template>
-
-<script lang="ts" setup>
-import { useAccountsStore } from '@frontend/stores/Admin/accountsStore.ts'
-import { storeToRefs } from 'pinia'
-import { ProInput, ProModalForm, ProSelect, ProButton } from 'pro-naive-ui'
-import { NFlex } from 'naive-ui'
-
-const accountsStore = useAccountsStore()
-const { resetEnterpriseOptions, getEnterpriseInfo } = accountsStore
-const { addAccountModalForm, enterpriseOptions } = storeToRefs(accountsStore)
-</script>
 
 <style lang="scss" scoped></style>

@@ -29,29 +29,29 @@ export interface CreateShareLinkApiFailedResponse {
   show_msg: string
 }
 
-export type CreateShareLinkResponse =
+export type CreateShareLinkResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '创建分享链接成功'
+      data: CreateShareLinkApiSuccessResponse
+    }
+  >
   | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '创建分享链接成功'
-        data: CreateShareLinkApiSuccessResponse
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export type CreateShareLinkOptions = (
   | {
-      fid_list: number[]
-    }
+    fid_list: number[]
+  }
   | {
-      path_list: string[]
-    }
+    path_list: string[]
+  }
 ) & {
   cookie: string
   pwd: string
@@ -74,7 +74,7 @@ export async function createShareLink(
       method: 'post',
       headers: {
         'User-Agent': bdwp_config.PC_USERAGENT,
-        Cookie: options.cookie,
+        'Cookie': options.cookie,
       },
       searchParams: {
         clienttype: bdwp_config.PC_CLIENTTYPE,

@@ -1,12 +1,3 @@
-<template>
-  <div quaternary class="logo" :class="props.showBorder ? 'border' : ''">
-    <NButton quaternary class="button">
-      <img src="/favicon.ico" alt="Logo" class="logo-img" />
-    </NButton>
-    <span v-if="props.showText" class="logo-text">BDWP-ts</span>
-  </div>
-</template>
-
 <script lang="ts" setup>
 import { NButton } from 'naive-ui'
 
@@ -15,6 +6,15 @@ const props = defineProps<{
   showText: boolean
 }>()
 </script>
+
+<template>
+  <div quaternary class="logo" :class="props.showBorder ? 'border' : ''">
+    <NButton quaternary class="button">
+      <img src="/favicon.ico" alt="Logo" class="logo-img">
+    </NButton>
+    <span v-if="props.showText" class="logo-text">BDWP-ts</span>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .logo {

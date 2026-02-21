@@ -1,7 +1,5 @@
-import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
-// import vueJsx from '@vitejs/plugin-vue-jsx'
-// import vueDevTools from 'vite-plugin-vue-devtools'
+import vue from '@vitejs/plugin-vue'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import { compression } from 'vite-plugin-compression2'
@@ -16,11 +14,10 @@ export default defineConfig({
         manualChunks: {
           '@elysiajs/eden': ['@elysiajs/eden'],
           '@vueuse/core': ['@vueuse/core'],
-          'lodash-es': ['lodash-es'],
           'naive-ui': ['naive-ui'],
-          pinia: ['pinia'],
+          'pinia': ['pinia'],
           'pro-naive-ui': ['pro-naive-ui'],
-          vue: ['vue'],
+          'vue': ['vue'],
           'vue-router': ['vue-router'],
         },
       },
@@ -39,13 +36,11 @@ export default defineConfig({
   },
   plugins: [
     vue(),
-    // vueJsx(),
-    // vueDevTools(),
     visualizer({
-      brotliSize: true, // 显示 brotli 后的体积
-      filename: 'stats.html', // 生成的分析文件名
-      gzipSize: true, // 显示 gzip 后的体积
-      open: false, // 打包展示完成后自动打开浏览器报告
+      brotliSize: true,
+      filename: 'stats.html',
+      gzipSize: true,
+      open: false,
     }),
     compression(),
   ],

@@ -20,21 +20,21 @@ export interface CreateFolderApiFailedResponse {
   errno: number
 }
 
-export type CreateFolderResponse =
+export type CreateFolderResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '创建文件夹成功'
+      data: CreateFolderApiSuccessResponse
+    }
+  >
   | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '创建文件夹成功'
-        data: CreateFolderApiSuccessResponse
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export interface CreateFolderOptions {
   cookie: string
@@ -54,7 +54,7 @@ export async function createFolder(options: CreateFolderOptions): Promise<Create
       method: 'post',
       headers: {
         'User-Agent': bdwp_config.PC_USERAGENT,
-        Cookie: options.cookie,
+        'Cookie': options.cookie,
       },
       searchParams: {
         clienttype: bdwp_config.PC_CLIENTTYPE,

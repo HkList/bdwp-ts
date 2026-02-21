@@ -6,20 +6,20 @@ import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { Desktop, Earth, Home, LogIn, People, Person, Search, Share } from '@vicons/ionicons5'
 import { createRouter, createWebHistory } from 'vue-router'
 
-export type RouteRecordRawPlus = BaseRouteRecordRawPlus &
-  (
+export type RouteRecordRawPlus = BaseRouteRecordRawPlus
+  & (
     | {
-        children: RouteRecordRawPlus[]
-        component: RouteRecordRaw['component']
-      }
+      children: RouteRecordRawPlus[]
+      component: RouteRecordRaw['component']
+    }
     | {
-        children?: never
-        component: RouteRecordRaw['component']
-      }
+      children?: never
+      component: RouteRecordRaw['component']
+    }
     | {
-        children?: RouteRecordRawPlus[]
-        component?: never
-      }
+      children?: RouteRecordRawPlus[]
+      component?: never
+    }
   )
 
 type BaseRouteRecordRawPlus = Omit<RouteRecordRaw, 'children' | 'component' | 'meta'> & {
@@ -97,7 +97,8 @@ router.beforeEach((to) => {
     if (!authStore.isAuthenticated) {
       return '/sign_in'
     }
-  } else if (to.path === '/sign_in') {
+  }
+  else if (to.path === '/sign_in') {
     const authStore = useAuthStore()
     if (authStore.isAuthenticated) {
       return '/admin'

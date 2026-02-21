@@ -18,21 +18,21 @@ export interface TemplateVariableApiFailedResponse {
   result: []
 }
 
-export type TemplateVariableResponse =
+export type TemplateVariableResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '获取模板变量成功'
+      data: TemplateVariable
+    }
+  >
   | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '获取模板变量成功'
-        data: TemplateVariable
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export interface GetTemplateVariableOptions {
   cookie: string
@@ -48,7 +48,7 @@ export async function getTemplateVariable(
     method: 'get',
     headers: {
       'User-Agent': bdwp_config.BROWSER_USERAGENT,
-      Cookie: options.cookie,
+      'Cookie': options.cookie,
     },
     searchParams: {
       fields: JSON.stringify(['bdstoken', 'uk']),

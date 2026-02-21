@@ -5,8 +5,7 @@
     "dev": "bun --watch src/index.ts",
     "build": "bun build --compile ./src/index.ts --outfile dist/app",
     "preview": "NODE_ENV=production bun run ./src/index.ts",
-    "lint": "eslint . --cache",
-    "lint:fix": "eslint . --cache --fix",
+    "lint": "eslint .",
     "typecheck": "tsgo --noEmit",
     "typecheck:legacy": "tsc --noEmit",
     "test": "bun run test/test.ts",
@@ -24,13 +23,10 @@
     "ky": "^1.14.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^7.4.3",
     "@types/pg": "^8.16.0",
     "@typescript/native-preview": "^7.0.0-dev.20260220.1",
     "bullmq": "^5.69.3",
     "drizzle-kit": "^1.0.0-beta.15-859cf75",
-    "eslint": "^10.0.0",
-    "eslint-config-prettier": "^10.1.8",
     "pg": "^8.18.0",
     "typescript": "^5.9.3"
   }

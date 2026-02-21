@@ -4,20 +4,20 @@
     "lib": ["ESNext"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "paths": {
+      "@backend/db": ["./src/database/index.ts"],
+      "@backend/api": ["./src/api/index.ts"],
+      "@backend/*": ["./src/*"],
+      "@root/*": ["../../*"]
+    },
+    "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noEmit": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "paths": {
-      "@backend/db": ["./src/database/index.ts"],
-      "@backend/api": ["./src/api/index.ts"],
-      "@backend/*": ["./src/*"],
-      "@root/*": ["../../*"]
-    }
+    "skipLibCheck": true
   },
-  "include": ["src", "test", "drizzle.config.ts", "eslint.config.ts"]
+  "include": ["src", "test", "drizzle.config.ts"]
 }

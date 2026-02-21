@@ -12,6 +12,5 @@ export interface ProDataTablePlusProps<RowKeyType extends number | string = RowK
 }
 
 export interface ProDataTablePlusSlots extends Omit<ProDataTableSlots, 'toolbar'> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   'header-extra': any
 }

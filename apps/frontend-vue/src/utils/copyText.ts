@@ -1,9 +1,10 @@
 import { notification } from '@frontend/utils/discreteApi.ts'
 
-export const copyText = (text: string, message = '复制成功') => {
+export function copyText(text: string, message = '复制成功') {
   try {
     navigator.clipboard.writeText(text)
-  } catch {
+  }
+  catch {
     // 使用兼容方法
     const textArea = document.createElement('textarea')
     textArea.value = text

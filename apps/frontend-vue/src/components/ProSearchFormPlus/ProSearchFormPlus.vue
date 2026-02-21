@@ -1,9 +1,48 @@
+<script lang="ts" setup generic="T extends Record<string, any>">
+import type { ProSearchFormPlusProps } from '@frontend/components/ProSearchFormPlus/types.ts'
+import type { FormRules } from 'naive-ui'
+
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { Refresh, Search } from '@vicons/ionicons5'
+import {
+  createProForm,
+  ProButton,
+  ProCard,
+  ProDate,
+  ProDigit,
+  ProForm,
+  ProInput,
+  ProSelect,
+} from 'pro-naive-ui'
+
+const props = withDefaults(defineProps<ProSearchFormPlusProps<T>>(), {
+  title: '搜索',
+})
+const emit = defineEmits<{
+  reset: []
+  search: []
+}>()
+const data = defineModel<T>('value', { required: true })
+const searchForm = createProForm({
+  initialValues: data.value,
+  onReset() {
+    // 使用对象替换而非属性修改，确保响应式更新
+    data.value = structuredClone(props.initValues)
+
+    emit('reset')
+  },
+  onSubmit() {
+    emit('search')
+  },
+})
+</script>
+
 <template>
   <ProCard :title="props.title">
     <ProForm :form="searchForm" :rules="props.rules as FormRules">
-      <div class="searchFormWarpper" ref="searchFormWarpperDiv">
+      <div class="searchFormWarpper">
         <div v-for="column in columns" :key="column.key" class="searchFormItem">
-          <component v-if="column.render" :is="column.render(data[column.key])" />
+          <component :is="column.render(data[column.key])" v-if="column.render" />
 
           <ProInput
             v-else-if="column.type === 'string' || !column.type"
@@ -29,9 +68,9 @@
 
       <div class="buttons">
         <ProButton
+          v-if="!props.hideResetButton"
           type="default"
           attr-type="reset"
-          v-if="!props.hideResetButton"
           v-bind="props.resetButtonProps"
           :render-icon="renderIcon(Refresh)"
         >
@@ -39,9 +78,9 @@
         </ProButton>
 
         <ProButton
+          v-if="!props.hideSearchButton"
           type="primary"
           attr-type="submit"
-          v-if="!props.hideSearchButton"
           v-bind="props.searchButtonProps"
           :render-icon="renderIcon(Search)"
         >
@@ -51,46 +90,6 @@
     </ProForm>
   </ProCard>
 </template>
-
-<script lang="ts" setup generic="T extends Record<string, any>">
-import type { ProSearchFormPlusProps } from '@frontend/components/ProSearchFormPlus/types.ts'
-import type { FormRules } from 'naive-ui'
-
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import { Refresh, Search } from '@vicons/ionicons5'
-import {
-  createProForm,
-  ProButton,
-  ProCard,
-  ProDate,
-  ProDigit,
-  ProInput,
-  ProSelect,
-  ProForm,
-} from 'pro-naive-ui'
-
-const data = defineModel<T>('value', { required: true })
-const props = withDefaults(defineProps<ProSearchFormPlusProps<T>>(), {
-  title: '搜索',
-})
-const emit = defineEmits<{
-  reset: []
-  search: []
-}>()
-
-const searchForm = createProForm({
-  initialValues: data.value,
-  onReset() {
-    // 使用对象替换而非属性修改，确保响应式更新
-    data.value = structuredClone(props.initValues)
-
-    emit('reset')
-  },
-  onSubmit() {
-    emit('search')
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 .searchFormWarpper {

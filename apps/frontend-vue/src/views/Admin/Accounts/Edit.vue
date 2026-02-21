@@ -1,20 +1,20 @@
+<script lang="ts" setup>
+import { useAccountsStore } from '@frontend/stores/Admin/accountsStore.ts'
+import { storeToRefs } from 'pinia'
+import { ProDigit, ProInput, ProModalForm } from 'pro-naive-ui'
+
+const accountsStore = useAccountsStore()
+const { updateAccountsModalForm } = storeToRefs(accountsStore)
+</script>
+
 <template>
-  <ProModalForm title="编辑用户" v-bind="updateUsersModalForm">
-    <ProDigit title="用户ID" path="id" readonly />
+  <ProModalForm title="编辑账号" v-bind="updateAccountsModalForm">
+    <ProDigit title="账号ID" path="id" readonly />
 
-    <ProInput title="用户名" path="username" />
+    <ProInput title="账号名称" path="baidu_name" />
 
-    <ProInput title="密码" path="password" tooltip="为空则不修改密码" />
+    <ProInput title="Cookie" path="cookie" />
   </ProModalForm>
 </template>
-
-<script lang="ts" setup>
-import { useUsersStore } from '@frontend/stores/Admin/usersStore.ts'
-import { storeToRefs } from 'pinia'
-import { ProInput, ProModalForm, ProDigit } from 'pro-naive-ui'
-
-const usersStore = useUsersStore()
-const { updateUsersModalForm } = storeToRefs(usersStore)
-</script>
 
 <style lang="scss" scoped></style>

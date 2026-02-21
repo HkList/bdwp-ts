@@ -2,8 +2,10 @@
   "recommendations": [
     "Vue.volar",
     "dbaeumer.vscode-eslint",
-    "EditorConfig.EditorConfig",
-    "oxc.oxc-vscode",
-    "esbenp.prettier-vscode"
+    "oven.bun-vscode",
+    "mikestead.dotenv",
+    "usernamehw.errorlens",
+    "YoavBls.pretty-ts-errors",
+    "meganrogge.template-string-converter"
   ]
 }

@@ -1,3 +1,29 @@
+<script lang="ts" setup>
+import Logo from '@frontend/layouts/AdminLayout/components/Logo.vue'
+import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { ChevronBack, ChevronForward } from '@vicons/ionicons5'
+import { NButton, NLayoutSider, NMenu } from 'naive-ui'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+
+const props = defineProps<{
+  isMobileDrawer?: boolean
+}>()
+
+const layoutStore = useLayoutStore()
+
+const { handleMenuSelect, toggleCollapsed } = layoutStore
+const { activeKey, collapsed, menuOptions } = storeToRefs(layoutStore)
+
+const collapsedWarped = computed(() => {
+  if (props.isMobileDrawer) {
+    return false
+  }
+  return collapsed.value
+})
+</script>
+
 <template>
   <NLayoutSider
     bordered
@@ -18,41 +44,15 @@
       @update:value="handleMenuSelect"
     />
 
-    <div class="footer" v-if="!props.isMobileDrawer">
+    <div v-if="!props.isMobileDrawer" class="footer">
       <NButton
         quaternary
-        @click="toggleCollapsed"
         :render-icon="renderIcon(collapsed ? ChevronForward : ChevronBack)"
+        @click="toggleCollapsed"
       />
     </div>
   </NLayoutSider>
 </template>
-
-<script lang="ts" setup>
-import Logo from '@frontend/layouts/AdminLayout/components/Logo.vue'
-import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import { ChevronBack, ChevronForward } from '@vicons/ionicons5'
-import { NButton, NLayoutSider, NMenu } from 'naive-ui'
-import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
-
-const layoutStore = useLayoutStore()
-
-const { handleMenuSelect, toggleCollapsed } = layoutStore
-const { activeKey, collapsed, menuOptions } = storeToRefs(layoutStore)
-
-const collapsedWarped = computed(() => {
-  if (props.isMobileDrawer) {
-    return false
-  }
-  return collapsed.value
-})
-
-const props = defineProps<{
-  isMobileDrawer?: boolean
-}>()
-</script>
 
 <style lang="scss" scoped>
 .layoutSider {

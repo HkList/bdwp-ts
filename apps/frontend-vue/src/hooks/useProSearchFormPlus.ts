@@ -5,8 +5,8 @@ import type {
 import type { FormRules } from '@frontend/hooks/useFormRules.ts'
 import type { ComputedRef, Ref } from 'vue'
 
-import { computed, ref } from 'vue'
 import { useFormRules } from '@frontend/hooks/useFormRules.ts'
+import { computed, ref } from 'vue'
 
 export interface UseProSearchFormPlusOptions<T extends object> {
   /** 搜索表单列配置 */
@@ -24,9 +24,7 @@ export interface ProSearchFormPlusReturn<T extends object> {
   rules: ComputedRef<FormRules<T> | undefined>
 }
 
-export const useProSearchFormPlus = <T extends object>(
-  options: UseProSearchFormPlusOptions<T>,
-): ProSearchFormPlusReturn<T> => {
+export function useProSearchFormPlus<T extends object>(options: UseProSearchFormPlusOptions<T>): ProSearchFormPlusReturn<T> {
   const { columns, initValues, rules } = options
 
   const formValues = ref(structuredClone(initValues)) as Ref<T>
@@ -37,13 +35,13 @@ export const useProSearchFormPlus = <T extends object>(
     columns: computedColumns,
     formProps: computed(() => ({
       initValues,
-      value: formValues.value,
+      'value': formValues.value,
       'onUpdate:value': (value: T) => {
         formValues.value = value
       },
 
-      columns: computedColumns.value,
-      rules: computedRules.value,
+      'columns': computedColumns.value,
+      'rules': computedRules.value,
     })),
     formValues,
     rules: computedRules,

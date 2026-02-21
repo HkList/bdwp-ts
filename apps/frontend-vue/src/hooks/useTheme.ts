@@ -38,20 +38,18 @@ export const proConfigProviderProps = computed<ProConfigProviderProps>(() => ({
   },
 }))
 
-export const setMode = (next: ThemeModeType) => {
+export function setMode(next: ThemeModeType) {
   colorMode.store.value = next
 }
 
-export const setModeWithTransition = (
-  event: { clientX: number; clientY: number },
-  next: ThemeModeType,
-) => {
+export function setModeWithTransition(event: { clientX: number, clientY: number }, next: ThemeModeType) {
   // 判断是否是一样的mode
-  if (next === colorMode.store.value) return
+  if (next === colorMode.store.value)
+    return
 
   if (
-    !('startViewTransition' in document) ||
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    !('startViewTransition' in document)
+    || window.matchMedia('(prefers-reduced-motion: reduce)').matches
   ) {
     setMode(next)
     return

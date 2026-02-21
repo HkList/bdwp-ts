@@ -3,23 +3,23 @@ import { bdwp_config } from '@backend/config.ts'
 import { request } from '@backend/utils/request.ts'
 import { status } from 'elysia'
 
-export type GetFullCookieResponse =
-  | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '获取完整CK成功'
-        data: {
-          cookie: string
-        }
+export type GetFullCookieResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '获取完整CK成功'
+      data: {
+        cookie: string
       }
-    >
+    }
+  >
   | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: `获取完整CK失败`
-        data: null
-      }
-    >
+    500,
+    {
+      message: `获取完整CK失败`
+      data: null
+    }
+  >
 
 export interface GetFullCookieOptions {
   cookie: string
@@ -31,7 +31,7 @@ export async function getFullCookie(options: GetFullCookieOptions): Promise<GetF
       method: 'get',
       headers: {
         'User-Agent': bdwp_config.BROWSER_USERAGENT,
-        Cookie: options.cookie,
+        'Cookie': options.cookie,
       },
     })
 
@@ -47,7 +47,8 @@ export async function getFullCookie(options: GetFullCookieOptions): Promise<GetF
         cookie: cookie + options.cookie,
       },
     })
-  } catch {
+  }
+  catch {
     return status(500, {
       message: `获取完整CK失败`,
       data: null,

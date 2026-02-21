@@ -41,21 +41,21 @@ export interface TransferFileApiFailedResponse {
   }
 }
 
-export type TransferFileResponse =
+export type TransferFileResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '转存文件成功'
+      data: TransferFileExtraItem[]
+    }
+  >
   | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '转存文件成功'
-        data: TransferFileExtraItem[]
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export interface TransferFileOptions {
   cookie: string
@@ -83,7 +83,7 @@ export async function transferFile(options: TransferFileOptions): Promise<Transf
       method: 'post',
       headers: {
         'User-Agent': bdwp_config.PC_USERAGENT,
-        Cookie: options.cookie,
+        'Cookie': options.cookie,
       },
       searchParams: {
         clienttype: bdwp_config.PC_CLIENTTYPE,

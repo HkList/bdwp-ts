@@ -42,7 +42,7 @@ export class AuthService {
 
     const token = await this.generateToken(user.id, remember_me)
 
-    return status(201, {
+    return status(200, {
       message: '登录成功',
       data: {
         token,

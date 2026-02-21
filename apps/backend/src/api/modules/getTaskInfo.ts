@@ -8,13 +8,13 @@ export type GetTaskInfoApiSuccessResponse<T = object> = T & {
   errno: 0
   task_errno: 0
 } & (
-    | {
-        status: 'running'
-        progress: number
-      }
-    | {
-        status: 'success'
-      }
+  | {
+    status: 'running'
+    progress: number
+  }
+  | {
+    status: 'success'
+  }
   )
 
 export type GetTaskInfoApiFailedResponse<T = object> = T & {
@@ -23,21 +23,21 @@ export type GetTaskInfoApiFailedResponse<T = object> = T & {
   task_errno?: string | number
 }
 
-export type GetTaskInfoResponse<T = object> =
+export type GetTaskInfoResponse<T = object>
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '任务信息查询成功'
+      data: GetTaskInfoApiSuccessResponse<T>
+    }
+  >
   | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '任务信息查询成功'
-        data: GetTaskInfoApiSuccessResponse<T>
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export interface GetTaskInfoOptions {
   cookie: string
@@ -114,7 +114,7 @@ export async function _getTaskInfo<T = object>(
       method: 'get',
       headers: {
         'User-Agent': bdwp_config.BROWSER_USERAGENT,
-        Cookie: options.cookie,
+        'Cookie': options.cookie,
       },
       searchParams: {
         web: '1',

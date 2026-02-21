@@ -86,7 +86,8 @@ const worker = new Worker<CreateOrUpdateAccountJobData, CreateOrUpdateAccountQue
           .returning({ id: Schemas.Account.id })
 
         account_id = result[0]!.id
-      } else {
+      }
+      else {
         const result = await Drizzle.insert(Schemas.Account)
           .values({
             user_id: user.id,
@@ -106,7 +107,8 @@ const worker = new Worker<CreateOrUpdateAccountJobData, CreateOrUpdateAccountQue
 
         account_id = result[0]?.id ?? 0
       }
-    } catch {
+    }
+    catch {
       return status(500, {
         message: `${isUpdate ? '创建' : '更新'}账号失败: 数据库操作失败`,
         data: null,
@@ -116,7 +118,7 @@ const worker = new Worker<CreateOrUpdateAccountJobData, CreateOrUpdateAccountQue
     // account_id === 0 说明可能触发了唯一索引冲突
     if (account_id === 0) {
       return status(200, {
-        message: '创建账号成功',
+        message: `${isUpdate ? '创建' : '更新'}账号成功`,
         data: {
           id: account_id,
         },
@@ -170,7 +172,7 @@ const worker = new Worker<CreateOrUpdateAccountJobData, CreateOrUpdateAccountQue
     }
 
     return status(200, {
-      message: '创建账号成功',
+      message: `${isUpdate ? '更新' : '创建'}账号成功`,
       data: {
         id: account_id,
       },

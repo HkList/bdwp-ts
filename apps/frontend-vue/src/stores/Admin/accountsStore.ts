@@ -1,22 +1,22 @@
 import type { TypeboxTypes } from '@backend/db'
-// import type { Oneof } from '@frontend/utils/types.ts'
 import type { AccountModelType } from '@backend/modules/admin/account/model.ts'
+import type { Oneof } from '@frontend/utils/types.ts'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface.d.ts'
 
 import { api } from '@frontend/api/index.ts'
+import { useAsyncJob } from '@frontend/hooks/useAsyncJob.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { useProModalForm } from '@frontend/hooks/useProModalForm.ts'
+import { useRequest } from '@frontend/hooks/useRequest.ts'
+import { copyText } from '@frontend/utils/copyText.ts'
+import { notification } from '@frontend/utils/discreteApi.ts'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { CookieBite } from '@vicons/fa'
 import { Pencil, Trash } from '@vicons/ionicons5'
 import { NButton, NFlex } from 'naive-ui'
 import { defineStore } from 'pinia'
 import { renderProDateText } from 'pro-naive-ui'
 import { h, ref } from 'vue'
-import { CookieBite } from '@vicons/fa'
-import { copyText } from '@frontend/utils/copyText.ts'
-import { useRequest } from '@frontend/hooks/useRequest.ts'
-import { useAsyncJob } from '@frontend/hooks/useAsyncJob.ts'
-import { notification } from '@frontend/utils/discreteApi.ts'
 
 export const useAccountsStore = defineStore('admin_accounts', () => {
   const {
@@ -62,12 +62,12 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
         {
           key: '账号信息',
           title: '账号信息',
-          render: (row) => `${row.baidu_name}(${row.uk})`,
+          render: row => `${row.baidu_name}(${row.uk})`,
         },
         {
           key: '组织信息',
           title: '组织信息',
-          render: (row) => `${row.org_name}(${row.cid})`,
+          render: row => `${row.org_name}(${row.cid})`,
         },
         {
           key: 'ticket_remain_count',
@@ -75,12 +75,12 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
         },
         {
           key: 'created_at',
-          render: (row) => renderProDateText(row.created_at),
+          render: row => renderProDateText(row.created_at),
           title: '创建时间',
         },
         {
           key: 'actions',
-          render: (row) =>
+          render: row =>
             h(NFlex, null, {
               default: () => [
                 h(
@@ -99,7 +99,7 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
                     size: 'small',
                     type: 'primary',
                     renderIcon: renderIcon(Pencil),
-                    // onClick: () => updateUsersModalForm.value.open(row),
+                    onClick: () => updateAccountsModalForm.value.open(row),
                   },
                   { default: () => '编辑' },
                 ),
@@ -119,10 +119,11 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
         },
       ],
       options: {
+        loading: () => deleteAccountsLoading.value,
         customProps: {
           cardTitle: '账号列表',
         },
-        rowKey: (row) => row.id,
+        rowKey: row => row.id,
       },
     },
     {
@@ -169,22 +170,22 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
       enterpriseOptions.value = []
       return
     }
-    enterpriseOptions.value =
-      res.data.data.map((item) => ({
+    enterpriseOptions.value
+      = res.data.data.map(item => ({
         label: `${item.orgInfo.name}(${item.cid})`,
         value: item.cid,
       })) ?? []
   }
   const resetEnterpriseOptions = () => {
     enterpriseOptions.value = []
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(addAccountModalForm.value.form.values.value.cid as any) = undefined
   }
 
   const { loading: addAccountLoading, send: _addAccount } = useRequest(api.admin.accounts.post)
   const addAccount = async (values: AccountModelType['createAccountBody']) => {
     const res = await _addAccount(values)
-    if (res.error) return false
+    if (res.error)
+      return false
 
     // 等待异步任务完成
     const response = await useAsyncJob<{ id: number }>({
@@ -197,6 +198,11 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
       })
       return false
     }
+
+    notification.success({
+      title: '账号创建成功',
+      duration: 3000,
+    })
 
     await getAccounts()
   }
@@ -212,36 +218,68 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
     loading: addAccountLoading,
     onSubmit: async (value) => {
       const res = await addAccount(value)
-      if (res !== false) addAccountModalForm.value.close()
+      if (res !== false)
+        addAccountModalForm.value.close()
     },
   })
 
-  // const { loading: updateUserLoading, send: _updateUsers } = useRequest(api.admin.users.patch)
-  // const updateUsers = async (values: UserModelType['updateUsersBody']) => {
-  //   const res = await _updateUsers(values)
-  //   if (res.error) return false
-  //   await getUsers()
-  // }
-  // const updateUsersModalForm = useProModalForm<
-  //   Oneof<UserModelType['updateUsersBody']>,
-  //   Oneof<UserModelType['updateUsersBody']>,
-  //   [Oneof<UserModelType['updateUsersBody']>]
-  // >(
-  //   {
-  //     initialValues: { id: 0, username: '', password: '' },
-  //     rules: () => ({
-  //       username: [{ required: true }, { min: 3, max: 30 }],
-  //     }),
-  //     loading: updateUserLoading,
-  //     onSubmit: async (value) => {
-  //       const res = await updateUsers([value])
-  //       if (res !== false) updateUsersModalForm.value.close()
-  //     },
-  //   },
-  //   ({ password: _, ...rest }) => {
-  //     updateUsersModalForm.value.form.values.value = rest
-  //   },
-  // )
+  const { loading: updateAccountsLoading, send: _updateAccounts } = useRequest(
+    api.admin.accounts.patch,
+  )
+  const updateAccounts = async (values: AccountModelType['updateAccountsBody']) => {
+    const res = await _updateAccounts(values)
+    if (res.error)
+      return false
+
+    if (!res.data.data.task_id[0]) {
+      notification.error({
+        title: '没有需要更新的账号',
+        duration: 3000,
+      })
+      return false
+    }
+
+    // 等待异步任务完成
+    const response = await useAsyncJob<{ id: number }>({
+      taskId: res.data.data.task_id[0],
+    })
+    if (response.status !== 'completed') {
+      notification.error({
+        title: response.message,
+        duration: 3000,
+      })
+      return false
+    }
+
+    notification.success({
+      title: '账号更新成功',
+      duration: 3000,
+    })
+
+    await getAccounts()
+  }
+  const updateAccountsModalForm = useProModalForm<
+    Oneof<AccountModelType['updateAccountsBody']>,
+    Oneof<AccountModelType['updateAccountsBody']>,
+    [Oneof<AccountModelType['updateAccountsBody']>]
+  >(
+    {
+      initialValues: { id: 0, baidu_name: '', cookie: '' },
+      rules: () => ({
+        baidu_name: [{ required: true }, { min: 2, max: 50 }],
+        cookie: [{ required: true }, { min: 10 }],
+      }),
+      loading: updateAccountsLoading,
+      onSubmit: async (account) => {
+        const res = await updateAccounts([account])
+        if (res !== false)
+          updateAccountsModalForm.value.close()
+      },
+    },
+    (account) => {
+      updateAccountsModalForm.value.form.values.value = account
+    },
+  )
 
   return {
     getEnterpriseInfo,
@@ -257,8 +295,8 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
     deleteAccounts,
     deleteAccountsLoading,
 
-    // updateUsers,
-    // updateUsersModalForm,
+    updateAccounts,
+    updateAccountsModalForm,
 
     getAccounts,
     accountCheckedRowKeys,

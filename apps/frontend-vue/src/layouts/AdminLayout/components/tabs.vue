@@ -1,5 +1,134 @@
+<script setup lang="ts">
+import {
+  activeTab,
+  closeTab,
+  switchTab,
+  tabs,
+  tabsOrder,
+  updateTabsOrder,
+} from '@frontend/hooks/useRouteTabs.ts'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { Close } from '@vicons/ionicons5'
+import { NCard, NScrollbar } from 'naive-ui'
+import { nextTick, ref, useTemplateRef, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import Draggable from 'vuedraggable'
+
+const router = useRouter()
+const closeAble = ref(true)
+const isClosingCount = ref(0)
+watch(tabsOrder.value, newValue => (closeAble.value = newValue.length > 1), { immediate: true })
+// 兜底
+setTimeout(() => {
+  closeAble.value = tabsOrder.value.length > 1
+}, 1000)
+
+const dropedPath = ref<string[]>([])
+function onDragEnd(event: { item: HTMLElement }) {
+  const element = event.item as HTMLElement
+  const path = element.getAttribute('path') || ''
+
+  dropedPath.value.push(path)
+
+  // 拖拽结束后，更新 tabsOrder 的顺序
+  updateTabsOrder(tabsOrder.value)
+}
+
+async function handleCardClick(path: string) {
+  if (path === activeTab.value)
+    return
+  await router.push(path)
+}
+
+const scrollbar = useTemplateRef('scrollbar')
+function handleMousewheel(event: WheelEvent) {
+  if (!scrollbar.value)
+    return
+
+  scrollbar.value.scrollBy({
+    behavior: 'auto',
+    left: Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY,
+  })
+}
+
+function warpedCloseTab(event: MouseEvent, path: string, fromTab = false) {
+  // 判断是否还有剩余标签
+  if (!closeAble.value)
+    return
+
+  let tabElement: HTMLElement | null | undefined
+
+  if (fromTab) {
+    tabElement = event.currentTarget as HTMLElement
+  }
+  else {
+    const target = event.currentTarget as HTMLElement
+    if (!target)
+      return
+    tabElement = target.parentElement?.parentElement?.parentElement
+  }
+
+  if (!tabElement)
+    return
+
+  if (tabsOrder.value.length - isClosingCount.value <= 1)
+    return
+  isClosingCount.value += 1
+
+  tabElement.style.maxWidth = '0px'
+  tabElement.style.opacity = '0'
+  tabElement.style.borderWidth = '0px'
+  tabElement.style.marginLeft = '0px'
+
+  // 如果关闭的标签是当前激活的标签，提前切换到下一个标签, 避免需要等待动画结束, 才能看到切换效果
+  if (path === activeTab.value) {
+    // 提前跳转
+    switchTab(path, true)
+  }
+
+  if (tabsOrder.value.length - 1 <= 1) {
+    closeAble.value = false
+  }
+
+  setTimeout(() => {
+    closeTab(path)
+
+    // 清理拖拽动画关闭的标签时，可能存在的残留路径
+    const pathIndex = dropedPath.value.indexOf(path)
+    if (pathIndex !== -1)
+      dropedPath.value.splice(pathIndex, 1)
+
+    isClosingCount.value -= 1
+  }, 600)
+}
+
+// 监听路由变化，自动滚动到 activeTab
+watch(
+  activeTab,
+  async () => {
+    await nextTick()
+
+    if (!scrollbar.value)
+      return
+    const activeTabElement = document.querySelector('.tab.active') as HTMLElement
+    if (!activeTabElement)
+      return
+
+    const { offsetLeft, offsetWidth } = activeTabElement
+    let left = offsetLeft - offsetWidth
+
+    if (left <= 10) {
+      left = 0
+    }
+
+    scrollbar.value.scrollTo({ behavior: 'smooth', left })
+  },
+  { immediate: true },
+)
+</script>
+
 <template>
-  <NScrollbar x-scrollable class="scrollbar" @mousewheel.stop="handleMousewheel" ref="scrollbar">
+  <NScrollbar ref="scrollbar" x-scrollable class="scrollbar" @mousewheel.stop="handleMousewheel">
     <Draggable
       v-model="tabsOrder"
       class="tabs"
@@ -39,125 +168,6 @@
     </Draggable>
   </NScrollbar>
 </template>
-
-<script setup lang="ts">
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import {
-  activeTab,
-  closeTab,
-  switchTab,
-  tabs,
-  tabsOrder,
-  updateTabsOrder,
-} from '@frontend/hooks/useRouteTabs.ts'
-import { Close } from '@vicons/ionicons5'
-import { NCard, NScrollbar } from 'naive-ui'
-import { nextTick, ref, useTemplateRef, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import Draggable from 'vuedraggable'
-
-const router = useRouter()
-const closeAble = ref(true)
-const isClosingCount = ref(0)
-watch(tabsOrder.value, (newValue) => (closeAble.value = newValue.length > 1), { immediate: true })
-// 兜底
-setTimeout(() => {
-  closeAble.value = tabsOrder.value.length > 1
-}, 1000)
-
-const handleCardClick = async (path: string) => {
-  if (path === activeTab.value) return
-  await router.push(path)
-}
-
-const scrollbar = useTemplateRef('scrollbar')
-const handleMousewheel = (event: WheelEvent) => {
-  if (!scrollbar.value) return
-
-  scrollbar.value.scrollBy({
-    behavior: 'auto',
-    left: Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY,
-  })
-}
-
-const warpedCloseTab = (event: MouseEvent, path: string, fromTab = false) => {
-  // 判断是否还有剩余标签
-  if (!closeAble.value) return
-
-  let tabElement: HTMLElement | null | undefined
-
-  if (fromTab) {
-    tabElement = event.currentTarget as HTMLElement
-  } else {
-    const target = event.currentTarget as HTMLElement
-    if (!target) return
-    tabElement = target.parentElement?.parentElement?.parentElement
-  }
-
-  if (!tabElement) return
-
-  if (tabsOrder.value.length - isClosingCount.value <= 1) return
-  isClosingCount.value += 1
-
-  tabElement.style.maxWidth = '0px'
-  tabElement.style.opacity = '0'
-  tabElement.style.borderWidth = '0px'
-  tabElement.style.marginLeft = '0px'
-
-  // 如果关闭的标签是当前激活的标签，提前切换到下一个标签, 避免需要等待动画结束, 才能看到切换效果
-  if (path === activeTab.value) {
-    // 提前跳转
-    switchTab(path, true)
-  }
-
-  if (tabsOrder.value.length - 1 <= 1) {
-    closeAble.value = false
-  }
-
-  setTimeout(() => {
-    closeTab(path)
-
-    // 清理拖拽动画关闭的标签时，可能存在的残留路径
-    const pathIndex = dropedPath.value.indexOf(path)
-    if (pathIndex !== -1) dropedPath.value.splice(pathIndex, 1)
-
-    isClosingCount.value -= 1
-  }, 600)
-}
-
-// 监听路由变化，自动滚动到 activeTab
-watch(
-  activeTab,
-  async () => {
-    await nextTick()
-
-    if (!scrollbar.value) return
-    const activeTabElement = document.querySelector('.tab.active') as HTMLElement
-    if (!activeTabElement) return
-
-    const { offsetLeft, offsetWidth } = activeTabElement
-    let left = offsetLeft - offsetWidth
-
-    if (left <= 10) {
-      left = 0
-    }
-
-    scrollbar.value.scrollTo({ behavior: 'smooth', left })
-  },
-  { immediate: true },
-)
-
-const dropedPath = ref<string[]>([])
-const onDragEnd = (event: { item: HTMLElement }) => {
-  const element = event.item as HTMLElement
-  const path = element.getAttribute('path') || ''
-
-  dropedPath.value.push(path)
-
-  // 拖拽结束后，更新 tabsOrder 的顺序
-  updateTabsOrder(tabsOrder.value)
-}
-</script>
 
 <style lang="scss">
 .scrollbar {

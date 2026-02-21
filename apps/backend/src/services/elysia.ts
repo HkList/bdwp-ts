@@ -108,15 +108,23 @@ export const app = new Elysia()
       data: { ...(config.NODE_ENV === 'development' ? { code, error } : null) },
     })
   })
-  .group('/api', (app) =>
-    app
-      .use(AuthModule)
-      .use(ParseModule)
-      .use(QrloginModule)
-      .use(TaskModule)
-      .group('/admin', (app) =>
-        app.use(UserAuthPlugin()).use(UserModule).use(AccountModule).use(KeyModule),
-      ),
+  .group(
+    '/api',
+    app =>
+      app
+        .use(AuthModule)
+        .use(ParseModule)
+        .use(QrloginModule)
+        .use(TaskModule)
+        .group(
+          '/admin',
+          app =>
+            app
+              .use(UserAuthPlugin())
+              .use(UserModule)
+              .use(AccountModule)
+              .use(KeyModule),
+        ),
   )
 
 export type App = typeof app

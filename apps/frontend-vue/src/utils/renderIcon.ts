@@ -9,5 +9,7 @@ import { h } from 'vue'
  * @param size - 图标大小（像素）
  * @returns 返回一个函数，该函数返回包装好的图标 VNode
  */
-export const renderIcon = (icon: Component, size?: number) => () =>
-  h(NIcon, { size }, { default: () => h(icon) })
+export function renderIcon(icon: Component, size?: number) {
+  return () =>
+    h(NIcon, { size }, { default: () => h(icon) })
+}

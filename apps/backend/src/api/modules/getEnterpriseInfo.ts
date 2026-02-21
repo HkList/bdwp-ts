@@ -24,21 +24,21 @@ export interface EnterpriseInfoApiFailedResponse {
   show_msg: string
 }
 
-export type EnterpriseInfoResponse =
+export type EnterpriseInfoResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '获取企业信息成功'
+      data: EnterpriseInfoItem[]
+    }
+  >
   | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '获取企业信息成功'
-        data: EnterpriseInfoItem[]
-      }
-    >
-  | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export interface GetEnterpriseInfoOptions {
   cookie: string
@@ -54,7 +54,7 @@ export async function getEnterpriseInfo(
     method: 'get',
     headers: {
       'User-Agent': bdwp_config.BROWSER_USERAGENT,
-      Cookie: options.cookie,
+      'Cookie': options.cookie,
     },
     searchParams: {
       clienttype: bdwp_config.WEB_CLIENTTYPE,

@@ -15,7 +15,7 @@ export type ProSearchFormPlusColumn<T extends object, K extends StringKeys<T> = 
   /** 显示的标题 */
   title: string
 } & (
-  | { multiple?: boolean; options: SelectMixedOption[]; type: 'select' }
+  | { multiple?: boolean, options: SelectMixedOption[], type: 'select' }
   | { type: 'date' }
   | { type: 'number' }
   | { type?: 'string' | undefined }
@@ -27,28 +27,28 @@ export type ProSearchFormPlusColumns<T extends object> = {
 
 export interface ProSearchFormPlusProps<T extends object> {
   /** 搜索表单列配置 */
-  columns: ProSearchFormPlusColumns<T>
+  'columns': ProSearchFormPlusColumns<T>
   /** 初始化表单值, 重置表单时会使用 */
-  initValues: T
+  'initValues': T
   /** 搜索表单标题 */
-  title?: string
+  'title'?: string
   /** 表单验证规则 */
-  rules?: FormRules<T>
+  'rules'?: FormRules<T>
   /** 自定义重置按钮属性 */
-  resetButtonProps?: ProButtonProps
+  'resetButtonProps'?: ProButtonProps
   /** 自定义搜索按钮属性 */
-  searchButtonProps?: ProButtonProps
+  'searchButtonProps'?: ProButtonProps
   /** 是否隐藏重置按钮 */
-  hideResetButton?: boolean
+  'hideResetButton'?: boolean
   /** 是否隐藏搜索按钮 */
-  hideSearchButton?: boolean
+  'hideSearchButton'?: boolean
 
   /** 重置事件回调 */
-  onReset?: () => void
+  'onReset'?: () => void
   /** 搜索事件回调 */
-  onSearch?: () => void
+  'onSearch'?: () => void
 
   /** 绑定 v-model 属性 */
-  value: T
+  'value': T
   'onUpdate:value': (value: T) => void
 }

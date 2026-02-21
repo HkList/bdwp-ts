@@ -24,7 +24,7 @@ export class KeyService {
       })
     }
 
-    const chunks = keys.map((key) => ({
+    const chunks = keys.map(key => ({
       user_id: user.id,
       account_id,
       key,
@@ -42,10 +42,10 @@ export class KeyService {
         })
         .returning({ key: Schemas.Key.key })
 
-      inserted_keys.push(...inserted.map((item) => item.key))
+      inserted_keys.push(...inserted.map(item => item.key))
     }
 
-    return status(201, {
+    return status(200, {
       message: '创建卡密成功',
       data: {
         inserted_keys,
@@ -72,7 +72,8 @@ export class KeyService {
 
         return rows
       })
-    } catch (error) {
+    }
+    catch (error) {
       if (error instanceof Error && error.message === 'IDS_NOT_ALL_FOUND') {
         return status(404, {
           message: '部分卡密不存在, 删除失败',
@@ -89,7 +90,7 @@ export class KeyService {
   }
 
   static async updateKeys(body: KeyModelType['updateKeysBody']) {
-    const ids = body.map((key) => key.id)
+    const ids = body.map(key => key.id)
 
     const existingKeys = await Drizzle.select({
       id: Schemas.Key.id,
@@ -116,7 +117,7 @@ export class KeyService {
       }
     })
 
-    return status(201, {
+    return status(200, {
       message: '更新卡密信息成功',
       data: null,
     })

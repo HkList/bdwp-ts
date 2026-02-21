@@ -20,24 +20,24 @@ export interface GetCookieByBdussApiFailedResponse {
   message: string
 }
 
-export type GetCookieByBdussResponse =
-  | ElysiaCustomStatusResponse<
-      200,
-      {
-        message: '获取CK成功'
-        data: {
-          bduss: string
-          stoken: string
-        }
+export type GetCookieByBdussResponse
+  = | ElysiaCustomStatusResponse<
+    200,
+    {
+      message: '获取CK成功'
+      data: {
+        bduss: string
+        stoken: string
       }
-    >
+    }
+  >
   | ElysiaCustomStatusResponse<
-      500,
-      {
-        message: string
-        data: null
-      }
-    >
+    500,
+    {
+      message: string
+      data: null
+    }
+  >
 
 export interface GetCookieByBdussOptions {
   bduss: string
@@ -53,7 +53,7 @@ export async function getCookieByBduss(
     method: 'get',
     headers: {
       'User-Agent': bdwp_config.BROWSER_USERAGENT,
-      Cookie: `BDUSS=${options.bduss};`,
+      'Cookie': `BDUSS=${options.bduss};`,
     },
     searchParams: {
       v: Date.now(),
@@ -79,7 +79,8 @@ export async function getCookieByBduss(
 
     try {
       response = JSON.parse(content)
-    } catch {
+    }
+    catch {
       return status(500, {
         message: '获取CK失败: 接口数据解析失败',
         data: null,
@@ -109,7 +110,7 @@ export async function getCookieByBduss(
   }
 
   const stokenList = typedResponseJson?.data?.session?.stokenList ?? []
-  const stoken = stokenList.find((item) => item.startsWith('netdisk#'))?.split('netdisk#')?.[1]
+  const stoken = stokenList.find(item => item.startsWith('netdisk#'))?.split('netdisk#')?.[1]
   if (!stoken) {
     return status(500, {
       message: '获取CK失败: stoken获取失败',

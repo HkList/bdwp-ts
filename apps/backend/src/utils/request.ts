@@ -19,14 +19,17 @@ class RequestClient {
       const response = await this.client(url, options)
       try {
         return (await response.clone().json()) as T
-      } catch {
+      }
+      catch {
         return await response.clone().text()
       }
-    } catch (error) {
+    }
+    catch (error) {
       if (error instanceof HTTPError) {
         try {
           return (await error.response.clone().json()) as K
-        } catch {
+        }
+        catch {
           return await error.response.clone().text()
         }
       }

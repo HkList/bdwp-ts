@@ -18,7 +18,8 @@ export class TaskService {
         message: '获取任务状态成功',
         data: parsed,
       })
-    } catch {
+    }
+    catch {
       return status(500, {
         message: '任务状态解析失败',
         data: null,

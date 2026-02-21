@@ -61,7 +61,7 @@ export class AccountService {
       })
     }
 
-    return status(201, {
+    return status(200, {
       message: '创建异步任务成功',
       data: {
         task_id: job.id,
@@ -97,7 +97,7 @@ export class AccountService {
     if (enterpriseInfo.code !== 200) {
       return enterpriseInfo
     }
-    const enterpriseInfoData = enterpriseInfo.response.data.find((item) => item.cid === cid)
+    const enterpriseInfoData = enterpriseInfo.response.data.find(item => item.cid === cid)
     if (!enterpriseInfoData) {
       return status(500, {
         message: `获取企业信息失败: 未找到对应的企业信息 CID=${cid}`,
@@ -116,7 +116,7 @@ export class AccountService {
 
     const bindSharelinkList: { [key: string]: EnterpriseShareBindListResponseData } = {}
     if (needShareLinkBindList) {
-      const chunks = sharelinkData.map((item) =>
+      const chunks = sharelinkData.map(item =>
         getEnterpriseShareBindList({
           cookie,
           cid: cid.toString(),
@@ -137,7 +137,7 @@ export class AccountService {
 
     const wxFileList: { [key: string]: WxFileListData } = {}
     if (needWxFileList) {
-      const chunks = sharelinkData.map((item) =>
+      const chunks = sharelinkData.map(item =>
         getWxFileList({
           surl: item.shorturl,
           pwd: item.passwd,
@@ -204,7 +204,8 @@ export class AccountService {
 
         return rows
       })
-    } catch (error) {
+    }
+    catch (error) {
       if (error instanceof Error && error.message === 'IDS_NOT_ALL_FOUND') {
         return status(404, {
           message: '部分账号不存在, 删除失败',
@@ -224,7 +225,7 @@ export class AccountService {
     user: TypeboxTypes['UserTypeboxSchemaType'],
     body: AccountModelType['updateAccountsBody'],
   ) {
-    const ids = body.map((account) => account.id)
+    const ids = body.map(account => account.id)
 
     const existingAccounts = await Drizzle.select({
       id: Schemas.Account.id,
@@ -242,7 +243,7 @@ export class AccountService {
       })
     }
 
-    const job_ids: string[] = []
+    const task_id: string[] = []
 
     for (const account of existingAccounts) {
       const job = await createOrUpdateAccountQueue.add(
@@ -252,9 +253,9 @@ export class AccountService {
           body: {
             ...account,
             cid: Number(account.cid),
-            ...body.find((item) => item.id === account.id),
+            ...body.find(item => item.id === account.id),
           },
-          isUpdate: false,
+          isUpdate: true,
         },
         {
           jobId: crypto.randomUUID(),
@@ -268,13 +269,13 @@ export class AccountService {
         })
       }
 
-      job_ids.push(job.id)
+      task_id.push(job.id)
     }
 
-    return status(201, {
+    return status(200, {
       message: '创建异步任务成功',
       data: {
-        job_id: job_ids,
+        task_id,
       },
     })
   }

@@ -1,3 +1,26 @@
+<script lang="ts" setup>
+import { ProDataTablePlus } from '@frontend/components/ProDataTablePlus/index.ts'
+import { ProSearchFormPlus } from '@frontend/components/ProSearchFormPlus/index.ts'
+import { useUsersStore } from '@frontend/stores/Admin/usersStore.ts'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import Add from '@frontend/views/Admin/Users/Add.vue'
+import Edit from '@frontend/views/Admin/Users/Edit.vue'
+import { Create, Trash } from '@vicons/ionicons5'
+import { NButton, NFlex } from 'naive-ui'
+import { storeToRefs } from 'pinia'
+
+const usersStore = useUsersStore()
+
+const { deleteUsers } = usersStore
+const {
+  addUserModalForm,
+  userCheckedRowKeys,
+  userDataTableProps,
+  userSearchFormProps,
+  deleteUsersLoading,
+} = storeToRefs(usersStore)
+</script>
+
 <template>
   <NFlex vertical :size="20">
     <Add />
@@ -29,28 +52,5 @@
     </ProDataTablePlus>
   </NFlex>
 </template>
-
-<script lang="ts" setup>
-import { ProDataTablePlus } from '@frontend/components/ProDataTablePlus/index.ts'
-import { ProSearchFormPlus } from '@frontend/components/ProSearchFormPlus/index.ts'
-import { useUsersStore } from '@frontend/stores/Admin/usersStore.ts'
-import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import Add from '@frontend/views/Admin/Users/Add.vue'
-import Edit from '@frontend/views/Admin/Users/Edit.vue'
-import { Create, Trash } from '@vicons/ionicons5'
-import { NButton, NFlex } from 'naive-ui'
-import { storeToRefs } from 'pinia'
-
-const usersStore = useUsersStore()
-
-const { deleteUsers } = usersStore
-const {
-  addUserModalForm,
-  userCheckedRowKeys,
-  userDataTableProps,
-  userSearchFormProps,
-  deleteUsersLoading,
-} = storeToRefs(usersStore)
-</script>
 
 <style lang="scss" scoped></style>

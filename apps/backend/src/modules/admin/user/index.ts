@@ -6,7 +6,7 @@ export const UserModule = new Elysia({ prefix: '/users' })
   .post('/', async ({ body }) => await UserService.createUser(body), {
     body: UserModel.createUserBody,
     response: {
-      201: UserModel.createUserSuccess,
+      200: UserModel.createUserSuccess,
       409: UserModel.createUserFailedUsernameExists,
     },
     detail: {

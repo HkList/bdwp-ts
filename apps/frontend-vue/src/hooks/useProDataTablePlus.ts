@@ -1,6 +1,6 @@
 import type { ProDataTablePlusProps } from '@frontend/components/ProDataTablePlus/types.ts'
+import type { ProSearchFormPlusReturn, UseProSearchFormPlusOptions } from '@frontend/hooks/useProSearchFormPlus.ts'
 import type { PaginationInfo } from 'naive-ui'
-import type { ProSearchFormPlusReturn } from '@frontend/hooks/useProSearchFormPlus.ts'
 import type { CreateRowKey } from 'naive-ui/es/data-table/src/interface.d.ts'
 import type {
   UseNDataTableData as Data,
@@ -12,7 +12,6 @@ import type {
   UseRequestPlugin,
 } from 'pro-naive-ui'
 import type { ComputedRef, Ref } from 'vue'
-import type { UseProSearchFormPlusOptions } from '@frontend/hooks/useProSearchFormPlus.ts'
 
 import { useDataTableSection } from '@frontend/hooks/useDataTableSection.ts'
 import { useProSearchFormPlus } from '@frontend/hooks/useProSearchFormPlus.ts'
@@ -20,19 +19,20 @@ import { useNDataTable } from 'pro-naive-ui'
 import { computed, toRaw } from 'vue'
 
 export interface UseProDataTablePlusOptions<T extends object> {
+  service: UseNDataTableService<Data, Params>
   columns?: () => ProDataTableColumns<T>
   options: UseNDataTableOptions<Data, Params> & {
     customProps?: ProDataTablePlusProps
     rowKey: CreateRowKey<T>
+    loading?: () => boolean
   }
   plugins?: UseRequestPlugin<Data, Params>[]
-  service: UseNDataTableService<Data, Params>
 }
 
-export type UseProDataTablePlusReturn<
+export interface UseProDataTablePlusReturn<
   ApiParams extends object,
   RowKeyType extends number | string = number,
-> = {
+> {
   search: ProSearchFormPlusReturn<ApiParams>
   send: () => Promise<void>
   table: Omit<UseNDataTableReturn<Data, Params>['table'], 'tableProps'> & {
@@ -43,26 +43,26 @@ export type UseProDataTablePlusReturn<
 
 export type UseProDataTablePlusService = UseNDataTableService<Data, Params>
 
-export const useProDataTablePlus = <
+export function useProDataTablePlus<
   ApiParams extends object,
   ApiResponse extends object,
   RowKeyType extends number | string = number,
->(
-  options: UseProDataTablePlusOptions<ApiResponse>,
-  searchFormPlusOptions?: UseProSearchFormPlusOptions<ApiParams>,
-): UseProDataTablePlusReturn<ApiParams, RowKeyType> => {
+>(options: UseProDataTablePlusOptions<ApiResponse>, searchFormPlusOptions?: UseProSearchFormPlusOptions<ApiParams>): UseProDataTablePlusReturn<ApiParams, RowKeyType> {
   const NData = useNDataTable(
     options.service,
     {
       ...options.options,
       onSuccess: (res, params) => {
-        if (options.options.onSuccess) options.options.onSuccess(res, params)
-        if (res.total === 0) return
+        if (options.options.onSuccess)
+          options.options.onSuccess(res, params)
+        if (res.total === 0)
+          return
 
         // 计算最大页数
         const maxPage = Math.ceil(res.total / params[0].pageSize)
         // 如果当前页码超过最大页码，则重新请求数据，页码设置为最大页码
-        if (params[0].current > maxPage) NData.pagination.current.value = maxPage
+        if (params[0].current > maxPage)
+          NData.pagination.current.value = maxPage
       },
     },
     options.plugins,
@@ -102,6 +102,10 @@ export const useProDataTablePlus = <
         showSizePicker: true,
         ...NData.table.tableProps.value?.pagination,
       },
+      // 如果外部传入了 loading，则和 NData 内置的 loading 进行合并，满足任一 loading 为 true 时，表格显示 loading
+      loading: options.options.loading
+        ? options.options.loading() || NData.table.tableProps.value?.loading
+        : NData.table.tableProps.value?.loading,
     }
   })
 

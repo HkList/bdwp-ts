@@ -8,7 +8,7 @@ export const KeyModule = new Elysia({ prefix: '/keys' })
   .post('/', async ({ user, body }) => await KeyService.createKey(user, body), {
     body: KeyModel.createKeyBody,
     response: {
-      201: KeyModel.createKeySuccess,
+      200: KeyModel.createKeySuccess,
       404: KeyModel.createKeyFailedAccountNotFound,
     },
     detail: {
@@ -30,7 +30,7 @@ export const KeyModule = new Elysia({ prefix: '/keys' })
   .patch('/', async ({ body }) => await KeyService.updateKeys(body), {
     body: KeyModel.updateKeysBody,
     response: {
-      201: KeyModel.updateKeysSuccess,
+      200: KeyModel.updateKeysSuccess,
       404: KeyModel.updateKeysFailedNotFound,
     },
     detail: {

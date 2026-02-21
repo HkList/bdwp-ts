@@ -16,13 +16,14 @@ export class UserService {
         })
         .returning({ id: Schemas.User.id })
 
-      return status(201, {
+      return status(200, {
         message: '创建用户成功',
         data: {
           id: insertedUser!.id,
         },
       })
-    } catch (error) {
+    }
+    catch (error) {
       console.error('创建用户失败:', error)
 
       if (isDuplicateError(error)) {
@@ -52,7 +53,8 @@ export class UserService {
 
         return rows
       })
-    } catch (error) {
+    }
+    catch (error) {
       if (error instanceof Error && error.message === 'IDS_NOT_ALL_FOUND') {
         return status(404, {
           message: '部分用户不存在, 删除失败',
@@ -77,7 +79,7 @@ export class UserService {
   }
 
   static async updateUsers(body: UserModelType['updateUsersBody']) {
-    const ids = body.map((user) => user.id)
+    const ids = body.map(user => user.id)
 
     const existingUsers = await Drizzle.select({
       id: Schemas.User.id,
@@ -104,7 +106,8 @@ export class UserService {
                 ...(item.password ? { password: await Bun.password.hash(item.password) } : {}),
               })
               .where(eq(Schemas.User.id, item.id))
-          } catch (error) {
+          }
+          catch (error) {
             if (isDuplicateError(error)) {
               throw new Error('USERNAME_EXISTS')
             }
@@ -113,7 +116,8 @@ export class UserService {
           }
         }
       })
-    } catch (error) {
+    }
+    catch (error) {
       if (error instanceof Error && error.message === 'USERNAME_EXISTS') {
         return status(409, {
           message: '部分用户名已存在, 更新失败',

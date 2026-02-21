@@ -7,7 +7,7 @@ export const AuthModule = new Elysia({ prefix: '/auth' })
   .post('/sign_in', async ({ body }) => await AuthService.signIn(body), {
     body: AuthModel.signInBody,
     response: {
-      201: AuthModel.signInSuccess,
+      200: AuthModel.signInSuccess,
       401: AuthModel.signInFailedInvalidPassword,
       404: AuthModel.signInFailedAccountNotFound,
     },
@@ -16,7 +16,7 @@ export const AuthModule = new Elysia({ prefix: '/auth' })
       tags: ['授权管理'],
     },
   })
-  .group('', (app) =>
+  .group('', app =>
     app
       .use(UserAuthPlugin())
       .delete('/sign_out', async ({ user }) => await AuthService.signOut(user), {
@@ -27,5 +27,4 @@ export const AuthModule = new Elysia({ prefix: '/auth' })
           summary: '注销',
           tags: ['授权管理'],
         },
-      }),
-  )
+      }))
