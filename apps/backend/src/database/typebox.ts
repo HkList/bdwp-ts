@@ -1,16 +1,20 @@
 import { t } from 'elysia'
 
-export const UserTypeboxSchema = t.Object({
+const UserTypeTypeSchema = t.Enum({
+  admin: 'admin',
+  user: 'user',
+})
+
+const UserTypeboxSchema = t.Object({
   id: t.Integer(),
   username: t.String(),
   password: t.String(),
+  type: UserTypeTypeSchema,
   created_at: t.Date(),
   updated_at: t.Date(),
 })
 
-export type UserTypeboxSchemaType = typeof UserTypeboxSchema.static
-
-export const AccountTypeboxSchema = t.Object({
+const AccountTypeboxSchema = t.Object({
   id: t.Integer(),
   user_id: t.Integer(),
   baidu_name: t.String(),
@@ -26,9 +30,22 @@ export const AccountTypeboxSchema = t.Object({
   updated_at: t.Date(),
 })
 
-export type AccountTypeboxSchemaType = typeof AccountTypeboxSchema.static
+const ShareLinkShareInfoTkbindListTypeboxSchema = t.Object({
+  avatar: t.String(),
+  channel: t.Integer(),
+  ctime: t.Integer(),
+  uk: t.Integer(),
+  username: t.String(),
+})
 
-export const ShareLinkTypeboxSchema = t.Object({
+const ShareLinkShareInfoTypeboxSchema = t.Object({
+  tkbind_list: t.Array(ShareLinkShareInfoTkbindListTypeboxSchema),
+  use_count: t.Integer(),
+  total_count: t.Integer(),
+  shareid: t.String(),
+})
+
+const ShareLinkTypeboxSchema = t.Object({
   id: t.Integer(),
   user_id: t.Integer(),
   account_id: t.Integer(),
@@ -37,20 +54,30 @@ export const ShareLinkTypeboxSchema = t.Object({
   randsk: t.String(),
   shareid: t.String(),
   uk: t.String(),
-  share_info: t.Any(),
+  share_info: t.Union([
+    t.Null(),
+    ShareLinkShareInfoTypeboxSchema,
+  ]),
   path: t.String(),
   ctime: t.Date(),
   created_at: t.Date(),
   updated_at: t.Date(),
 })
 
-export type ShareLinkTypeboxSchemaType = typeof ShareLinkTypeboxSchema.static
+const KeyUserDataTypeboxSchema = t.Object({
+  username: t.String(),
+  baidu_name: t.String(),
+  uk: t.String(),
+})
 
-export const KeyTypeboxSchema = t.Object({
+const KeyTypeboxSchema = t.Object({
   id: t.Integer(),
   user_id: t.Integer(),
   account_id: t.Integer(),
-  user_data: t.Optional(t.Any()),
+  user_data: t.Union([
+    t.Null(),
+    KeyUserDataTypeboxSchema,
+  ]),
   key: t.String(),
   used_count: t.Integer(),
   total_count: t.Integer(),
@@ -62,18 +89,24 @@ export const KeyTypeboxSchema = t.Object({
   updated_at: t.Date(),
 })
 
-export type KeyTypeboxSchemaType = typeof KeyTypeboxSchema.static
-
 export const Typeboxs = {
-  UserTypeboxSchema,
-  AccountTypeboxSchema,
-  ShareLinkTypeboxSchema,
-  KeyTypeboxSchema,
+  User: UserTypeboxSchema,
+  UserType: UserTypeTypeSchema,
+  Account: AccountTypeboxSchema,
+  ShareLinkShareInfoTkbindList: ShareLinkShareInfoTkbindListTypeboxSchema,
+  ShareLinkShareInfo: ShareLinkShareInfoTypeboxSchema,
+  ShareLink: ShareLinkTypeboxSchema,
+  KeyUserData: KeyUserDataTypeboxSchema,
+  Key: KeyTypeboxSchema,
 } as const
 
 export interface TypeboxTypes {
-  UserTypeboxSchemaType: UserTypeboxSchemaType
-  AccountTypeboxSchemaType: AccountTypeboxSchemaType
-  ShareLinkTypeboxSchemaType: ShareLinkTypeboxSchemaType
-  KeyTypeboxSchemaType: KeyTypeboxSchemaType
+  User: typeof UserTypeboxSchema.static
+  UserType: typeof UserTypeTypeSchema.static
+  Account: typeof AccountTypeboxSchema.static
+  ShareLinkShareInfoTkbindList: typeof ShareLinkShareInfoTkbindListTypeboxSchema.static
+  ShareLinkShareInfo: typeof ShareLinkShareInfoTypeboxSchema.static
+  ShareLink: typeof ShareLinkTypeboxSchema.static
+  KeyUserData: typeof KeyUserDataTypeboxSchema.static
+  Key: typeof KeyTypeboxSchema.static
 }

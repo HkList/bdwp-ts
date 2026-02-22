@@ -1,4 +1,4 @@
-import { boolean, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
+import { boolean, integer, jsonb, pgEnum, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 
 const timestamps = {
   created_at: timestamp().notNull().defaultNow(),
@@ -8,10 +8,13 @@ const timestamps = {
     .$onUpdate(() => new Date()),
 }
 
+export const userTypeEnum = pgEnum('user_type', ['admin', 'user'])
+
 export const User = pgTable('users', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   username: text().notNull().unique(),
   password: text().notNull(),
+  type: userTypeEnum().notNull().default('user'),
   ...timestamps,
 })
 

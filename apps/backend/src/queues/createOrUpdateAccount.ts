@@ -11,7 +11,7 @@ import { and, eq, sql } from 'drizzle-orm'
 import { status } from 'elysia'
 
 export interface CreateOrUpdateAccountJobData {
-  user: TypeboxTypes['UserTypeboxSchemaType']
+  user: TypeboxTypes['User']
   body: AccountModelType['createAccountBody']
   isUpdate: boolean
 }

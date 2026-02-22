@@ -7,14 +7,14 @@ import { status } from 'elysia'
 
 export class KeyService {
   static async createKey(
-    user: TypeboxTypes['UserTypeboxSchemaType'],
+    user: TypeboxTypes['User'],
     body: KeyModelType['createKeyBody'],
   ) {
     const { account_id, keys, total_count, total_hours } = body
 
     const account = await Drizzle.select({ id: Schemas.Account.id })
       .from(Schemas.Account)
-      .where(eq(Schemas.Account.id, account_id))
+      .where(and(eq(Schemas.Account.user_id, user.id), eq(Schemas.Account.id, account_id)))
       .limit(1)
 
     if (!account.length) {
@@ -54,7 +54,7 @@ export class KeyService {
   }
 
   static async deleteKeys(
-    user: TypeboxTypes['UserTypeboxSchemaType'],
+    user: TypeboxTypes['User'],
     body: KeyModelType['deleteKeysBody'],
   ) {
     const { ids } = body
@@ -89,14 +89,14 @@ export class KeyService {
     })
   }
 
-  static async updateKeys(body: KeyModelType['updateKeysBody']) {
+  static async updateKeys(user: TypeboxTypes['User'], body: KeyModelType['updateKeysBody']) {
     const ids = body.map(key => key.id)
 
     const existingKeys = await Drizzle.select({
       id: Schemas.Key.id,
     })
       .from(Schemas.Key)
-      .where(inArray(Schemas.Key.id, ids))
+      .where(and(eq(Schemas.Key.user_id, user.id), inArray(Schemas.Key.id, ids)))
 
     if (existingKeys.length !== ids.length) {
       return status(404, {
@@ -124,7 +124,7 @@ export class KeyService {
   }
 
   static async getAllKeys(
-    user: TypeboxTypes['UserTypeboxSchemaType'],
+    user: TypeboxTypes['User'],
     query: KeyModelType['getAllKeysQuery'],
   ) {
     const page = query.page ?? 1
@@ -163,7 +163,7 @@ export class KeyService {
         page,
         page_size,
         total: total[0]!.count,
-        data: keys,
+        data: keys as TypeboxTypes['Key'][],
       },
     })
   }

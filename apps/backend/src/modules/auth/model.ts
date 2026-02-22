@@ -1,3 +1,4 @@
+import { Typeboxs } from '@backend/db'
 import { t } from 'elysia'
 
 export const AuthModel = {
@@ -9,6 +10,7 @@ export const AuthModel = {
   signInSuccess: t.Object({
     message: t.Literal('登录成功'),
     data: t.Object({
+      type: Typeboxs.UserType,
       token: t.String(),
     }),
   }),

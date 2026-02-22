@@ -64,7 +64,7 @@ export const KeyModel = {
       total: t.Number(),
       page: t.Number(),
       page_size: t.Number(),
-      data: t.Array(Typeboxs.KeyTypeboxSchema),
+      data: t.Array(Typeboxs.Key),
     }),
   }),
 }

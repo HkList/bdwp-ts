@@ -25,6 +25,7 @@ export interface UseProDataTablePlusOptions<T extends object> {
     customProps?: ProDataTablePlusProps
     rowKey: CreateRowKey<T>
     loading?: () => boolean
+    disablePagination?: boolean
   }
   plugins?: UseRequestPlugin<Data, Params>[]
 }
@@ -98,13 +99,15 @@ export function useProDataTablePlus<
       ...options.options.customProps,
       ...dataTableProps.value,
       columns: options.columns ? options.columns() : [],
-      pagination: {
-        pageSizes: [10, 20, 50, 100],
-        prefix: ({ itemCount }: PaginationInfo) => `共 ${itemCount} 条`,
-        showQuickJumper: true,
-        showSizePicker: true,
-        ...NData.table.tableProps.value?.pagination,
-      },
+      pagination: options.options.customProps?.pagination !== false && !options.options.disablePagination
+        ? {
+            pageSizes: [10, 20, 50, 100],
+            prefix: ({ itemCount }: PaginationInfo) => `共 ${itemCount} 条`,
+            showQuickJumper: true,
+            showSizePicker: true,
+            ...NData.table.tableProps.value?.pagination,
+          }
+        : false as const,
       // 如果外部传入了 loading，则和 NData 内置的 loading 进行合并，满足任一 loading 为 true 时，表格显示 loading
       loading: options.options.loading
         ? options.options.loading() || NData.table.tableProps.value?.loading

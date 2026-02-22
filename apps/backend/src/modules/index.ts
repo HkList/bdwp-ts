@@ -1,5 +1,6 @@
 export { AccountModule } from '@backend/modules/admin/account/index.ts'
 export { KeyModule } from '@backend/modules/admin/key/index.ts'
+export { ShareLinkModule } from '@backend/modules/admin/share_link/index.ts'
 export { UserModule } from '@backend/modules/admin/user/index.ts'
 export { AuthModule } from '@backend/modules/auth/index.ts'
 export { ParseModule } from '@backend/modules/parse/index.ts'

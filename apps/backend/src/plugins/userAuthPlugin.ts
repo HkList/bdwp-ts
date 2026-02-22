@@ -1,10 +1,15 @@
+import type { TypeboxTypes } from '@backend/db'
 import { Drizzle } from '@backend/db'
 import { redis } from '@backend/services/redis.ts'
 import { bearer } from '@elysiajs/bearer'
 import { Elysia, status } from 'elysia'
 
-export function UserAuthPlugin() {
-  return new Elysia({ name: 'user_auth' })
+export interface UserAuthOptions {
+  type: TypeboxTypes['UserType']
+}
+
+export function UserAuthPlugin(options?: UserAuthOptions) {
+  return new Elysia({ name: 'user_auth', seed: options })
     .use(bearer())
     .derive({ as: 'scoped' }, async ({ bearer }) => {
       if (!bearer) {
@@ -24,6 +29,11 @@ export function UserAuthPlugin() {
 
       if (!user) {
         throw status(401, { message: '令牌对应用户不存在', data: null })
+      }
+
+      const type = options?.type ?? 'user'
+      if (user.type !== type && user.type !== 'admin') {
+        throw status(403, { message: '权限不足', data: null })
       }
 
       return { user }

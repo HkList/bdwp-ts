@@ -45,12 +45,13 @@ export class AuthService {
     return status(200, {
       message: '登录成功',
       data: {
+        type: user.type,
         token,
       },
     })
   }
 
-  static async signOut(user: TypeboxTypes['UserTypeboxSchemaType']) {
+  static async signOut(user: TypeboxTypes['User']) {
     // 删除所有token
     const list = (await redis.get(`auth:${user.id}`)) ?? '[]'
     const tokenList = JSON.parse(list) as string[]

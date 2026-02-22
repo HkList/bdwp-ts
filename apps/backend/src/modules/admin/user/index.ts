@@ -1,8 +1,10 @@
 import { UserModel } from '@backend/modules/admin/user/model.ts'
 import { UserService } from '@backend/modules/admin/user/service.ts'
+import { UserAuthPlugin } from '@backend/plugins/userAuthPlugin.ts'
 import { Elysia } from 'elysia'
 
 export const UserModule = new Elysia({ prefix: '/users' })
+  .use(UserAuthPlugin({ type: 'admin' }))
   .post('/', async ({ body }) => await UserService.createUser(body), {
     body: UserModel.createUserBody,
     response: {

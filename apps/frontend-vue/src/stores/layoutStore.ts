@@ -4,6 +4,7 @@ import type { MenuOption } from 'naive-ui'
 
 import { useMobile } from '@frontend/hooks/useMobile.ts'
 import { ADMIN_ROUTES } from '@frontend/router/index.ts'
+import { useAuthStore } from '@frontend/stores/authStore.ts'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -56,8 +57,9 @@ export const useLayoutStore = defineStore('layout', () => {
   const activeKey = computed(() => route.path)
 
   // 菜单选项
+  const authStore = useAuthStore()
   const menuOptions = computed<MenuOption[]>(() => {
-    return ADMIN_ROUTES.map(route => routeToMenuOption(route))
+    return ADMIN_ROUTES.filter(route => !route.meta.needAdmin || authStore.isAdmin).map(route => routeToMenuOption(route))
   })
 
   // 菜单选择处理

@@ -1,0 +1,138 @@
+import type { TypeboxTypes } from '@backend/db'
+import type { ShareLinkModelType } from '@backend/modules/admin/share_link/model.ts'
+
+import { api } from '@frontend/api/index.ts'
+import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
+import { NA } from 'naive-ui'
+import { defineStore } from 'pinia'
+import { ProDataTable, renderProDateText, renderProImages } from 'pro-naive-ui'
+import { h } from 'vue'
+
+export const useShareLinksStore = defineStore('admin_share_links', () => {
+  const {
+    table: { tableProps: shareLinkShareInfoTkbindListDataTableProps },
+  } = useProDataTablePlus<object, TypeboxTypes['ShareLinkShareInfoTkbindList']>({
+    // 假数据
+    service: async () => ({ list: [], total: 0 }),
+    options: { rowKey: row => row.uk, disablePagination: true },
+    columns: () => [
+      {
+        type: 'index',
+        title: '序号',
+      },
+      {
+        key: '用户信息',
+        title: '用户信息',
+        render: row => `${row.username}(${row.uk})`,
+      },
+      {
+        key: '用户头像',
+        title: '用户头像',
+        render: (bind: TypeboxTypes['ShareLinkShareInfoTkbindList']) => renderProImages(bind.avatar),
+      },
+      {
+        key: '绑定日期',
+        title: '绑定日期',
+        render: (bind: TypeboxTypes['ShareLinkShareInfoTkbindList']) => renderProDateText(bind.ctime * 1000),
+      },
+    ],
+  })
+
+  const {
+    search: { formValues: shareLinkSearchFormValues },
+    send: getShareLinks,
+    table: { tableProps: shareLinkDataTableProps },
+  } = useProDataTablePlus<ShareLinkModelType['getAllShareLinksQuery'], TypeboxTypes['ShareLink']>(
+    {
+      service: async ({ current, pageSize }) => {
+        const response = await api.admin.share_links.get({
+          query: {
+            ...shareLinkSearchFormValues.value,
+            page: current,
+            page_size: pageSize,
+          },
+        })
+
+        if (response.error) {
+          return {
+            list: [],
+            total: 0,
+          }
+        }
+
+        return {
+          list: response.data.data.data,
+          total: response.data.data.total,
+        }
+      },
+      columns: () => [
+        {
+          type: 'expand',
+          expandable: row => row.share_info !== null,
+          renderExpand: row => h(ProDataTable, {
+            ...shareLinkShareInfoTkbindListDataTableProps.value,
+            data: row.share_info?.tkbind_list ?? [],
+          }),
+        },
+        {
+          key: 'id',
+          title: 'ID',
+          width: 80,
+        },
+        {
+          key: '分享链接',
+          title: '分享链接',
+          render: row => h(
+            NA,
+            {
+              href: `https://pan.baidu.com/s/${row.surl}?pwd=${row.pwd}`,
+              target: '_blank',
+            },
+            { default: () => `https://pan.baidu.com/s/${row.surl}?pwd=${row.pwd}` },
+          ),
+        },
+        {
+          key: 'path',
+          title: '绑定路径',
+        },
+        {
+          key: '下载卷使用情况',
+          title: '下载卷使用情况',
+          render: row => row.share_info
+            ? `已使用 ${row.share_info.total_count} 张 / 共 ${row.share_info.use_count} 张`
+            : '获取分享信息失败',
+        },
+        {
+          key: 'created_at',
+          title: '本地端-创建时间',
+          render: row => renderProDateText(row.created_at),
+        },
+        {
+          key: 'ctime',
+          title: '百度端-创建时间',
+          render: row => renderProDateText(row.ctime),
+        },
+        {
+          key: 'actions',
+          title: '操作',
+        },
+      ],
+      options: {
+        customProps: {
+          cardTitle: '分享链接列表',
+        },
+        rowKey: row => row.id,
+      },
+    },
+    {
+      columns: () => [],
+      initValues: {},
+    },
+  )
+
+  return {
+    getShareLinks,
+    shareLinkDataTableProps,
+    shareLinkSearchFormValues,
+  }
+})

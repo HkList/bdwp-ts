@@ -65,7 +65,7 @@ export const UserModel = {
       total: t.Number(),
       page: t.Number(),
       page_size: t.Number(),
-      data: t.Array(Typeboxs.UserTypeboxSchema),
+      data: t.Array(Typeboxs.User),
     }),
   }),
 }

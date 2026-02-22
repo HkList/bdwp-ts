@@ -6,6 +6,7 @@ async function main() {
       {
         username: 'admin',
         password: await Bun.password.hash('admin_password'),
+        type: 'admin',
       },
     ])
     .onConflictDoUpdate({
@@ -13,6 +14,7 @@ async function main() {
       set: {
         username: 'admin',
         password: await Bun.password.hash('admin_password'),
+        type: 'admin',
       },
     })
 

@@ -37,7 +37,6 @@ export async function retryFetch(url: string, options?: RequestInit, retries = 3
 }
 
 export const api = treaty<App>(window?.location?.origin, {
-  parseDate: false,
   fetcher: retryFetch as typeof fetch,
   headers(path) {
     if (path.startsWith('/api/admin') || path === '/api/auth/sign_out') {

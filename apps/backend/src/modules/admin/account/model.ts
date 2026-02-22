@@ -91,7 +91,7 @@ export const AccountModel = {
       total: t.Number(),
       page: t.Number(),
       page_size: t.Number(),
-      data: t.Array(Typeboxs.AccountTypeboxSchema),
+      data: t.Array(Typeboxs.Account),
     }),
   }),
 }

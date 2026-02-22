@@ -5,6 +5,7 @@ import {
   KeyModule,
   ParseModule,
   QrloginModule,
+  ShareLinkModule,
   TaskModule,
   UserModule,
 } from '@backend/modules/index.ts'
@@ -42,7 +43,7 @@ export const app = new Elysia()
           securitySchemes: {
             bearer: {
               // 固定的 token 值，实际应用中应该从配置中读取
-              token: 'f3e55d07-4700-4143-b7a4-732884ac47d8',
+              token: '8135bda0-2e08-4188-a711-e6c7950e3edd',
             },
           },
         },
@@ -123,7 +124,8 @@ export const app = new Elysia()
               .use(UserAuthPlugin())
               .use(UserModule)
               .use(AccountModule)
-              .use(KeyModule),
+              .use(KeyModule)
+              .use(ShareLinkModule),
         ),
   )
 

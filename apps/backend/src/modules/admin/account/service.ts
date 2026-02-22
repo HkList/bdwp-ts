@@ -24,7 +24,7 @@ export class AccountService {
   }
 
   static async createAccount(
-    user: TypeboxTypes['UserTypeboxSchemaType'],
+    user: TypeboxTypes['User'],
     body: AccountModelType['createAccountBody'],
   ) {
     // 判断是否已存在相同 cid 的账号
@@ -186,7 +186,7 @@ export class AccountService {
   }
 
   static async deleteAccounts(
-    user: TypeboxTypes['UserTypeboxSchemaType'],
+    user: TypeboxTypes['User'],
     body: AccountModelType['deleteAccountsBody'],
   ) {
     const { ids } = body
@@ -222,7 +222,7 @@ export class AccountService {
   }
 
   static async updateAccounts(
-    user: TypeboxTypes['UserTypeboxSchemaType'],
+    user: TypeboxTypes['User'],
     body: AccountModelType['updateAccountsBody'],
   ) {
     const ids = body.map(account => account.id)
@@ -281,7 +281,7 @@ export class AccountService {
   }
 
   static async getAllAccounts(
-    user: TypeboxTypes['UserTypeboxSchemaType'],
+    user: TypeboxTypes['User'],
     query: AccountModelType['getAllAccountsQuery'],
   ) {
     const page = query.page ?? 1

@@ -78,7 +78,7 @@ export const useUsersStore = defineStore('admin_users', () => {
     search: { formProps: userSearchFormProps, formValues: userSearchFormValues },
     send: getUsers,
     table: { checkedRowKeys: userCheckedRowKeys, tableProps: userDataTableProps },
-  } = useProDataTablePlus<UserModelType['getAllUsersQuery'], TypeboxTypes['UserTypeboxSchemaType']>(
+  } = useProDataTablePlus<UserModelType['getAllUsersQuery'], TypeboxTypes['User']>(
     {
       service: async ({ current, pageSize }) => {
         const response = await api.admin.users.get({

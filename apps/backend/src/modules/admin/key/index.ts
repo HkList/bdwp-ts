@@ -27,7 +27,7 @@ export const KeyModule = new Elysia({ prefix: '/keys' })
       tags: ['卡密管理'],
     },
   })
-  .patch('/', async ({ body }) => await KeyService.updateKeys(body), {
+  .patch('/', async ({ user, body }) => await KeyService.updateKeys(user, body), {
     body: KeyModel.updateKeysBody,
     response: {
       200: KeyModel.updateKeysSuccess,

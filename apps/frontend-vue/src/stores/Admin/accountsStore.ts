@@ -25,7 +25,7 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
     table: { checkedRowKeys: accountCheckedRowKeys, tableProps: accountDataTableProps },
   } = useProDataTablePlus<
     AccountModelType['getAllAccountsQuery'],
-    TypeboxTypes['AccountTypeboxSchemaType']
+    TypeboxTypes['Account']
   >(
     {
       service: async ({ current, pageSize }) => {
@@ -72,6 +72,11 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
         {
           key: 'ticket_remain_count',
           title: '剩余票数',
+        },
+        {
+          key: '账号状态',
+          title: '账号状态',
+          render: row => `${row.status ? '正常' : `禁用(${row.reason})`}`,
         },
         {
           key: 'created_at',
