@@ -29,10 +29,15 @@ export interface SaveQueueStatusOptions<T extends object> {
 export async function saveQueueStatus<T extends object>(options: SaveQueueStatusOptions<T>) {
   const { job, progress, status, message, data } = options
 
+  const payload = JSON.stringify({ progress, status, message, data: data ?? {} })
+
   await redis.set(
     `task:${job.id}`,
-    JSON.stringify({ progress, status, message, data: data ?? {} }),
+    payload,
     'EX',
     3600,
   )
+
+  // 发布任务状态更新消息，用于 SSE 推送
+  await redis.publish(`task:update:${job.id}`, payload)
 }

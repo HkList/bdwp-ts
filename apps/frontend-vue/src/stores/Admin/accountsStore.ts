@@ -190,7 +190,7 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
 
     // 等待异步任务完成
     const response = await useAsyncJob<{ id: number }>({
-      taskId: res.data.data.task_id,
+      task_id: res.data.data.task_id,
     })
     if (response.status !== 'completed') {
       notification.error({
@@ -243,7 +243,7 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
 
     // 等待异步任务完成
     const response = await useAsyncJob<{ id: number }>({
-      taskId: res.data.data.task_id[0],
+      task_id: res.data.data.task_id[0],
     })
     if (response.status !== 'completed') {
       notification.error({

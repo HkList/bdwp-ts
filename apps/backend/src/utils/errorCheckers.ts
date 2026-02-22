@@ -19,3 +19,7 @@ export function isReferenceError(error: unknown) {
 
   return error.cause?.message?.includes('violates foreign key constraint')
 }
+
+export function isAbortError(error: unknown) {
+  return error instanceof Error && error.name === 'AbortError'
+}

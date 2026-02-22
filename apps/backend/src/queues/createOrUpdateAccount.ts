@@ -28,11 +28,6 @@ export const createOrUpdateAccountQueue = new Queue<
     db: config.REDIS_DB,
   },
   defaultJobOptions: {
-    attempts: 3,
-    backoff: {
-      type: 'exponential',
-      delay: 1000,
-    },
     removeOnComplete: true,
     removeOnFail: 100,
   },
@@ -187,6 +182,15 @@ const worker = new Worker<CreateOrUpdateAccountJobData, CreateOrUpdateAccountQue
     concurrency: 1,
   },
 )
+
+worker.on('active', async (job) => {
+  await saveQueueStatus({
+    job,
+    progress: 0,
+    status: 'processing',
+    message: '任务已启动, 正在准备中',
+  })
+})
 
 worker.on('completed', async (job) => {
   const returnValue = job.returnvalue

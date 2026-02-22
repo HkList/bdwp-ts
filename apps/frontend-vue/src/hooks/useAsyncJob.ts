@@ -1,46 +1,63 @@
 import { api } from '@frontend/api/index.ts'
+import { notification } from '@frontend/utils/discreteApi.ts'
 
-export interface UseAsyncJobOptions {
-  taskId: string
-  /** 轮询间隔，单位毫秒，默认为2000ms */
-  pollingInterval?: number
+const NOTIFICATION_DURATION = 3000
+
+interface AsyncJobOptions {
+  task_id: string
 }
 
-export interface AsyncJobResultType<T> {
-  status: 'completed' | 'failed'
+interface AsyncJobApiResult<T> {
+  status: 'processing' | 'completed' | 'failed'
   message: string
   data: T
   progress: number
 }
 
-export function useAsyncJob<T>(options: UseAsyncJobOptions) {
-  const { taskId, pollingInterval = import.meta.env.DEV ? 100 : 2000 } = options
+export type AsyncJobResult<T> = Omit<AsyncJobApiResult<T>, 'status'> & {
+  status: 'completed' | 'failed'
+}
 
-  return new Promise<AsyncJobResultType<T>>((resolve, reject) => {
-    const pollJobStatus = async () => {
-      try {
-        const res = await api.task.get({ query: { task_id: taskId } })
-        if (res.error) {
-          return reject(res.error)
-        }
+function showErrorNotification(title: string, content: string, error?: unknown): never {
+  notification.error({
+    duration: NOTIFICATION_DURATION,
+    title,
+    content,
+  })
 
-        if (import.meta.env.DEV) {
-          console.warn('轮询任务状态:', res.data)
-        }
+  throw error instanceof Error ? error : new Error(content)
+}
 
-        if (res.data.data.status !== 'processing') {
-          resolve(res.data.data as AsyncJobResultType<T>)
-        }
-        else {
-          setTimeout(pollJobStatus, pollingInterval)
-        }
-      }
-      catch (err) {
-        reject(err)
-      }
+export async function useAsyncJob<T>(
+  options: AsyncJobOptions,
+): Promise<AsyncJobResult<T>> {
+  const { task_id } = options
+
+  const response = await api.task.sse.get({ query: { task_id } })
+
+  if (response.error) {
+    showErrorNotification(
+      '订阅任务状态失败',
+      `HTTP ${response.status}: ${response.response.statusText}`,
+      response.error,
+    )
+  }
+
+  for await (const res of response.data) {
+    if (res.event === 'error') {
+      showErrorNotification('获取任务状态失败', res.data.message)
     }
 
-    // 开始轮询
-    pollJobStatus()
-  })
+    if (res.event === 'message') {
+      const result = res.data as AsyncJobApiResult<T>
+      if (result.status !== 'processing') {
+        return result as AsyncJobResult<T>
+      }
+    }
+  }
+
+  showErrorNotification(
+    '任务订阅意外结束',
+    '任务订阅连接意外关闭，可能导致无法获取最终结果',
+  )
 }

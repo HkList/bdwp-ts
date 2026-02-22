@@ -5,7 +5,7 @@ export const TaskModel = {
     task_id: t.String(),
   }),
   GetTaskStatusSuccess: t.Object({
-    message: t.String(),
+    message: t.Literal('获取任务状态成功'),
     data: t.Object({
       progress: t.Number(),
       status: t.Enum({
@@ -18,11 +18,11 @@ export const TaskModel = {
     }),
   }),
   GetTaskStatusFailedNotFound: t.Object({
-    message: t.String(),
+    message: t.Literal('任务不存在或已过期'),
     data: t.Null(),
   }),
   GetTaskStatusFailedParse: t.Object({
-    message: t.String(),
+    message: t.Literal('任务状态解析失败'),
     data: t.Null(),
   }),
 }
