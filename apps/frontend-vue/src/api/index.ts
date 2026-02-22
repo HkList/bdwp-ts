@@ -57,6 +57,11 @@ export const api = treaty<App>(window?.location?.origin, {
       data?: unknown
     }
 
+    // 不处理 SSE 响应
+    if (response.headers.get('Content-Type')?.includes('text/event-stream')) {
+      return
+    }
+
     if (!response.headers.get('Content-Type')?.includes('application/json')) {
       loadingBar.error()
 
