@@ -27,8 +27,10 @@ export const useAuthStore = defineStore('auth', () => {
   const { loading: signInLoading, send: _signIn } = useRequest(api.auth.sign_in.post)
   const signIn = async (values: AuthModelType['signInBody']) => {
     const { error, data } = await _signIn(values)
-    if (error)
+    if (error) {
       return
+    }
+
     setToken(data.data.token)
     await router.push('/admin')
   }

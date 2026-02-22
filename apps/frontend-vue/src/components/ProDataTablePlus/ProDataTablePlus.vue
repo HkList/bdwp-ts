@@ -22,17 +22,21 @@ if ('toolbar' in slots) {
 
 function onClick(event: PointerEvent, row: any) {
   const target = event.target
-  if (!target || !(target instanceof HTMLElement))
+  if (!target || !(target instanceof HTMLElement)) {
     return
+  }
+
   const tagName = target.tagName.toLowerCase()
 
-  if (!props.selectRowTagNames.includes(tagName))
+  if (!props.selectRowTagNames.includes(tagName)) {
     return
+  }
 
   // 取出当前行的ID
   const rowKey = typeof props.rowKey === 'function' ? props.rowKey(row) : row[props.rowKey ?? 'id']
-  if (rowKey === undefined)
+  if (rowKey === undefined) {
     return
+  }
 
   // 触发选择事件
   if (props.checkedRowKeys && props['onUpdate:checkedRowKeys']) {

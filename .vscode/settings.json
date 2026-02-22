@@ -1,4 +1,12 @@
 {
+  "files.watcherExclude": {
+    "**/node_modules/*/**": true
+  },
+
+  // Git 优化
+  "git.autorefresh": false,
+  "git.autofetch": false,
+
   // Disable the default formatter, use eslint instead
   "prettier.enable": false,
   "editor.formatOnSave": false,

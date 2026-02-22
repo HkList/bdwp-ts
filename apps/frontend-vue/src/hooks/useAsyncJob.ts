@@ -20,8 +20,9 @@ export function useAsyncJob<T>(options: UseAsyncJobOptions) {
     const pollJobStatus = async () => {
       try {
         const res = await api.task.get({ query: { task_id: taskId } })
-        if (res.error)
+        if (res.error) {
           return reject(res.error)
+        }
 
         if (import.meta.env.DEV) {
           console.warn('轮询任务状态:', res.data)

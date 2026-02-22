@@ -23,10 +23,9 @@ export const activeTab = ref<string>('')
 
 export async function useRouteTabs(router: Router, checker?: (path: string) => MaybePromise<boolean>) {
   router.afterEach(async (to, _, failure) => {
-    if (failure)
+    if (failure || (checker && !(await checker(to.path)))) {
       return
-    if (checker && !(await checker(to.path)))
-      return
+    }
 
     tabs.value[to.path] = {
       icon: to.meta.icon as ReturnType<typeof renderIcon>,
@@ -92,8 +91,9 @@ export async function useRouteTabs(router: Router, checker?: (path: string) => M
 
 export function switchTab(path: string, preflight = false) {
   const index = tabsOrder.value.indexOf(path)
-  if (index === -1)
+  if (index === -1) {
     return
+  }
 
   let nextIndex: number
   if (preflight) {
@@ -114,8 +114,9 @@ export function switchTab(path: string, preflight = false) {
 export function closeTab(path: string) {
   // 判断标签是否存在
   const index = tabsOrder.value.indexOf(path)
-  if (index === -1)
+  if (index === -1) {
     return
+  }
 
   delete tabs.value[path]
   tabsOrder.value.splice(index, 1)

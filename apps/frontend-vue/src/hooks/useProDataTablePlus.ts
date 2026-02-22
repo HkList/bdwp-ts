@@ -53,10 +53,13 @@ export function useProDataTablePlus<
     {
       ...options.options,
       onSuccess: (res, params) => {
-        if (options.options.onSuccess)
+        if (options.options.onSuccess) {
           options.options.onSuccess(res, params)
-        if (res.total === 0)
+        }
+
+        if (res.total === 0) {
           return
+        }
 
         // 计算最大页数
         const maxPage = Math.ceil(res.total / params[0].pageSize)

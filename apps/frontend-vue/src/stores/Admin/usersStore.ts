@@ -17,8 +17,10 @@ export const useUsersStore = defineStore('admin_users', () => {
   const { loading: addUserLoading, send: _addUser } = useRequest(api.admin.users.post)
   const addUser = async (values: UserModelType['createUserBody']) => {
     const res = await _addUser(values)
-    if (res.error)
+    if (res.error) {
       return false
+    }
+
     await getUsers()
   }
   const addUserModalForm = useProModalForm<UserModelType['createUserBody']>({
@@ -45,8 +47,10 @@ export const useUsersStore = defineStore('admin_users', () => {
   const { loading: updateUsersLoading, send: _updateUsers } = useRequest(api.admin.users.patch)
   const updateUsers = async (users: UserModelType['updateUsersBody']) => {
     const res = await _updateUsers(users)
-    if (res.error)
+    if (res.error) {
       return false
+    }
+
     await getUsers()
   }
   const updateUsersModalForm = useProModalForm<

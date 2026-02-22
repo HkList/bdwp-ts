@@ -44,8 +44,9 @@ export function setMode(next: ThemeModeType) {
 
 export function setModeWithTransition(event: { clientX: number, clientY: number }, next: ThemeModeType) {
   // 判断是否是一样的mode
-  if (next === colorMode.store.value)
+  if (next === colorMode.store.value) {
     return
+  }
 
   if (
     !('startViewTransition' in document)

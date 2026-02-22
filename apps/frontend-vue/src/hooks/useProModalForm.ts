@@ -37,9 +37,11 @@ export function useProModalForm<T extends object, K extends object = T, U extend
   const open = (...args: U) => {
     if (openFn) {
       const r = openFn(...args)
-      if (r === false)
+      if (r === false) {
         return
+      }
     }
+
     form.show.value = true
   }
 

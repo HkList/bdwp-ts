@@ -184,8 +184,9 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
   const { loading: addAccountLoading, send: _addAccount } = useRequest(api.admin.accounts.post)
   const addAccount = async (values: AccountModelType['createAccountBody']) => {
     const res = await _addAccount(values)
-    if (res.error)
+    if (res.error) {
       return false
+    }
 
     // 等待异步任务完成
     const response = await useAsyncJob<{ id: number }>({
@@ -228,8 +229,9 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
   )
   const updateAccounts = async (values: AccountModelType['updateAccountsBody']) => {
     const res = await _updateAccounts(values)
-    if (res.error)
+    if (res.error) {
       return false
+    }
 
     if (!res.data.data.task_id[0]) {
       notification.error({

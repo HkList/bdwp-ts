@@ -35,15 +35,18 @@ function onDragEnd(event: { item: HTMLElement }) {
 }
 
 async function handleCardClick(path: string) {
-  if (path === activeTab.value)
+  if (path === activeTab.value) {
     return
+  }
+
   await router.push(path)
 }
 
 const scrollbar = useTemplateRef('scrollbar')
 function handleMousewheel(event: WheelEvent) {
-  if (!scrollbar.value)
+  if (!scrollbar.value) {
     return
+  }
 
   scrollbar.value.scrollBy({
     behavior: 'auto',
@@ -53,8 +56,9 @@ function handleMousewheel(event: WheelEvent) {
 
 function warpedCloseTab(event: MouseEvent, path: string, fromTab = false) {
   // 判断是否还有剩余标签
-  if (!closeAble.value)
+  if (!closeAble.value) {
     return
+  }
 
   let tabElement: HTMLElement | null | undefined
 
@@ -63,16 +67,21 @@ function warpedCloseTab(event: MouseEvent, path: string, fromTab = false) {
   }
   else {
     const target = event.currentTarget as HTMLElement
-    if (!target)
+    if (!target) {
       return
+    }
+
     tabElement = target.parentElement?.parentElement?.parentElement
   }
 
-  if (!tabElement)
+  if (!tabElement) {
     return
+  }
 
-  if (tabsOrder.value.length - isClosingCount.value <= 1)
+  if (tabsOrder.value.length - isClosingCount.value <= 1) {
     return
+  }
+
   isClosingCount.value += 1
 
   tabElement.style.maxWidth = '0px'
@@ -108,11 +117,14 @@ watch(
   async () => {
     await nextTick()
 
-    if (!scrollbar.value)
+    if (!scrollbar.value) {
       return
+    }
+
     const activeTabElement = document.querySelector('.tab.active') as HTMLElement
-    if (!activeTabElement)
+    if (!activeTabElement) {
       return
+    }
 
     const { offsetLeft, offsetWidth } = activeTabElement
     let left = offsetLeft - offsetWidth
