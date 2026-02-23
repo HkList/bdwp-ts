@@ -4,9 +4,10 @@ import type {
   ProDataTablePlusSlots,
 } from '@frontend/components/ProDataTablePlus/types.ts'
 import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
 
 import { EllipsisVertical } from '@vicons/ionicons5'
-import { NButton, NIcon, NPopover } from 'naive-ui'
+import { NButton, NPopover } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { ProCard, ProDataTable } from 'pro-naive-ui'
 import { computed } from 'vue'
@@ -100,13 +101,9 @@ const selectRowOnClickProps = computed<ProDataTablePlusProps>(() => ({
       <div v-if="!isMobile" class="header-extra-warper">
         <slot name="header-extra" />
       </div>
-      <NPopover v-else trigger="click" placement="bottom-end">
+      <NPopover v-else trigger="click" placement="bottom-end" class="header-extra-popover">
         <template #trigger>
-          <NButton text>
-            <NIcon size="20">
-              <EllipsisVertical />
-            </NIcon>
-          </NButton>
+          <NButton text :render-icon="renderIcon(EllipsisVertical)" class="header-extra-warper" />
         </template>
         <div class="header-extra-popover">
           <slot name="header-extra" />
@@ -115,6 +112,12 @@ const selectRowOnClickProps = computed<ProDataTablePlusProps>(() => ({
     </template>
   </ProCard>
 </template>
+
+<style lang="scss">
+.header-extra-popover {
+  max-width: 240px;
+}
+</style>
 
 <style lang="scss" scoped>
 .header-extra-warper {
