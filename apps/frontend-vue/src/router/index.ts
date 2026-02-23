@@ -3,7 +3,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@frontend/stores/authStore.ts'
 import { loadingBar } from '@frontend/utils/discreteApi.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import { Desktop, Earth, Home, Key, LogIn, People, Person, Search, Share, ShareSocial } from '@vicons/ionicons5'
+import { Desktop, Home, Key, LogIn, People, Person, Search, Share, ShareSocial } from '@vicons/ionicons5'
 import { createRouter, createWebHistory } from 'vue-router'
 
 type BaseRouteRecordRawPlus = Omit<RouteRecordRaw, 'children' | 'component' | 'meta'> & {
@@ -31,11 +31,6 @@ export type RouteRecordRawPlus = BaseRouteRecordRawPlus
   )
 
 export const ADMIN_ROUTES: RouteRecordRawPlus[] = [
-  {
-    component: () => import('@frontend/views/Admin/Dashboard.vue'),
-    meta: { icon: renderIcon(Earth), title: '仪表盘' },
-    path: '/admin/dashboard',
-  },
   {
     component: () => import('@frontend/views/Admin/Users/Index.vue'),
     meta: { icon: renderIcon(People), title: '用户管理', needAdmin: true },
@@ -81,7 +76,7 @@ export const routes: RouteRecordRawPlus[] = [
     component: () => import('@frontend/layouts/AdminLayout/index.vue'),
     meta: { icon: renderIcon(Desktop), title: '管理后台首页' },
     path: '/admin',
-    redirect: '/admin/dashboard',
+    redirect: '/admin/users',
   },
   {
     component: () => import('@frontend/views/NotFound.vue'),

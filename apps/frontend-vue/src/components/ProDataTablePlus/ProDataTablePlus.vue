@@ -3,7 +3,11 @@ import type {
   ProDataTablePlusProps,
   ProDataTablePlusSlots,
 } from '@frontend/components/ProDataTablePlus/types.ts'
+import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
 
+import { EllipsisVertical } from '@vicons/ionicons5'
+import { NButton, NIcon, NPopover } from 'naive-ui'
+import { storeToRefs } from 'pinia'
 import { ProCard, ProDataTable } from 'pro-naive-ui'
 import { computed } from 'vue'
 
@@ -13,8 +17,13 @@ const props = withDefaults(defineProps<ProDataTablePlusProps>(), {
   cascade: true,
   paginateSinglePage: true,
   selectRowTagNames: () => ['td'],
+  scrollX: 1200,
 })
 const slots = defineSlots<ProDataTablePlusSlots>()
+
+const layoutStore = useLayoutStore()
+const { isMobile } = storeToRefs(layoutStore)
+
 if ('toolbar' in slots) {
   throw new Error('ProDataTablePlus 已废弃 toolbar 插槽，请使用 header-extra 插槽替代')
 }
@@ -88,9 +97,21 @@ const selectRowOnClickProps = computed<ProDataTablePlusProps>(() => ({
     </ProDataTable>
 
     <template #header-extra>
-      <div class="header-extra-warper">
+      <div v-if="!isMobile" class="header-extra-warper">
         <slot name="header-extra" />
       </div>
+      <NPopover v-else trigger="click" placement="bottom-end">
+        <template #trigger>
+          <NButton text>
+            <NIcon size="20">
+              <EllipsisVertical />
+            </NIcon>
+          </NButton>
+        </template>
+        <div class="header-extra-popover">
+          <slot name="header-extra" />
+        </div>
+      </NPopover>
     </template>
   </ProCard>
 </template>
@@ -98,5 +119,10 @@ const selectRowOnClickProps = computed<ProDataTablePlusProps>(() => ({
 <style lang="scss" scoped>
 .header-extra-warper {
   margin-right: 10px;
+}
+
+.header-extra-popover {
+  padding: 8px;
+  min-width: 200px;
 }
 </style>

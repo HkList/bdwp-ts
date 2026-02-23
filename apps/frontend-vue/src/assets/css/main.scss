@@ -13,6 +13,17 @@ body,
   width: 100%;
 }
 
+.n-pagination {
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+
+  & > div {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
