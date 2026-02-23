@@ -13,7 +13,6 @@ const props = withDefaults(defineProps<ProDataTablePlusProps>(), {
   cascade: true,
   paginateSinglePage: true,
   selectRowTagNames: () => ['td'],
-  singleLine: true,
 })
 const slots = defineSlots<ProDataTablePlusSlots>()
 if ('toolbar' in slots) {
