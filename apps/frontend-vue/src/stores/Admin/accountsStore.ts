@@ -1,13 +1,15 @@
 import type { TypeboxTypes } from '@backend/db'
 import type { AccountModelType } from '@backend/modules/admin/account/model.ts'
+import type { CreateOrUpdateAccountQueueRawResponse } from '@backend/queues/createOrUpdateAccount.ts'
 import type { Oneof } from '@frontend/utils/types.ts'
-import type { SelectMixedOption } from 'naive-ui/es/select/src/interface.d.ts'
 
+import type { SelectOption } from 'naive-ui'
 import { api } from '@frontend/api/index.ts'
 import { useAsyncJob } from '@frontend/hooks/useAsyncJob.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
 import { useProModalForm } from '@frontend/hooks/useProModalForm.ts'
 import { useRequest } from '@frontend/hooks/useRequest.ts'
+import { useRouteQueryWatcher } from '@frontend/hooks/useRouteQueryWatcher.ts'
 import { copyText } from '@frontend/utils/copyText.ts'
 import { notification } from '@frontend/utils/discreteApi.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
@@ -51,42 +53,38 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
       },
       columns: () => [
         {
-          title: '选择',
           type: 'selection',
+          title: '选择',
         },
         {
-          key: 'id',
+          path: 'id',
           title: 'ID',
           width: 80,
         },
         {
-          key: '账号信息',
           title: '账号信息',
           render: row => `${row.baidu_name}(${row.uk})`,
         },
         {
-          key: '组织信息',
           title: '组织信息',
           render: row => `${row.org_name}(${row.cid})`,
         },
         {
-          key: 'ticket_remain_count',
+          path: 'ticket_remain_count',
           title: '剩余票数',
         },
         {
-          key: '账号状态',
           title: '账号状态',
           render: row => `${row.status ? '正常' : `禁用(${row.reason})`}`,
         },
         {
-          key: 'created_at',
           render: row => renderProDateText(row.created_at),
           title: '创建时间',
         },
         {
-          key: 'actions',
-          render: row =>
-            h(NFlex, null, {
+          title: '操作',
+          render: (row) => {
+            return h(NFlex, null, {
               default: () => [
                 h(
                   NButton,
@@ -119,8 +117,8 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
                   { default: () => '删除' },
                 ),
               ],
-            }),
-          title: '操作',
+            })
+          },
         },
       ],
       options: {
@@ -134,7 +132,12 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
     {
       columns: () => [
         {
-          key: 'status',
+          path: 'id',
+          title: 'ID',
+          type: 'number',
+        },
+        {
+          path: 'status',
           title: '状态',
           type: 'select',
           options: [
@@ -142,9 +145,37 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
             { label: '禁用', value: 'false' },
           ],
         },
+        {
+          path: 'baidu_name',
+          title: '百度账号名称',
+        },
+        {
+          path: 'uk',
+          title: '百度账号UK',
+        },
+        {
+          path: 'org_name',
+          title: '组织名称',
+        },
+        {
+          path: 'cid',
+          title: '组织CID',
+        },
       ],
       initValues: {},
-      rules: () => ({}),
+    },
+  )
+
+  useRouteQueryWatcher(
+    path => path.includes('/admin/accounts'),
+    (query) => {
+      if (query.id) {
+        accountSearchFormValues.value.id = Number(query.id)
+      }
+
+      if (Object.keys(query).length > 0) {
+        getAccounts()
+      }
     },
   )
 
@@ -163,12 +194,7 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
     data: getEnterpriseInfoData,
     send: _getEnterpriseInfo,
   } = useRequest(api.admin.accounts.get_enterprise_info.post)
-  const enterpriseOptions = ref<SelectMixedOption[]>([
-    {
-      label: '测试',
-      value: 123,
-    },
-  ])
+  const enterpriseOptions = ref<SelectOption[]>([])
   const getEnterpriseInfo = async (cookie: string) => {
     const res = await _getEnterpriseInfo({ cookie })
     if (res.error) {
@@ -194,7 +220,7 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
     }
 
     // 等待异步任务完成
-    const response = await useAsyncJob<{ id: number }>({
+    const response = await useAsyncJob<CreateOrUpdateAccountQueueRawResponse>({
       task_id: res.data.data.task_id,
     })
     if (response.status !== 'completed') {
@@ -224,8 +250,9 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
     loading: addAccountLoading,
     onSubmit: async (value) => {
       const res = await addAccount(value)
-      if (res !== false)
+      if (res !== false) {
         addAccountModalForm.value.close()
+      }
     },
   })
 
@@ -247,7 +274,7 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
     }
 
     // 等待异步任务完成
-    const response = await useAsyncJob<{ id: number }>({
+    const response = await useAsyncJob<CreateOrUpdateAccountQueueRawResponse>({
       task_id: res.data.data.task_id[0],
     })
     if (response.status !== 'completed') {
@@ -279,8 +306,9 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
       loading: updateAccountsLoading,
       onSubmit: async (account) => {
         const res = await updateAccounts([account])
-        if (res !== false)
+        if (res !== false) {
           updateAccountsModalForm.value.close()
+        }
       },
     },
     (account) => {

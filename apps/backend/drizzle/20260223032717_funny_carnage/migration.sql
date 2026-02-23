@@ -1,0 +1,2 @@
+ALTER TABLE "keys" ADD COLUMN "share_link_id" integer NOT NULL;--> statement-breakpoint
+ALTER TABLE "keys" ADD CONSTRAINT "keys_share_link_id_share_links_id_fkey" FOREIGN KEY ("share_link_id") REFERENCES "share_links"("id");

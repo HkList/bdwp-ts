@@ -31,8 +31,9 @@ export const useUsersStore = defineStore('admin_users', () => {
     loading: addUserLoading,
     onSubmit: async (value) => {
       const res = await addUser(value)
-      if (res !== false)
+      if (res !== false) {
         addUserModalForm.value.close()
+      }
     },
   })
 
@@ -65,8 +66,9 @@ export const useUsersStore = defineStore('admin_users', () => {
       loading: updateUsersLoading,
       onSubmit: async (user) => {
         const res = await updateUsers([user])
-        if (res !== false)
+        if (res !== false) {
           updateUsersModalForm.value.close()
+        }
       },
     },
     ({ password: _, ...rest }) => {
@@ -103,27 +105,27 @@ export const useUsersStore = defineStore('admin_users', () => {
       },
       columns: () => [
         {
-          title: '选择',
           type: 'selection',
+          title: '选择',
         },
         {
-          key: 'id',
+          path: 'id',
           title: 'ID',
           width: 80,
         },
         {
-          key: 'username',
+          path: 'username',
           title: '用户名',
         },
         {
-          key: 'created_at',
-          render: row => renderProDateText(row.created_at),
+          path: 'created_at',
           title: '创建时间',
+          render: row => renderProDateText(row.created_at),
         },
         {
-          key: 'actions',
-          render: row =>
-            h(NFlex, null, {
+          title: '操作',
+          render: (row) => {
+            return h(NFlex, null, {
               default: () => [
                 h(
                   NButton,
@@ -146,8 +148,8 @@ export const useUsersStore = defineStore('admin_users', () => {
                   { default: () => '删除' },
                 ),
               ],
-            }),
-          title: '操作',
+            })
+          },
         },
       ],
       options: {
@@ -161,12 +163,11 @@ export const useUsersStore = defineStore('admin_users', () => {
     {
       columns: () => [
         {
-          key: 'username',
+          path: 'username',
           title: '用户名',
         },
       ],
       initValues: {},
-      rules: () => ({}),
     },
   )
 

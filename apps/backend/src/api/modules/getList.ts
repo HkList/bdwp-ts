@@ -51,7 +51,7 @@ export async function getList(options: GetListOptions): Promise<GetListResponse>
   const response = await request.send<GetListApiSuccessResponse, GetListApiFailedResponse>(
     options.cid
       ? 'https://pan.baidu.com/mid_enterprise_v2/api/list'
-      : 'http://pan.baidu.com/api/list',
+      : 'https://pan.baidu.com/api/list',
     {
       method: 'get',
       headers: {

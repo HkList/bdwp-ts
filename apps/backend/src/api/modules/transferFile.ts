@@ -78,7 +78,7 @@ export async function transferFile(options: TransferFileOptions): Promise<Transf
   >(
     options.cid
       ? 'https://pan.baidu.com/mid_enterprise_v2/share/transfer'
-      : 'http://pan.baidu.com/share/transfer',
+      : 'https://pan.baidu.com/share/transfer',
     {
       method: 'post',
       headers: {

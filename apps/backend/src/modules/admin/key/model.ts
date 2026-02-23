@@ -9,13 +9,21 @@ export const KeyModel = {
     total_hours: t.Number({ minimum: 1 }),
   }),
   createKeySuccess: t.Object({
-    message: t.Literal('创建卡密成功'),
+    message: t.Literal('创建异步任务成功'),
     data: t.Object({
-      inserted_keys: t.Array(t.String()),
+      task_id: t.String(),
     }),
   }),
   createKeyFailedAccountNotFound: t.Object({
     message: t.Literal('账号不存在'),
+    data: t.Null(),
+  }),
+  createKeyFailedExceedRemainCount: t.Object({
+    message: t.Literal('卡密数量超过账号剩余下载卷数量'),
+    data: t.Null(),
+  }),
+  createKeyFailedCreateJobFailed: t.Object({
+    message: t.Literal('创建异步任务失败'),
     data: t.Null(),
   }),
 
@@ -36,8 +44,9 @@ export const KeyModel = {
       id: t.Number(),
       key: t.Optional(t.String()),
       used_count: t.Optional(t.Number()),
-      expired_at: t.Optional(t.String({ format: 'date-time' })),
       total_count: t.Optional(t.Number()),
+      expired_at: t.Optional(t.Date()),
+      total_hours: t.Optional(t.Number()),
       status: t.Optional(t.Boolean()),
       reason: t.Optional(t.String()),
     }),
@@ -57,6 +66,7 @@ export const KeyModel = {
     id: t.Optional(t.Number()),
     account_id: t.Optional(t.Number()),
     status: t.Optional(t.Boolean()),
+    key: t.Optional(t.String()),
   }),
   getAllKeysSuccess: t.Object({
     message: t.Literal('获取卡密列表成功'),

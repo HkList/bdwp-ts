@@ -13,7 +13,7 @@ import {
 import { Drizzle, Schemas } from '@backend/db'
 import { createOrUpdateAccountQueue } from '@backend/queues/createOrUpdateAccount.ts'
 import { toChunks } from '@backend/utils/toChunks.ts'
-import { and, count, eq, inArray } from 'drizzle-orm'
+import { and, count, eq, inArray, like } from 'drizzle-orm'
 import { status } from 'elysia'
 
 export class AccountService {
@@ -286,10 +286,26 @@ export class AccountService {
   ) {
     const page = query.page ?? 1
     const page_size = query.page_size ?? 10
-    const { id, status: accountStatus } = query
+    const { id, status: accountStatus, baidu_name, uk, org_name, cid } = query
 
     // 构建查询条件
     const conditions = [eq(Schemas.Account.user_id, user.id)]
+
+    if (baidu_name) {
+      conditions.push(like(Schemas.Account.baidu_name, `%${baidu_name}%`))
+    }
+
+    if (uk) {
+      conditions.push(eq(Schemas.Account.uk, uk))
+    }
+
+    if (org_name) {
+      conditions.push(like(Schemas.Account.org_name, `%${org_name}%`))
+    }
+
+    if (cid) {
+      conditions.push(eq(Schemas.Account.cid, cid.toString()))
+    }
 
     if (id) {
       conditions.push(eq(Schemas.Account.id, id))

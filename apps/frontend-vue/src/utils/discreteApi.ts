@@ -1,8 +1,8 @@
 import { configProviderProps } from '@frontend/hooks/useTheme.ts'
 import { createDiscreteApi } from 'naive-ui'
 
-const { notification, message, dialog, loadingBar } = createDiscreteApi(['notification', 'message', 'dialog', 'loadingBar'], {
+const { notification, message, dialog, loadingBar, modal } = createDiscreteApi(['notification', 'message', 'dialog', 'loadingBar', 'modal'], {
   configProviderProps,
 })
 
-export { dialog, loadingBar, message, notification }
+export { dialog, loadingBar, message, modal, notification }

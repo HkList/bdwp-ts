@@ -1,0 +1,1 @@
+ALTER TABLE "keys" ALTER COLUMN "share_link_id" DROP NOT NULL;

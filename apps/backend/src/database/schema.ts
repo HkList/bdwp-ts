@@ -70,6 +70,8 @@ export const Key = pgTable('keys', {
   account_id: integer()
     .notNull()
     .references(() => Account.id),
+  share_link_id: integer()
+    .references(() => ShareLink.id),
   user_data: jsonb(),
   key: text().notNull().unique(),
   used_count: integer().notNull().default(0),

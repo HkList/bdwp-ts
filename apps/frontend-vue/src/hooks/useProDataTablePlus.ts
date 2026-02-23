@@ -58,6 +58,9 @@ export function useProDataTablePlus<
           options.options.onSuccess(res, params)
         }
 
+        // 清空 checkedRowKeys
+        checkedRowKeys.value = []
+
         if (res.total === 0) {
           return
         }

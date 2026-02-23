@@ -27,5 +27,9 @@ export const Relations = defineRelations(Schemas, r => ({
       from: r.Key.account_id,
       to: r.Account.id,
     }),
+    ShareLink: r.one.ShareLink({
+      from: r.Key.share_link_id,
+      to: r.ShareLink.id,
+    }),
   },
 }))

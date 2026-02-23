@@ -84,6 +84,10 @@ export const AccountModel = {
     page_size: t.Optional(t.Number()),
     id: t.Optional(t.Number()),
     status: t.Optional(t.Boolean()),
+    baidu_name: t.Optional(t.String()),
+    uk: t.Optional(t.String()),
+    org_name: t.Optional(t.String()),
+    cid: t.Optional(t.Number()),
   }),
   getAllAccountsSuccess: t.Object({
     message: t.Literal('获取账号列表成功'),

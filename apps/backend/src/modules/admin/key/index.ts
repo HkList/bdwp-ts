@@ -10,6 +10,8 @@ export const KeyModule = new Elysia({ prefix: '/keys' })
     response: {
       200: KeyModel.createKeySuccess,
       404: KeyModel.createKeyFailedAccountNotFound,
+      409: KeyModel.createKeyFailedExceedRemainCount,
+      500: KeyModel.createKeyFailedCreateJobFailed,
     },
     detail: {
       summary: '创建卡密',

@@ -41,28 +41,28 @@ const searchForm = createProForm({
   <ProCard :title="props.title">
     <ProForm :form="searchForm" :rules="props.rules as FormRules">
       <div class="searchFormWarpper">
-        <div v-for="column in columns" :key="column.key" class="searchFormItem">
-          <component :is="column.render(data[column.key])" v-if="column.render" />
+        <div v-for="column in columns" :key="column.path" class="searchFormItem">
+          <component :is="column.render(data[column.path])" v-if="column.render" />
 
           <ProInput
             v-else-if="column.type === 'string' || !column.type"
             :title="column.title"
-            :path="column.key"
+            :path="column.path"
           />
 
-          <ProDigit v-else-if="column.type === 'number'" :title="column.title" :path="column.key" />
+          <ProDigit v-else-if="column.type === 'number'" :title="column.title" :path="column.path" />
 
           <ProSelect
             v-else-if="column.type === 'select'"
             :title="column.title"
-            :path="column.key"
+            :path="column.path"
             :field-props="{
               options: column.options,
               multiple: column.multiple,
             }"
           />
 
-          <ProDate v-else-if="column.type === 'date'" :title="column.title" :path="column.key" />
+          <ProDate v-else-if="column.type === 'date'" :title="column.title" :path="column.path" />
         </div>
       </div>
 

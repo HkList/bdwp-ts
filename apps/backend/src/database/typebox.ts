@@ -74,6 +74,7 @@ const KeyTypeboxSchema = t.Object({
   id: t.Integer(),
   user_id: t.Integer(),
   account_id: t.Integer(),
+  share_link_id: t.Nullable(t.Integer()),
   user_data: t.Union([
     t.Null(),
     KeyUserDataTypeboxSchema,

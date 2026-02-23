@@ -163,7 +163,7 @@ export async function manageFile<T extends keyof FileOpMap>(
   >(
     options.cid
       ? 'https://pan.baidu.com/mid_enterprise_v2/api/filemanager'
-      : 'http://pan.baidu.com/api/filemanager',
+      : 'https://pan.baidu.com/api/filemanager',
     {
       method: 'post',
       headers: {

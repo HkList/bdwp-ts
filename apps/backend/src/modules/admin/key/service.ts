@@ -1,8 +1,8 @@
 import type { TypeboxTypes } from '@backend/db'
 import type { KeyModelType } from '@backend/modules/admin/key/model.ts'
 import { Drizzle, Schemas } from '@backend/db'
-import { toChunks } from '@backend/utils/toChunks.ts'
-import { and, count, eq, inArray } from 'drizzle-orm'
+import { createKeyQueue } from '@backend/queues/createKeys.ts'
+import { and, count, eq, inArray, like } from 'drizzle-orm'
 import { status } from 'elysia'
 
 export class KeyService {
@@ -10,45 +10,49 @@ export class KeyService {
     user: TypeboxTypes['User'],
     body: KeyModelType['createKeyBody'],
   ) {
-    const { account_id, keys, total_count, total_hours } = body
+    const { account_id, keys } = body
 
-    const account = await Drizzle.select({ id: Schemas.Account.id })
+    const account = await Drizzle.select({ id: Schemas.Account.id, ticket_remain_count: Schemas.Account.ticket_remain_count })
       .from(Schemas.Account)
       .where(and(eq(Schemas.Account.user_id, user.id), eq(Schemas.Account.id, account_id)))
       .limit(1)
 
-    if (!account.length) {
+    if (!account[0]) {
       return status(404, {
         message: '账号不存在',
         data: null,
       })
     }
 
-    const chunks = keys.map(key => ({
-      user_id: user.id,
-      account_id,
-      key,
-      total_count,
-      total_hours,
-    }))
+    if (keys.length > account[0].ticket_remain_count) {
+      return status(409, {
+        message: '卡密数量超过账号剩余下载卷数量',
+        data: null,
+      })
+    }
 
-    const inserted_keys: string[] = []
+    const job = await createKeyQueue.add(
+      'createKey',
+      {
+        user,
+        body,
+      },
+      {
+        jobId: crypto.randomUUID(),
+      },
+    )
 
-    for (const chunk of toChunks(chunks, 100)) {
-      const inserted = await Drizzle.insert(Schemas.Key)
-        .values(chunk)
-        .onConflictDoNothing({
-          target: [Schemas.Key.key],
-        })
-        .returning({ key: Schemas.Key.key })
-
-      inserted_keys.push(...inserted.map(item => item.key))
+    if (!job.id) {
+      return status(500, {
+        message: '创建异步任务失败',
+        data: null,
+      })
     }
 
     return status(200, {
-      message: '创建卡密成功',
+      message: '创建异步任务成功',
       data: {
-        inserted_keys,
+        task_id: job.id,
       },
     })
   }
@@ -110,8 +114,13 @@ export class KeyService {
         await tx
           .update(Schemas.Key)
           .set({
-            ...item,
-            expired_at: item.expired_at ? new Date(item.expired_at) : undefined,
+            key: item.key,
+            used_count: item.used_count,
+            total_count: item.total_count,
+            expired_at: item.expired_at ? new Date(item.expired_at) : null,
+            total_hours: item.total_hours,
+            status: item.status,
+            reason: item.reason,
           })
           .where(eq(Schemas.Key.id, item.id))
       }
@@ -129,7 +138,7 @@ export class KeyService {
   ) {
     const page = query.page ?? 1
     const page_size = query.page_size ?? 10
-    const { id, account_id, status: keyStatus } = query
+    const { id, account_id, status: keyStatus, key } = query
 
     // 构建查询条件
     const conditions = [eq(Schemas.Key.user_id, user.id)]
@@ -144,6 +153,10 @@ export class KeyService {
 
     if (keyStatus) {
       conditions.push(eq(Schemas.Key.status, keyStatus))
+    }
+
+    if (key) {
+      conditions.push(like(Schemas.Key.key, `%${key}%`))
     }
 
     const where = conditions.length > 0 ? and(...conditions) : undefined

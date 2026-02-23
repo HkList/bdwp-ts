@@ -3,7 +3,10 @@ import type { ShareLinkModelType } from '@backend/modules/admin/share_link/model
 
 import { api } from '@frontend/api/index.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
-import { NA } from 'naive-ui'
+import { router } from '@frontend/router/index.ts'
+import { renderIcon } from '@frontend/utils/renderIcon.ts'
+import { Person } from '@vicons/ionicons5'
+import { NA, NButton, NFlex } from 'naive-ui'
 import { defineStore } from 'pinia'
 import { ProDataTable, renderProDateText, renderProImages } from 'pro-naive-ui'
 import { h } from 'vue'
@@ -21,17 +24,14 @@ export const useShareLinksStore = defineStore('admin_share_links', () => {
         title: '序号',
       },
       {
-        key: '用户信息',
         title: '用户信息',
         render: row => `${row.username}(${row.uk})`,
       },
       {
-        key: '用户头像',
         title: '用户头像',
         render: (bind: TypeboxTypes['ShareLinkShareInfoTkbindList']) => renderProImages(bind.avatar),
       },
       {
-        key: '绑定日期',
         title: '绑定日期',
         render: (bind: TypeboxTypes['ShareLinkShareInfoTkbindList']) => renderProDateText(bind.ctime * 1000),
       },
@@ -75,12 +75,11 @@ export const useShareLinksStore = defineStore('admin_share_links', () => {
           }),
         },
         {
-          key: 'id',
+          path: 'id',
           title: 'ID',
           width: 80,
         },
         {
-          key: '分享链接',
           title: '分享链接',
           render: row => h(
             NA,
@@ -92,29 +91,48 @@ export const useShareLinksStore = defineStore('admin_share_links', () => {
           ),
         },
         {
-          key: 'path',
+          path: 'path',
           title: '绑定路径',
         },
         {
-          key: '下载卷使用情况',
           title: '下载卷使用情况',
           render: row => row.share_info
             ? `已使用 ${row.share_info.total_count} 张 / 共 ${row.share_info.use_count} 张`
             : '获取分享信息失败',
         },
         {
-          key: 'created_at',
           title: '本地端-创建时间',
           render: row => renderProDateText(row.created_at),
         },
         {
-          key: 'ctime',
           title: '百度端-创建时间',
           render: row => renderProDateText(row.ctime),
         },
         {
-          key: 'actions',
           title: '操作',
+          render: (row) => {
+            return h(NFlex, null, {
+              default: () => [
+                h(
+                  NButton,
+                  {
+                    size: 'small',
+                    type: 'info',
+                    renderIcon: renderIcon(Person),
+                    onClick: () => {
+                      router.push({
+                        path: '/admin/accounts',
+                        query: {
+                          id: row.account_id,
+                        },
+                      })
+                    },
+                  },
+                  { default: () => '跳转到账号' },
+                ),
+              ],
+            })
+          },
         },
       ],
       options: {

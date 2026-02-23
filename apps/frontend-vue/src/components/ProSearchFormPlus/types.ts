@@ -1,13 +1,13 @@
 import type { FormRules } from '@frontend/hooks/useFormRules.ts'
 import type { StringKeys } from '@frontend/utils/types.ts'
-import type { SelectMixedOption } from 'naive-ui/es/select/src/interface.d.ts'
+import type { SelectOption } from 'naive-ui'
 import type { ProButtonProps } from 'pro-naive-ui'
 import type { VNode } from 'vue'
 
 // 搜索表单列配置项
 export type ProSearchFormPlusColumn<T extends object, K extends StringKeys<T> = StringKeys<T>> = {
   /** 字段路径，必须是字符串类型的 key */
-  key: K
+  path: K
   /** 占位符 */
   placeholder?: string
   /** 自定义渲染函数 - 返回 VNode */
@@ -15,7 +15,7 @@ export type ProSearchFormPlusColumn<T extends object, K extends StringKeys<T> = 
   /** 显示的标题 */
   title: string
 } & (
-  | { multiple?: boolean, options: SelectMixedOption[], type: 'select' }
+  | { multiple?: boolean, options: SelectOption[], type: 'select' }
   | { type: 'date' }
   | { type: 'number' }
   | { type?: 'string' | undefined }

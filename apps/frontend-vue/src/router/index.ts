@@ -3,7 +3,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@frontend/stores/authStore.ts'
 import { loadingBar } from '@frontend/utils/discreteApi.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import { Desktop, Earth, Home, LogIn, People, Person, Search, Share, ShareSocial } from '@vicons/ionicons5'
+import { Desktop, Earth, Home, Key, LogIn, People, Person, Search, Share, ShareSocial } from '@vicons/ionicons5'
 import { createRouter, createWebHistory } from 'vue-router'
 
 type BaseRouteRecordRawPlus = Omit<RouteRecordRaw, 'children' | 'component' | 'meta'> & {
@@ -50,6 +50,11 @@ export const ADMIN_ROUTES: RouteRecordRawPlus[] = [
     component: () => import('@frontend/views/Admin/ShareLinks/Index.vue'),
     meta: { icon: renderIcon(ShareSocial), title: '分享链接管理' },
     path: '/admin/share_links',
+  },
+  {
+    component: () => import('@frontend/views/Admin/Keys/Index.vue'),
+    meta: { icon: renderIcon(Key), title: '卡密管理' },
+    path: '/admin/keys',
   },
 ]
 

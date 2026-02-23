@@ -16,7 +16,11 @@ export interface CreateOrUpdateAccountJobData {
   isUpdate: boolean
 }
 
-export type CreateOrUpdateAccountQueueResponse = QueueResponse<{ id: number }>
+export interface CreateOrUpdateAccountQueueRawResponse {
+  id: number
+}
+
+export type CreateOrUpdateAccountQueueResponse = QueueResponse<CreateOrUpdateAccountQueueRawResponse>
 
 export const createOrUpdateAccountQueue = new Queue<
   CreateOrUpdateAccountJobData,

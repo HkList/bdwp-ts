@@ -1,5 +1,7 @@
 import { api } from '@frontend/api/index.ts'
 import { notification } from '@frontend/utils/discreteApi.ts'
+import { NSpin } from 'naive-ui'
+import { h } from 'vue'
 
 const NOTIFICATION_DURATION = 3000
 
@@ -43,6 +45,12 @@ export async function useAsyncJob<T>(
     )
   }
 
+  const notificationLoading = notification.create({
+    title: '正在处理，请稍候...',
+    duration: 0,
+    avatar: () => h(NSpin),
+  })
+
   for await (const res of response.data) {
     if (res.event === 'error') {
       showErrorNotification('获取任务状态失败', res.data.message)
@@ -50,7 +58,16 @@ export async function useAsyncJob<T>(
 
     if (res.event === 'message') {
       const result = res.data as AsyncJobApiResult<T>
+
+      notificationLoading.content = () => {
+        return h('div', { style: { display: 'flex', flexDirection: 'column' } }, [
+          h('div', `进度: ${result.progress}%`),
+          h('div', `消息: ${result.message}`),
+        ])
+      }
+
       if (result.status !== 'processing') {
+        notificationLoading.destroy()
         return result as AsyncJobResult<T>
       }
     }

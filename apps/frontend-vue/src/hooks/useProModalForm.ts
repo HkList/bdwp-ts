@@ -13,6 +13,7 @@ export interface UseProModalFormOptions<T extends object, K extends object> exte
   rules?: () => FormRules<K>
   // 表单提交状态
   loading?: Ref<boolean>
+  onOpen?: () => void
 }
 
 export type ModifiedOpenFn<T extends unknown[]> = (...args: T) => boolean | void
@@ -35,6 +36,8 @@ export function useProModalForm<T extends object, K extends object = T, U extend
   const form = createProModalForm<T>(options)
 
   const open = (...args: U) => {
+    options.onOpen?.()
+
     if (openFn) {
       const r = openFn(...args)
       if (r === false) {
