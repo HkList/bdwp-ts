@@ -49,12 +49,12 @@ export class ShareLinkService {
     })
   }
 
-  static async getValidShareLinkIds(shareLinks: TypeboxTypes['ShareLink'][], force: boolean) {
+  static async getNotValidShareLinkIds(shareLinks: TypeboxTypes['ShareLink'][], force: boolean) {
     if (force) {
       return shareLinks.map(link => link.id)
     }
 
-    const validShareLinkIds: number[] = []
+    const notValidShareLinkIds: number[] = []
     const promise: Promise<void>[] = []
 
     shareLinks.forEach((shareLink) => {
@@ -62,10 +62,14 @@ export class ShareLinkService {
         // 查询分享链接状态
         const res = await getWxFileList({
           surl: shareLink.surl,
+          pwd: shareLink.pwd,
+          dir: '/',
         })
 
-        if (res.code === 200) {
-          validShareLinkIds.push(shareLink.id)
+        console.log(`分享链接 ${shareLink.id} 状态:`, res)
+
+        if (res.code !== 200) {
+          notValidShareLinkIds.push(shareLink.id)
         }
       })())
     })
@@ -74,7 +78,7 @@ export class ShareLinkService {
       await Promise.all(chunk)
     }
 
-    return validShareLinkIds
+    return notValidShareLinkIds
   }
 
   static async deleteShareLink(user: TypeboxTypes['User'], body: ShareLinkModelType['deleteShareLinkBody']) {
@@ -95,11 +99,11 @@ export class ShareLinkService {
     try {
       await Drizzle.transaction(async (tx) => {
         // 如果不是强制删除，先检查分享链接是否有效, 如果有效就不删除
-        const validShareLinkIds = await this.getValidShareLinkIds(shareLinks, force)
+        const notValidShareLinkIds = await this.getNotValidShareLinkIds(shareLinks, force)
 
         const rows = await tx
           .delete(Schemas.ShareLink)
-          .where(and(eq(Schemas.ShareLink.user_id, user.id), inArray(Schemas.ShareLink.id, validShareLinkIds)))
+          .where(and(eq(Schemas.ShareLink.user_id, user.id), inArray(Schemas.ShareLink.id, notValidShareLinkIds)))
           .returning({ id: Schemas.ShareLink.id })
 
         return rows

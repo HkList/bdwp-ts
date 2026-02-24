@@ -24,12 +24,15 @@ export const ShareLinkModel = {
   }),
   deleteShareLinkSuccess: t.Object({
     message: t.Literal('删除分享链接成功'),
+    data: t.Null(),
   }),
   deleteShareLinkFailedNotFound: t.Object({
     message: t.Literal('部分分享链接不存在, 删除失败'),
+    data: t.Null(),
   }),
   deleteShareLinkFailedReferenced: t.Object({
     message: t.Literal('分享链接存在关联数据, 无法删除'),
+    data: t.Null(),
   }),
 }
 

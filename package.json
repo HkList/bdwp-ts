@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "monorepo-commander dev apps/backend,apps/frontend-vue",
-    "build": "monorepo-commander build apps/backend,apps/frontend-vue",
+    "typecheck": "bun run --workspaces typecheck",
     "preview": "monorepo-commander preview apps/backend,apps/frontend-vue",
-    "typecheck": "monorepo-commander typecheck apps/backend,apps/frontend-vue",
+    "build": "bun run --workspaces build",
     "drizzle": "bun run --cwd apps/backend drizzle-kit",
     "seed": "bun run --cwd apps/backend seed",
     "prepare": "husky",

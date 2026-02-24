@@ -106,7 +106,6 @@ export const useUsersStore = defineStore('admin_users', () => {
       columns: () => [
         {
           type: 'selection',
-          title: '选择',
         },
         {
           path: 'id',

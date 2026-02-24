@@ -195,7 +195,6 @@ export const useKeysStore = defineStore('admin_keys', () => {
       columns: () => [
         {
           type: 'selection',
-          title: '选择',
         },
         {
           path: 'id',

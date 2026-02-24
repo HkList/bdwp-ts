@@ -54,7 +54,6 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
       columns: () => [
         {
           type: 'selection',
-          title: '选择',
         },
         {
           path: 'id',
