@@ -11,7 +11,7 @@ import { useProModalForm } from '@frontend/hooks/useProModalForm.ts'
 import { useRequest } from '@frontend/hooks/useRequest.ts'
 import { useRouteQueryWatcher } from '@frontend/hooks/useRouteQueryWatcher.ts'
 import { copyText } from '@frontend/utils/copyText.ts'
-import { notification } from '@frontend/utils/discreteApi.ts'
+import { dialog, notification } from '@frontend/utils/discreteApi.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { CookieBite } from '@vicons/fa'
 import { Pencil, Trash } from '@vicons/ionicons5'
@@ -183,10 +183,18 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
     api.admin.accounts.delete,
   )
   const deleteAccounts = async (ids: number[]) => {
-    await _deleteAccounts({
-      ids,
+    dialog.create({
+      title: '确认删除账号',
+      content: `此操作会删除关联的分享链接, 但不会删除关联的卡密, 确定要删除选中的 ${ids.length} 个账号吗？`,
+      positiveText: '确认',
+      negativeText: '取消',
+      onPositiveClick: async () => {
+        await _deleteAccounts({
+          ids,
+        })
+        await getAccounts()
+      },
     })
-    await getAccounts()
   }
 
   const {

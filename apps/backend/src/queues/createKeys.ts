@@ -119,12 +119,6 @@ const worker = new Worker<CreateKeyJobData, CreateKeyQueueResponse>(
         }
         const createShareLinkData = createShareLinkRes.response.data
 
-        console.log({
-          surl: createShareLinkData.link,
-          pwd,
-          dir: '/',
-        })
-
         const surl = createShareLinkData.shorturl.split('/s/')[1]
         if (!surl) {
           return {
@@ -161,7 +155,7 @@ const worker = new Worker<CreateKeyJobData, CreateKeyQueueResponse>(
           .values({
             user_id: user.id,
             account_id: account.id,
-            surl: createShareLinkData.shorturl,
+            surl,
             pwd,
             randsk: shareInfoData.seckey,
             shareid: createShareLinkData.shareid.toString(),

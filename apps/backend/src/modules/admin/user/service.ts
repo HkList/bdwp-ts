@@ -63,8 +63,8 @@ export class UserService {
       }
 
       if (isReferenceError(error)) {
-        return status(500, {
-          message: '用户无法删除, 存在绑定的数据, 请先删除相关数据',
+        return status(409, {
+          message: '用户存在关联数据, 无法删除',
           data: null,
         })
       }

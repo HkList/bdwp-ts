@@ -33,6 +33,7 @@ export const AccountModule = new Elysia({ prefix: '/accounts' })
     response: {
       200: AccountModel.deleteAccountsSuccess,
       404: AccountModel.deleteAccountsFailedNotFound,
+      409: AccountModel.deleteAccountsFailedReferenceError,
     },
     detail: {
       summary: '删除账号',

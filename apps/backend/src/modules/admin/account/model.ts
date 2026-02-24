@@ -52,6 +52,10 @@ export const AccountModel = {
     message: t.Literal('部分账号不存在, 删除失败'),
     data: t.Null(),
   }),
+  deleteAccountsFailedReferenceError: t.Object({
+    message: t.Literal('账号存在关联数据, 无法删除'),
+    data: t.Null(),
+  }),
 
   updateAccountsBody: t.Array(
     t.Object({

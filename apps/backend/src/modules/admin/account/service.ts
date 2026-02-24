@@ -12,6 +12,7 @@ import {
 } from '@backend/api'
 import { Drizzle, Schemas } from '@backend/db'
 import { createOrUpdateAccountQueue } from '@backend/queues/createOrUpdateAccount.ts'
+import { isReferenceError } from '@backend/utils/errorCheckers.ts'
 import { toChunks } from '@backend/utils/toChunks.ts'
 import { and, count, eq, inArray, like } from 'drizzle-orm'
 import { status } from 'elysia'
@@ -193,6 +194,9 @@ export class AccountService {
 
     try {
       await Drizzle.transaction(async (tx) => {
+        // 先删除账号关联的数据
+        await tx.delete(Schemas.ShareLink).where(inArray(Schemas.ShareLink.account_id, ids))
+
         const rows = await tx
           .delete(Schemas.Account)
           .where(and(eq(Schemas.Account.user_id, user.id), inArray(Schemas.Account.id, ids)))
@@ -212,6 +216,14 @@ export class AccountService {
           data: null,
         })
       }
+
+      if (isReferenceError(error)) {
+        return status(409, {
+          message: '账号存在关联数据, 无法删除',
+          data: null,
+        })
+      }
+
       throw error
     }
 

@@ -29,7 +29,7 @@ export const UserModel = {
     data: t.Null(),
   }),
   deleteUsersFailedReferenceError: t.Object({
-    message: t.Literal('用户无法删除, 存在绑定的数据, 请先删除相关数据'),
+    message: t.Literal('用户存在关联数据, 无法删除'),
     data: t.Null(),
   }),
 
