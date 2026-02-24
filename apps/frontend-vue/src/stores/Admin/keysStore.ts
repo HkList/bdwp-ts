@@ -53,6 +53,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
       keys: '',
       total_count: 100,
       total_hours: 100,
+      disable_create_share_link: false,
     },
     rules: () => ({
       account_id: [{ required: true, type: 'number' }],
@@ -308,7 +309,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
       options: {
         loading: () => deleteKeysLoading.value,
         customProps: {
-          cardTitle: '密钥列表',
+          cardTitle: '卡密列表',
         },
         rowKey: row => row.id,
       },
@@ -317,7 +318,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
       columns: () => [
         {
           path: 'key',
-          title: '密钥',
+          title: '卡密',
         },
       ],
       initValues: {},

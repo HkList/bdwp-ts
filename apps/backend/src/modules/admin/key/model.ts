@@ -7,6 +7,7 @@ export const KeyModel = {
     keys: t.Array(t.String()),
     total_count: t.Number({ minimum: 1 }),
     total_hours: t.Number({ minimum: 1 }),
+    disable_create_share_link: t.Optional(t.Boolean()),
   }),
   createKeySuccess: t.Object({
     message: t.Literal('创建异步任务成功'),

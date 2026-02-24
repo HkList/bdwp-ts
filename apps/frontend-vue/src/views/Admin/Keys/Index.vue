@@ -36,7 +36,7 @@ const {
             :render-icon="renderIcon(Create)"
             @click="addKeyModalForm.open()"
           >
-            新建密钥
+            新建卡密
           </NButton>
 
           <NButton

@@ -48,7 +48,7 @@ const worker = new Worker<CreateKeyJobData, CreateKeyQueueResponse>(
   'createKey',
   async (job) => {
     const { user, body } = job.data
-    const { account_id, keys, total_count, total_hours } = body
+    const { account_id, keys, total_count, total_hours, disable_create_share_link } = body
 
     const accounts = await Drizzle.select()
       .from(Schemas.Account)
@@ -104,66 +104,68 @@ const worker = new Worker<CreateKeyJobData, CreateKeyQueueResponse>(
 
     for (const key of not_exist_key) {
       promises.push((async () => {
-        // 创建分享链接
-        const pwd = randomString(4)
-        const createShareLinkRes = await createShareLinkWithAutoMakePath({
-          cid: account.cid,
-          cookie: account.cookie,
-          period: 0,
-          pwd,
-          ticket_count: 0,
-        })
-        // 如果创建分享链接失败, 跳过
-        if (createShareLinkRes.code !== 200) {
-          return { res: createShareLinkRes, key }
-        }
-        const createShareLinkData = createShareLinkRes.response.data
-
-        const surl = createShareLinkData.shorturl.split('/s/')[1]
-        if (!surl) {
-          return {
-            res: status(500, {
-              message: '解析分享链接失败: 提取surl失败',
-              data: null,
-            }),
-            key,
+        // 判断是否需要自动创建分享链接并填充一张下载卷
+        if (!disable_create_share_link) {
+          const pwd = randomString(4)
+          const createShareLinkRes = await createShareLinkWithAutoMakePath({
+            cid: account.cid,
+            cookie: account.cookie,
+            period: 0,
+            pwd,
+            ticket_count: 0,
+          })
+          // 如果创建分享链接失败, 跳过
+          if (createShareLinkRes.code !== 200) {
+            return { res: createShareLinkRes, key }
           }
-        }
+          const createShareLinkData = createShareLinkRes.response.data
 
-        const shareInfoRes = await getWxFileList({
-          surl,
-          pwd,
-          dir: '/',
-        })
-        if (shareInfoRes.code !== 200) {
-          return { res: shareInfoRes, key }
-        }
-        const shareInfoData = shareInfoRes.response.data
+          const surl = createShareLinkData.shorturl.split('/s/')[1]
+          if (!surl) {
+            return {
+              res: status(500, {
+                message: '解析分享链接失败: 提取surl失败',
+                data: null,
+              }),
+              key,
+            }
+          }
 
-        const bindListRes = await getEnterpriseShareBindList({
-          cookie: account.cookie,
-          cid: account.cid,
-          shareid: createShareLinkData.shareid.toString(),
-        })
-        if (bindListRes.code !== 200) {
-          return { res: bindListRes, key }
-        }
-        const bindListData = bindListRes.response.data
-
-        // 插入数据库
-        await Drizzle.insert(Schemas.ShareLink)
-          .values({
-            user_id: user.id,
-            account_id: account.id,
+          const shareInfoRes = await getWxFileList({
             surl,
             pwd,
-            randsk: shareInfoData.seckey,
-            shareid: createShareLinkData.shareid.toString(),
-            uk: account.uk,
-            share_info: bindListData,
-            path: createShareLinkData.path,
-            ctime: new Date(createShareLinkData.ctime * 1000),
+            dir: '/',
           })
+          if (shareInfoRes.code !== 200) {
+            return { res: shareInfoRes, key }
+          }
+          const shareInfoData = shareInfoRes.response.data
+
+          const bindListRes = await getEnterpriseShareBindList({
+            cookie: account.cookie,
+            cid: account.cid,
+            shareid: createShareLinkData.shareid.toString(),
+          })
+          if (bindListRes.code !== 200) {
+            return { res: bindListRes, key }
+          }
+          const bindListData = bindListRes.response.data
+
+          // 插入数据库
+          await Drizzle.insert(Schemas.ShareLink)
+            .values({
+              user_id: user.id,
+              account_id: account.id,
+              surl,
+              pwd,
+              randsk: shareInfoData.seckey,
+              shareid: createShareLinkData.shareid.toString(),
+              uk: account.uk,
+              share_info: bindListData,
+              path: createShareLinkData.path,
+              ctime: new Date(createShareLinkData.ctime * 1000),
+            })
+        }
 
         await Drizzle.insert(Schemas.Key)
           .values({
