@@ -50,6 +50,7 @@ export const KeyModel = {
       total_hours: t.Optional(t.Number()),
       status: t.Optional(t.Boolean()),
       reason: t.Optional(t.String()),
+      share_link_id: t.Optional(t.Number()),
     }),
   ),
   updateKeysSuccess: t.Object({
@@ -58,6 +59,10 @@ export const KeyModel = {
   }),
   updateKeysFailedNotFound: t.Object({
     message: t.Literal('部分卡密不存在, 更新失败'),
+    data: t.Null(),
+  }),
+  updateKeysFailedShareLinkNotFound: t.Object({
+    message: t.Literal('部分分享链接不存在, 更新失败'),
     data: t.Null(),
   }),
 

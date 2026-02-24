@@ -50,19 +50,21 @@ const worker = new Worker<CreateKeyJobData, CreateKeyQueueResponse>(
     const { user, body } = job.data
     const { account_id, keys, total_count, total_hours, disable_create_share_link } = body
 
-    const accounts = await Drizzle.select()
-      .from(Schemas.Account)
-      .where(and(eq(Schemas.Account.user_id, user.id), eq(Schemas.Account.id, account_id)))
-      .limit(1)
+    const account = await Drizzle.query.Account.findFirst({
+      where: {
+        user_id: user.id,
+        id: account_id,
+      },
+    })
 
-    if (!accounts.length || !accounts[0]) {
+    if (!account) {
       return status(500, {
         message: '账号不存在',
         data: null,
       })
     }
 
-    if (keys.length > accounts[0].ticket_remain_count) {
+    if (keys.length > account.ticket_remain_count) {
       return status(500, {
         message: '卡密数量超过账号剩余下载卷数量',
         data: null,
@@ -94,7 +96,6 @@ const worker = new Worker<CreateKeyJobData, CreateKeyQueueResponse>(
       message: '开始创建卡密和分享链接',
     })
 
-    const account = accounts[0]
     const inserted_keys: string[] = []
     const insert_failed_keys: CreateKeyFailedItem[] = []
     const promises = []

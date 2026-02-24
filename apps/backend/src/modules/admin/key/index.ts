@@ -1,7 +1,7 @@
 import { KeyModel } from '@backend/modules/admin/key/model.ts'
 import { KeyService } from '@backend/modules/admin/key/service.ts'
 import { UserAuthPlugin } from '@backend/plugins/userAuthPlugin.ts'
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 export const KeyModule = new Elysia({ prefix: '/keys' })
   .use(UserAuthPlugin())
@@ -33,7 +33,10 @@ export const KeyModule = new Elysia({ prefix: '/keys' })
     body: KeyModel.updateKeysBody,
     response: {
       200: KeyModel.updateKeysSuccess,
-      404: KeyModel.updateKeysFailedNotFound,
+      404: t.Union([
+        KeyModel.updateKeysFailedNotFound,
+        KeyModel.updateKeysFailedShareLinkNotFound,
+      ]),
     },
     detail: {
       summary: '更新卡密信息',

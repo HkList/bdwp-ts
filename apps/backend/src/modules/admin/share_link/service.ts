@@ -4,7 +4,7 @@ import { getWxFileList } from '@backend/api'
 import { Drizzle, Schemas } from '@backend/db'
 import { isReferenceError } from '@backend/utils/errorCheckers.ts'
 import { toChunks } from '@backend/utils/toChunks.ts'
-import { and, count, eq, inArray } from 'drizzle-orm'
+import { and, count, eq, inArray, like } from 'drizzle-orm'
 import { status } from 'elysia'
 
 export class ShareLinkService {
@@ -14,7 +14,7 @@ export class ShareLinkService {
   ) {
     const page = query.page ?? 1
     const page_size = query.page_size ?? 10
-    const { id, account_id } = query
+    const { id, account_id, surl } = query
 
     // 构建查询条件
     const conditions = [eq(Schemas.ShareLink.user_id, user.id)]
@@ -25,6 +25,10 @@ export class ShareLinkService {
 
     if (account_id) {
       conditions.push(eq(Schemas.ShareLink.account_id, account_id))
+    }
+
+    if (surl) {
+      conditions.push(like(Schemas.ShareLink.surl, `%${surl}%`))
     }
 
     const where = conditions.length > 0 ? and(...conditions) : undefined

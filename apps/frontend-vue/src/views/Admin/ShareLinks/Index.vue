@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ProDataTablePlus } from '@frontend/components/ProDataTablePlus/index.ts'
+import ProSearchFormPlus from '@frontend/components/ProSearchFormPlus/ProSearchFormPlus.vue'
 import { useShareLinksStore } from '@frontend/stores/Admin/shareLinksStore.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { Trash } from '@vicons/ionicons5'
@@ -9,11 +10,15 @@ import { storeToRefs } from 'pinia'
 const shareLinksStore = useShareLinksStore()
 
 const { deleteShareLinks } = shareLinksStore
-const { shareLinkDataTableProps, deleteShareLinksLoading, shareLinkCheckedRowKeys } = storeToRefs(shareLinksStore)
+const { shareLinkSearchFormProps, shareLinkDataTableProps, deleteShareLinksLoading, shareLinkCheckedRowKeys } = storeToRefs(shareLinksStore)
 </script>
 
 <template>
   <NFlex vertical :size="20">
+    <ProSearchFormPlus
+      v-bind="shareLinkSearchFormProps"
+    />
+
     <ProDataTablePlus v-bind="shareLinkDataTableProps" :scroll-x="1700">
       <template #header-extra>
         <NFlex>

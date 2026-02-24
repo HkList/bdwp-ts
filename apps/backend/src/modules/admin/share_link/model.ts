@@ -7,6 +7,7 @@ export const ShareLinkModel = {
     page_size: t.Optional(t.Number()),
     id: t.Optional(t.Number()),
     account_id: t.Optional(t.Number()),
+    surl: t.Optional(t.String()),
   }),
   getAllShareLinksSuccess: t.Object({
     message: t.Literal('获取分享链接列表成功'),

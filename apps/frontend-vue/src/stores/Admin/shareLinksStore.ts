@@ -4,6 +4,7 @@ import type { ShareLinkModelType } from '@backend/modules/admin/share_link/model
 import { api } from '@frontend/api/index.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
 import { useRequest } from '@frontend/hooks/useRequest.ts'
+import { useRouteQueryWatcher } from '@frontend/hooks/useRouteQueryWatcher.ts'
 import { router } from '@frontend/router/index.ts'
 import { dialog } from '@frontend/utils/discreteApi.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
@@ -66,7 +67,7 @@ export const useShareLinksStore = defineStore('admin_share_links', () => {
   }
 
   const {
-    search: { formValues: shareLinkSearchFormValues },
+    search: { formProps: shareLinkSearchFormProps, formValues: shareLinkSearchFormValues },
     send: getShareLinks,
     table: { tableProps: shareLinkDataTableProps, checkedRowKeys: shareLinkCheckedRowKeys },
   } = useProDataTablePlus<ShareLinkModelType['getAllShareLinksQuery'], TypeboxTypes['ShareLink']>(
@@ -195,8 +196,27 @@ export const useShareLinksStore = defineStore('admin_share_links', () => {
       },
     },
     {
-      columns: () => [],
+      columns: () => [
+        {
+          path: 'id',
+          title: 'ID',
+          type: 'number',
+        },
+      ],
       initValues: {},
+    },
+  )
+
+  useRouteQueryWatcher(
+    path => path.includes('/admin/share_links'),
+    (query) => {
+      if (query.id) {
+        shareLinkSearchFormValues.value.id = Number(query.id)
+      }
+
+      if (Object.keys(query).length > 0) {
+        getShareLinks()
+      }
     },
   )
 
@@ -204,6 +224,7 @@ export const useShareLinksStore = defineStore('admin_share_links', () => {
     getShareLinks,
     shareLinkDataTableProps,
     shareLinkCheckedRowKeys,
+    shareLinkSearchFormProps,
     shareLinkSearchFormValues,
 
     deleteShareLinks,

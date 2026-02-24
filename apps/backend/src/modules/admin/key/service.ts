@@ -12,19 +12,21 @@ export class KeyService {
   ) {
     const { account_id, keys } = body
 
-    const account = await Drizzle.select({ id: Schemas.Account.id, ticket_remain_count: Schemas.Account.ticket_remain_count })
-      .from(Schemas.Account)
-      .where(and(eq(Schemas.Account.user_id, user.id), eq(Schemas.Account.id, account_id)))
-      .limit(1)
+    const account = await Drizzle.query.Account.findFirst({
+      where: {
+        user_id: user.id,
+        id: account_id,
+      },
+    })
 
-    if (!account[0]) {
+    if (!account) {
       return status(404, {
         message: '账号不存在',
         data: null,
       })
     }
 
-    if (keys.length > account[0].ticket_remain_count) {
+    if (keys.length > account.ticket_remain_count) {
       return status(409, {
         message: '卡密数量超过账号剩余下载卷数量',
         data: null,
@@ -109,6 +111,24 @@ export class KeyService {
       })
     }
 
+    // 判断share_link_id是否存在且属于当前用户
+    const validShareLinkIds = body.map(key => key.share_link_id).filter(Boolean) as number[]
+    const shareLink = await Drizzle.select({ count: count() })
+      .from(Schemas.ShareLink)
+      .where(
+        and(
+          eq(Schemas.ShareLink.user_id, user.id),
+          inArray(Schemas.ShareLink.id, validShareLinkIds),
+        ),
+      )
+
+    if (!shareLink[0] || shareLink[0].count !== validShareLinkIds.length) {
+      return status(404, {
+        message: `部分分享链接不存在, 更新失败`,
+        data: null,
+      })
+    }
+
     await Drizzle.transaction(async (tx) => {
       for (const item of body) {
         await tx
@@ -121,8 +141,14 @@ export class KeyService {
             total_hours: item.total_hours,
             status: item.status,
             reason: item.reason,
+            share_link_id: item.share_link_id,
           })
-          .where(eq(Schemas.Key.id, item.id))
+          .where(
+            and(
+              eq(Schemas.Key.user_id, user.id),
+              eq(Schemas.Key.id, item.id),
+            ),
+          )
       }
     })
 

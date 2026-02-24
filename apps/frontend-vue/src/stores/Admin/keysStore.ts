@@ -158,6 +158,12 @@ export const useKeysStore = defineStore('admin_keys', () => {
           updateKeysModalForm.value.close()
         }
       },
+      onOpen: () => {
+        const onSearch = selectShareLinkIdProps.value.onSearch
+        if (typeof onSearch === 'function') {
+          onSearch('')
+        }
+      },
     },
     (item) => {
       // 由于 ProModalForm 的日期组件需要 Number 类型，而接口返回的是 Date 类型的日期，所以在这里进行转换
@@ -165,6 +171,32 @@ export const useKeysStore = defineStore('admin_keys', () => {
       updateKeysModalForm.value.form.values.value = item
     },
   )
+  const { loading: getShareLinksLoading, send: getShareLinks } = useRequest(api.admin.share_links.get)
+  const selectShareLinkOptions = ref<SelectOption[]>([])
+  const selectShareLinkIdProps = computed<SelectProps>(() => ({
+    remote: true,
+    filterable: true,
+    clearable: true,
+    options: selectShareLinkOptions.value,
+    loading: getShareLinksLoading.value,
+    onSearch: async (value) => {
+      const res = await getShareLinks({
+        query: {
+          page: 1,
+          page_size: 100,
+          surl: value,
+        },
+      })
+      if (res.error) {
+        selectShareLinkOptions.value = []
+        return
+      }
+      selectShareLinkOptions.value = res.data.data.data.map(item => ({
+        label: `路径:${item.path} 分享链接:${item.surl} 下载卷:${item.share_info ? `${item.share_info.use_count}/${item.share_info.total_count}` : '无下载卷数据'}`,
+        value: item.id,
+      }))
+    },
+  }))
 
   const {
     search: { formProps: keySearchFormProps, formValues: keySearchFormValues },
@@ -246,6 +278,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
                     renderIcon: renderIcon(Pencil),
                     onClick: () => updateKeysModalForm.value.open({
                       ...row,
+                      share_link_id: row.share_link_id ?? undefined,
                       expired_at: row.expired_at ?? undefined,
                     }),
                   },
@@ -337,6 +370,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
 
     updateKeys,
     updateKeysModalForm,
+    selectShareLinkIdProps,
 
     getKeys,
     keyCheckedRowKeys,
