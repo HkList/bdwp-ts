@@ -17,8 +17,23 @@ export const ShareLinkModel = {
       data: t.Array(Typeboxs.ShareLink),
     }),
   }),
+
+  deleteShareLinkBody: t.Object({
+    ids: t.Array(t.Number()),
+    force: t.Optional(t.Boolean()),
+  }),
+  deleteShareLinkSuccess: t.Object({
+    message: t.Literal('删除分享链接成功'),
+  }),
+  deleteShareLinkFailedNotFound: t.Object({
+    message: t.Literal('部分分享链接不存在, 删除失败'),
+  }),
+  deleteShareLinkFailedReferenced: t.Object({
+    message: t.Literal('分享链接存在关联数据, 无法删除'),
+  }),
 }
 
 export interface ShareLinkModelType {
   getAllShareLinksQuery: typeof ShareLinkModel.getAllShareLinksQuery.static
+  deleteShareLinkBody: typeof ShareLinkModel.deleteShareLinkBody.static
 }

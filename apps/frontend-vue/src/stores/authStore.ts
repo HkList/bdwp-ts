@@ -14,7 +14,9 @@ export const USER_TYPE_STORAGE_KEY = 'BDWP_USER_TYPE'
 export const useAuthStore = defineStore('auth', () => {
   const router = useRouter()
   const token = ref<null | string>(localStorage.getItem(TOKEN_STORAGE_KEY))
-  const type = ref<null | TypeboxTypes['UserType']>(localStorage.getItem(USER_TYPE_STORAGE_KEY) as TypeboxTypes['UserType'] ?? 'user')
+  const type = ref<null | TypeboxTypes['UserType']>(
+    (localStorage.getItem(USER_TYPE_STORAGE_KEY) ?? 'user') as TypeboxTypes['UserType'],
+  )
 
   const isAuthenticated = computed(() => token.value !== null)
   const isAdmin = computed(() => type.value === 'admin')

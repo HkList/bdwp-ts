@@ -1,10 +1,10 @@
 import type { CreateRowKey, RowKey } from 'naive-ui/es/data-table/src/interface.d.ts'
-import type { ComputedRef, Ref } from 'vue'
+import type { ComputedRef, ShallowRef } from 'vue'
 
-import { computed, ref } from 'vue'
+import { computed, shallowRef } from 'vue'
 
 export interface UseDataTableSectionReturn<T extends object, K extends RowKey = RowKey> {
-  checkedRowKeys: Ref<K[]>
+  checkedRowKeys: ShallowRef<K[]>
   dataTableProps: ComputedRef<{
     'checkedRowKeys': K[]
     'onUpdate:checkedRowKeys': (keys: RowKey[]) => void
@@ -13,7 +13,7 @@ export interface UseDataTableSectionReturn<T extends object, K extends RowKey = 
 }
 
 export function useDataTableSection<T extends object, K extends RowKey = RowKey>(rowKey: CreateRowKey<T>): UseDataTableSectionReturn<T, K> {
-  const checkedRowKeys = ref<K[]>([]) as Ref<K[]>
+  const checkedRowKeys = shallowRef<K[]>([])
 
   return {
     checkedRowKeys,

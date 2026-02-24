@@ -15,3 +15,15 @@ export const ShareLinkModule = new Elysia({ prefix: '/share_links' })
       tags: ['分享链接管理'],
     },
   })
+  .delete('/', async ({ user, body }) => await ShareLinkService.deleteShareLink(user, body), {
+    body: ShareLinkModel.deleteShareLinkBody,
+    response: {
+      200: ShareLinkModel.deleteShareLinkSuccess,
+      404: ShareLinkModel.deleteShareLinkFailedNotFound,
+      409: ShareLinkModel.deleteShareLinkFailedReferenced,
+    },
+    detail: {
+      summary: '删除分享链接',
+      tags: ['分享链接管理'],
+    },
+  })

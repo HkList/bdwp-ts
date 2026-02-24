@@ -3,7 +3,7 @@ import type {
   ProSearchFormPlusProps,
 } from '@frontend/components/ProSearchFormPlus/types.ts'
 import type { FormRules } from '@frontend/hooks/useFormRules.ts'
-import type { ComputedRef, Ref } from 'vue'
+import type { ComputedRef, Ref, UnwrapRef } from 'vue'
 
 import { useFormRules } from '@frontend/hooks/useFormRules.ts'
 import { computed, ref } from 'vue'
@@ -20,14 +20,14 @@ export interface UseProSearchFormPlusOptions<T extends object> {
 export interface ProSearchFormPlusReturn<T extends object> {
   columns: ComputedRef<ProSearchFormPlusColumns<T>>
   formProps: ComputedRef<ProSearchFormPlusProps<T>>
-  formValues: Ref<T>
+  formValues: Ref<T, T> | Ref<UnwrapRef<T>, T | UnwrapRef<T>>
   rules: ComputedRef<FormRules<T> | undefined>
 }
 
 export function useProSearchFormPlus<T extends object>(options: UseProSearchFormPlusOptions<T>): ProSearchFormPlusReturn<T> {
   const { columns, initValues, rules } = options
 
-  const formValues = ref(structuredClone(initValues)) as Ref<T>
+  const formValues = ref(structuredClone(initValues))
   const computedColumns = computed(() => columns())
   const computedRules = computed(() => useFormRules(rules?.()))
 

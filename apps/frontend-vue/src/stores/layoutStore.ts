@@ -70,11 +70,13 @@ export const useLayoutStore = defineStore('layout', () => {
   // 面包屑导航
   const breadcrumbs = computed<Breadcrumb[]>(() => {
     return route.matched.map<Breadcrumb>((item) => {
+      const typedRoute = item as unknown as RouteRecordRawPlus
+
       return {
-        icon: item.meta.icon as ReturnType<typeof renderIcon> | undefined,
-        path: item.path,
-        route: item as unknown as RouteRecordRawPlus,
-        title: (item.meta.title as string) ?? '',
+        icon: typedRoute.meta.icon,
+        path: typedRoute.path,
+        route: typedRoute,
+        title: typedRoute.meta.title,
       }
     })
   })

@@ -48,6 +48,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
   }
   const addKeyModalForm = useProModalForm<Omit<KeyModelType['createKeyBody'], 'keys'> & { keys: string }>({
     initialValues: {
+      // 默认未选择账号, 所以设置为 undefined
       account_id: undefined as unknown as number,
       keys: '',
       total_count: 100,

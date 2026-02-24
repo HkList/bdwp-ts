@@ -217,6 +217,8 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
   }
   const resetEnterpriseOptions = () => {
     enterpriseOptions.value = []
+
+    // 重置表单中的组织信息
     ;(addAccountModalForm.value.form.values.value.cid as any) = undefined
   }
 

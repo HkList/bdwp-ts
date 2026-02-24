@@ -1,12 +1,13 @@
+import type { RouteRecordRawPlus } from '@frontend/router/index.ts'
 import type { renderIcon } from '@frontend/utils/renderIcon.ts'
+
 import type { MaybePromise } from '@frontend/utils/types.ts'
 import type { Router } from 'vue-router'
-
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 export interface RouteTab {
-  icon: ReturnType<typeof renderIcon>
+  icon?: ReturnType<typeof renderIcon>
   path: string
   pinned: boolean
   title: string
@@ -27,11 +28,13 @@ export async function useRouteTabs(router: Router, checker?: (path: string) => M
       return
     }
 
+    const typedTo = to as unknown as RouteRecordRawPlus
+
     tabs.value[to.path] = {
-      icon: to.meta.icon as ReturnType<typeof renderIcon>,
-      path: to.path,
+      icon: typedTo.meta.icon,
+      path: typedTo.path,
       pinned: false,
-      title: to.meta.title as string,
+      title: typedTo.meta.title,
     }
     if (!tabsOrder.value.includes(to.path)) {
       tabsOrder.value.push(to.path)
@@ -69,7 +72,8 @@ export async function useRouteTabs(router: Router, checker?: (path: string) => M
 
     const json_tabs_order = JSON.parse(
       localStorage.getItem(ROUTE_TABS_ORDER_KEY) ?? '[]',
-    ) as unknown
+    )
+
     if (Array.isArray(json_tabs_order)) {
       // 确保所有标签都在 order 中
       for (const path of Object.keys(tabs.value)) {

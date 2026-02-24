@@ -176,7 +176,7 @@ export class KeyService {
         page,
         page_size,
         total: total[0]!.count,
-        data: keys as TypeboxTypes['Key'][],
+        data: keys,
       },
     })
   }

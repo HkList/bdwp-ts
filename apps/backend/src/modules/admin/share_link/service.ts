@@ -1,7 +1,10 @@
 import type { TypeboxTypes } from '@backend/db'
 import type { ShareLinkModelType } from '@backend/modules/admin/share_link/model.ts'
+import { getWxFileList } from '@backend/api'
 import { Drizzle, Schemas } from '@backend/db'
-import { and, count, eq } from 'drizzle-orm'
+import { isReferenceError } from '@backend/utils/errorCheckers.ts'
+import { toChunks } from '@backend/utils/toChunks.ts'
+import { and, count, eq, inArray } from 'drizzle-orm'
 import { status } from 'elysia'
 
 export class ShareLinkService {
@@ -41,8 +44,81 @@ export class ShareLinkService {
         page,
         page_size,
         total: total[0]!.count,
-        data: shareLinks as TypeboxTypes['ShareLink'][],
+        data: shareLinks,
       },
+    })
+  }
+
+  static async getValidShareLinkIds(shareLinks: TypeboxTypes['ShareLink'][], force: boolean) {
+    if (force) {
+      return shareLinks.map(link => link.id)
+    }
+
+    const validShareLinkIds: number[] = []
+    const promise: Promise<void>[] = []
+
+    shareLinks.forEach((shareLink) => {
+      promise.push((async () => {
+        // 查询分享链接状态
+        const res = await getWxFileList({
+          surl: shareLink.surl,
+        })
+
+        if (res.code === 200) {
+          validShareLinkIds.push(shareLink.id)
+        }
+      })())
+    })
+
+    for (const chunk of toChunks(promise, 5)) {
+      await Promise.all(chunk)
+    }
+
+    return validShareLinkIds
+  }
+
+  static async deleteShareLink(user: TypeboxTypes['User'], body: ShareLinkModelType['deleteShareLinkBody']) {
+    const { ids, force = false } = body
+
+    const shareLinks = await Drizzle
+      .select()
+      .from(Schemas.ShareLink)
+      .where(and(eq(Schemas.ShareLink.user_id, user.id), inArray(Schemas.ShareLink.id, ids)))
+
+    if (shareLinks.length !== ids.length) {
+      return status(404, {
+        message: '部分分享链接不存在, 删除失败',
+        data: null,
+      })
+    }
+
+    try {
+      await Drizzle.transaction(async (tx) => {
+        // 如果不是强制删除，先检查分享链接是否有效, 如果有效就不删除
+        const validShareLinkIds = await this.getValidShareLinkIds(shareLinks, force)
+
+        const rows = await tx
+          .delete(Schemas.ShareLink)
+          .where(and(eq(Schemas.ShareLink.user_id, user.id), inArray(Schemas.ShareLink.id, validShareLinkIds)))
+          .returning({ id: Schemas.ShareLink.id })
+
+        return rows
+      })
+    }
+    catch (error) {
+      if (isReferenceError(error)) {
+        return status(409, {
+          message: '分享链接存在关联数据, 无法删除',
+          data: null,
+        })
+      }
+
+      throw error
+    }
+
+    return status(200, {
+      message: '删除分享链接成功',
+      data: null,
     })
   }
 }

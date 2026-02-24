@@ -25,7 +25,7 @@ setTimeout(() => {
 
 const dropedPath = ref<string[]>([])
 function onDragEnd(event: { item: HTMLElement }) {
-  const element = event.item as HTMLElement
+  const element = event.item
   const path = element.getAttribute('path') || ''
 
   dropedPath.value.push(path)

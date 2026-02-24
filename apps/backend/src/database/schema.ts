@@ -1,3 +1,4 @@
+import type { TypeboxTypes } from './typebox.ts'
 import { boolean, integer, jsonb, pgEnum, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 
 const timestamps = {
@@ -54,7 +55,7 @@ export const ShareLink = pgTable(
     randsk: text().notNull(),
     shareid: text().notNull().unique(),
     uk: text().notNull(),
-    share_info: jsonb().notNull(),
+    share_info: jsonb().notNull().$type<TypeboxTypes['ShareLinkShareInfo']>(),
     path: text().notNull(),
     ctime: timestamp().notNull(),
     ...timestamps,
@@ -72,7 +73,7 @@ export const Key = pgTable('keys', {
     .references(() => Account.id),
   share_link_id: integer()
     .references(() => ShareLink.id),
-  user_data: jsonb(),
+  user_data: jsonb().$type<TypeboxTypes['KeyUserData']>(),
   key: text().notNull().unique(),
   used_count: integer().notNull().default(0),
   total_count: integer().notNull(),
