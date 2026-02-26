@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { Breadcrumb } from '@frontend/stores/layoutStore.ts'
-
+import type { Breadcrumb } from '@frontend/hooks/useBreadcrumbs.ts'
 import { ThemeSwitcher } from '@frontend/components/ThemeSwitcher/index.ts'
 import LayoutSider from '@frontend/layouts/AdminLayout/components/LayoutSider.vue'
 import Logo from '@frontend/layouts/AdminLayout/components/Logo.vue'
@@ -72,7 +71,7 @@ async function handleClickCrumb(item: Breadcrumb) {
             <NButton
               quaternary
               :render-icon="renderIcon(Menu, 24)"
-              @click="toggleCollapsedMobileDrawer"
+              @click="toggleCollapsedMobileDrawer()"
             />
 
             <Logo :show-text="true" />
@@ -81,7 +80,7 @@ async function handleClickCrumb(item: Breadcrumb) {
 
         <template v-else>
           <div class="pcHeader">
-            <NButton quaternary :render-icon="renderIcon(Menu, 24)" @click="toggleShowMenu" />
+            <NButton quaternary :render-icon="renderIcon(Menu, 24)" @click="toggleShowMenu()" />
 
             <NBreadcrumb class="breadcrumb">
               <NBreadcrumbItem v-for="item in breadcrumbs" :key="item.path" :clickable="false">

@@ -48,7 +48,7 @@ const collapsedWarped = computed(() => {
       <NButton
         quaternary
         :render-icon="renderIcon(collapsed ? ChevronForward : ChevronBack)"
-        @click="toggleCollapsed"
+        @click="toggleCollapsed()"
       />
     </div>
   </NLayoutSider>
