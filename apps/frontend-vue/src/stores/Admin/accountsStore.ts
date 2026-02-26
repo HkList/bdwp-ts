@@ -2,13 +2,12 @@ import type { TypeboxTypes } from '@backend/db'
 import type { AccountModelType } from '@backend/modules/admin/account/model.ts'
 import type { CreateOrUpdateAccountQueueRawResponse } from '@backend/queues/createOrUpdateAccount.ts'
 import type { Oneof } from '@frontend/utils/types.ts'
-
 import type { SelectOption } from 'naive-ui'
+
 import { api } from '@frontend/api/index.ts'
 import { useAsyncJob } from '@frontend/hooks/useAsyncJob.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
 import { useProModalForm } from '@frontend/hooks/useProModalForm.ts'
-import { useRequest } from '@frontend/hooks/useRequest.ts'
 import { useRouteQueryWatcher } from '@frontend/hooks/useRouteQueryWatcher.ts'
 import { copyText } from '@frontend/utils/copyText.ts'
 import { dialog, notification } from '@frontend/utils/discreteApi.ts'
@@ -17,10 +16,158 @@ import { CookieBite } from '@vicons/fa'
 import { Pencil, Trash } from '@vicons/ionicons5'
 import { NButton, NFlex } from 'naive-ui'
 import { defineStore } from 'pinia'
-import { renderProDateText } from 'pro-naive-ui'
+import { renderProDateText, useRequest } from 'pro-naive-ui'
 import { h, ref } from 'vue'
 
 export const useAccountsStore = defineStore('admin_accounts', () => {
+  const {
+    loading: getEnterpriseInfoLoading,
+    data: getEnterpriseInfoData,
+    runAsync: _getEnterpriseInfo,
+  } = useRequest(api.admin.accounts.get_enterprise_info.post, { manual: true })
+  const enterpriseOptions = ref<SelectOption[]>([])
+  const getEnterpriseInfo = async (params: AccountModelType['getEnterpriseInfoBody']) => {
+    const res = await _getEnterpriseInfo(params)
+    if (res.error) {
+      enterpriseOptions.value = []
+      return
+    }
+
+    enterpriseOptions.value = res.data.data.map(item => ({
+      label: `${item.orgInfo.name}(${item.cid})`,
+      value: item.cid,
+    }))
+  }
+  const resetEnterpriseOptions = () => {
+    enterpriseOptions.value = []
+
+    addAccountModalForm.value.form.resetFieldValue('cid')
+  }
+
+  const { loading: addAccountLoading, runAsync: _addAccount } = useRequest(api.admin.accounts.post, { manual: true })
+  const addAccount = async (values: AccountModelType['createAccountBody']) => {
+    const res = await _addAccount(values)
+    if (res.error) {
+      return false
+    }
+
+    // 等待异步任务完成
+    const response = await useAsyncJob<CreateOrUpdateAccountQueueRawResponse>({
+      task_id: res.data.data.task_id,
+    })
+    if (response.status !== 'completed') {
+      notification.error({
+        title: response.message,
+        duration: 3000,
+      })
+      return false
+    }
+
+    notification.success({
+      title: '账号创建成功',
+      duration: 3000,
+    })
+
+    await getAccounts()
+  }
+  const addAccountModalForm = useProModalForm<AccountModelType['createAccountBody']>({
+    rules: () => ({
+      baidu_name: [{ required: true }, { min: 2, max: 50 }],
+      cookie: [{ required: true }, { min: 10 }],
+      cid: [
+        { required: true, type: 'number' },
+        { min: 1, type: 'number' },
+      ],
+    }),
+    loading: addAccountLoading,
+    onSubmit: async (value) => {
+      const res = await addAccount(value)
+      if (res !== false) {
+        addAccountModalForm.value.close()
+      }
+    },
+  })
+
+  const { loading: deleteAccountsLoading, runAsync: _deleteAccounts } = useRequest(
+    api.admin.accounts.delete,
+    { manual: true },
+  )
+  const deleteAccounts = async (ids: number[]) => {
+    dialog.create({
+      title: '确认删除账号',
+      content: `此操作会删除关联的分享链接, 但不会删除关联的卡密, 确定要删除选中的 ${ids.length} 个账号吗？`,
+      positiveText: '确认',
+      negativeText: '取消',
+      onPositiveClick: async () => {
+        await _deleteAccounts({
+          ids,
+        })
+        await getAccounts()
+      },
+    })
+  }
+
+  const { loading: updateAccountsLoading, runAsync: _updateAccounts } = useRequest(
+    api.admin.accounts.patch,
+    { manual: true },
+  )
+  const updateAccounts = async (values: AccountModelType['updateAccountsBody']) => {
+    const res = await _updateAccounts(values)
+    if (res.error) {
+      return false
+    }
+
+    if (!res.data.data.task_id[0]) {
+      notification.error({
+        title: '没有需要更新的账号',
+        duration: 3000,
+      })
+      return false
+    }
+
+    // 等待异步任务完成
+    const response = await useAsyncJob<CreateOrUpdateAccountQueueRawResponse>({
+      task_id: res.data.data.task_id[0],
+    })
+    if (response.status !== 'completed') {
+      notification.error({
+        title: response.message,
+        duration: 3000,
+      })
+      return false
+    }
+
+    notification.success({
+      title: '账号更新成功',
+      duration: 3000,
+    })
+
+    await getAccounts()
+  }
+  const updateAccountsModalForm = useProModalForm<
+    Oneof<AccountModelType['updateAccountsBody']>,
+    Oneof<AccountModelType['updateAccountsBody']>,
+    [Oneof<AccountModelType['updateAccountsBody']>]
+  >(
+    {
+      initialValues: { id: 0, baidu_name: '', cookie: '' },
+      rules: () => ({
+        baidu_name: [{ required: true }, { min: 2, max: 50 }],
+        cookie: [{ required: true }, { min: 10 }],
+      }),
+      loading: updateAccountsLoading,
+      onSubmit: async (account) => {
+        const res = await updateAccounts([account])
+        if (res !== false) {
+          updateAccountsModalForm.value.close()
+        }
+      },
+    },
+    (account) => {
+      updateAccountsModalForm.value.form.values.value = account
+    },
+  )
+
   const {
     search: { formProps: accountSearchFormProps, formValues: accountSearchFormValues },
     send: getAccounts,
@@ -175,153 +322,6 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
       if (Object.keys(query).length > 0) {
         getAccounts()
       }
-    },
-  )
-
-  const { loading: deleteAccountsLoading, send: _deleteAccounts } = useRequest(
-    api.admin.accounts.delete,
-  )
-  const deleteAccounts = async (ids: number[]) => {
-    dialog.create({
-      title: '确认删除账号',
-      content: `此操作会删除关联的分享链接, 但不会删除关联的卡密, 确定要删除选中的 ${ids.length} 个账号吗？`,
-      positiveText: '确认',
-      negativeText: '取消',
-      onPositiveClick: async () => {
-        await _deleteAccounts({
-          ids,
-        })
-        await getAccounts()
-      },
-    })
-  }
-
-  const {
-    loading: getEnterpriseInfoLoading,
-    data: getEnterpriseInfoData,
-    send: _getEnterpriseInfo,
-  } = useRequest(api.admin.accounts.get_enterprise_info.post)
-  const enterpriseOptions = ref<SelectOption[]>([])
-  const getEnterpriseInfo = async (cookie: string) => {
-    const res = await _getEnterpriseInfo({ cookie })
-    if (res.error) {
-      enterpriseOptions.value = []
-      return
-    }
-    enterpriseOptions.value
-      = res.data.data.map(item => ({
-        label: `${item.orgInfo.name}(${item.cid})`,
-        value: item.cid,
-      })) ?? []
-  }
-  const resetEnterpriseOptions = () => {
-    enterpriseOptions.value = []
-
-    // 重置表单中的组织信息
-    ;(addAccountModalForm.value.form.values.value.cid as any) = undefined
-  }
-
-  const { loading: addAccountLoading, send: _addAccount } = useRequest(api.admin.accounts.post)
-  const addAccount = async (values: AccountModelType['createAccountBody']) => {
-    const res = await _addAccount(values)
-    if (res.error) {
-      return false
-    }
-
-    // 等待异步任务完成
-    const response = await useAsyncJob<CreateOrUpdateAccountQueueRawResponse>({
-      task_id: res.data.data.task_id,
-    })
-    if (response.status !== 'completed') {
-      notification.error({
-        title: response.message,
-        duration: 3000,
-      })
-      return false
-    }
-
-    notification.success({
-      title: '账号创建成功',
-      duration: 3000,
-    })
-
-    await getAccounts()
-  }
-  const addAccountModalForm = useProModalForm<AccountModelType['createAccountBody']>({
-    rules: () => ({
-      baidu_name: [{ required: true }, { min: 2, max: 50 }],
-      cookie: [{ required: true }, { min: 10 }],
-      cid: [
-        { required: true, type: 'number' },
-        { min: 1, type: 'number' },
-      ],
-    }),
-    loading: addAccountLoading,
-    onSubmit: async (value) => {
-      const res = await addAccount(value)
-      if (res !== false) {
-        addAccountModalForm.value.close()
-      }
-    },
-  })
-
-  const { loading: updateAccountsLoading, send: _updateAccounts } = useRequest(
-    api.admin.accounts.patch,
-  )
-  const updateAccounts = async (values: AccountModelType['updateAccountsBody']) => {
-    const res = await _updateAccounts(values)
-    if (res.error) {
-      return false
-    }
-
-    if (!res.data.data.task_id[0]) {
-      notification.error({
-        title: '没有需要更新的账号',
-        duration: 3000,
-      })
-      return false
-    }
-
-    // 等待异步任务完成
-    const response = await useAsyncJob<CreateOrUpdateAccountQueueRawResponse>({
-      task_id: res.data.data.task_id[0],
-    })
-    if (response.status !== 'completed') {
-      notification.error({
-        title: response.message,
-        duration: 3000,
-      })
-      return false
-    }
-
-    notification.success({
-      title: '账号更新成功',
-      duration: 3000,
-    })
-
-    await getAccounts()
-  }
-  const updateAccountsModalForm = useProModalForm<
-    Oneof<AccountModelType['updateAccountsBody']>,
-    Oneof<AccountModelType['updateAccountsBody']>,
-    [Oneof<AccountModelType['updateAccountsBody']>]
-  >(
-    {
-      initialValues: { id: 0, baidu_name: '', cookie: '' },
-      rules: () => ({
-        baidu_name: [{ required: true }, { min: 2, max: 50 }],
-        cookie: [{ required: true }, { min: 10 }],
-      }),
-      loading: updateAccountsLoading,
-      onSubmit: async (account) => {
-        const res = await updateAccounts([account])
-        if (res !== false) {
-          updateAccountsModalForm.value.close()
-        }
-      },
-    },
-    (account) => {
-      updateAccountsModalForm.value.form.values.value = account
     },
   )
 

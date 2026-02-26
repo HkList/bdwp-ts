@@ -2,7 +2,7 @@ import type { App } from '@backend/elysia'
 
 import { treaty } from '@elysiajs/eden'
 import { router } from '@frontend/router/index.ts'
-import { useAuthStore } from '@frontend/stores/authStore.ts'
+import { useUserStore } from '@frontend/stores/userStore.ts'
 import { loadingBar, notification } from '@frontend/utils/discreteApi.ts'
 import { sleep } from '@frontend/utils/sleep.ts'
 
@@ -40,10 +40,10 @@ export const api = treaty<App>(window?.location?.origin, {
   fetcher: retryFetch as typeof fetch,
   headers(path) {
     if (path.startsWith('/api/admin') || path === '/api/auth/sign_out') {
-      const { token } = useAuthStore()
+      const userStore = useUserStore()
 
       return {
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${userStore.token}`,
       }
     }
   },
@@ -108,8 +108,8 @@ export const api = treaty<App>(window?.location?.origin, {
         })
 
         setTimeout(async () => {
-          const authStore = useAuthStore()
-          authStore.setToken(null)
+          const userStore = useUserStore()
+          userStore.setToken(null, null)
 
           await router.push('/sign_in')
         }, 1000)

@@ -8,7 +8,6 @@ import { api } from '@frontend/api/index.ts'
 import { useAsyncJob } from '@frontend/hooks/useAsyncJob.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
 import { useProModalForm } from '@frontend/hooks/useProModalForm.ts'
-import { useRequest } from '@frontend/hooks/useRequest.ts'
 import { router } from '@frontend/router/index.ts'
 import { notification } from '@frontend/utils/discreteApi.ts'
 import { randomString } from '@frontend/utils/randomString.ts'
@@ -16,11 +15,11 @@ import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { Pencil, Person, ShareSocial, Trash } from '@vicons/ionicons5'
 import { NButton, NFlex } from 'naive-ui'
 import { defineStore } from 'pinia'
-import { renderProDateText } from 'pro-naive-ui'
+import { renderProDateText, useRequest } from 'pro-naive-ui'
 import { computed, h, ref } from 'vue'
 
 export const useKeysStore = defineStore('admin_keys', () => {
-  const { loading: addKeyLoading, send: _addKey } = useRequest(api.admin.keys.post)
+  const { loading: addKeyLoading, runAsync: _addKey } = useRequest(api.admin.keys.post, { manual: true })
   const addKey = async (value: KeyModelType['createKeyBody']) => {
     const res = await _addKey(value)
     if (res.error) {
@@ -93,7 +92,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
     },
   })
 
-  const { loading: getAccountsLoading, send: getAccounts } = useRequest(api.admin.accounts.get)
+  const { loading: getAccountsLoading, runAsync: getAccounts } = useRequest(api.admin.accounts.get, { manual: true })
   const selectAccountIdOptions = ref<SelectOption[]>([])
   const selectAccountIdProps = computed<SelectProps>(() => ({
     remote: true,
@@ -120,7 +119,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
     },
   }))
 
-  const { loading: deleteKeysLoading, send: _deleteKeys } = useRequest(api.admin.keys.delete)
+  const { loading: deleteKeysLoading, runAsync: _deleteKeys } = useRequest(api.admin.keys.delete, { manual: true })
   const deleteKeys = async (ids: number[]) => {
     await _deleteKeys({
       ids,
@@ -128,7 +127,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
     await getKeys()
   }
 
-  const { loading: updateKeysLoading, send: _updateKeys } = useRequest(api.admin.keys.patch)
+  const { loading: updateKeysLoading, runAsync: _updateKeys } = useRequest(api.admin.keys.patch, { manual: true })
   const updateKeys = async (keys: KeyModelType['updateKeysBody']) => {
     const res = await _updateKeys(keys)
     if (res.error) {
@@ -171,7 +170,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
       updateKeysModalForm.value.form.values.value = item
     },
   )
-  const { loading: getShareLinksLoading, send: getShareLinks } = useRequest(api.admin.share_links.get)
+  const { loading: getShareLinksLoading, runAsync: getShareLinks } = useRequest(api.admin.share_links.get, { manual: true })
   const selectShareLinkOptions = ref<SelectOption[]>([])
   const selectShareLinkIdProps = computed<SelectProps>(() => ({
     remote: true,

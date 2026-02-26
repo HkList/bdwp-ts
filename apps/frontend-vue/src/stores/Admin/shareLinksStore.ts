@@ -3,7 +3,6 @@ import type { ShareLinkModelType } from '@backend/modules/admin/share_link/model
 
 import { api } from '@frontend/api/index.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
-import { useRequest } from '@frontend/hooks/useRequest.ts'
 import { useRouteQueryWatcher } from '@frontend/hooks/useRouteQueryWatcher.ts'
 import { router } from '@frontend/router/index.ts'
 import { dialog } from '@frontend/utils/discreteApi.ts'
@@ -11,10 +10,35 @@ import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { Person, Trash } from '@vicons/ionicons5'
 import { NA, NButton, NFlex } from 'naive-ui'
 import { defineStore } from 'pinia'
-import { ProDataTable, renderProDateText, renderProImages } from 'pro-naive-ui'
+import { ProDataTable, renderProDateText, renderProImages, useRequest } from 'pro-naive-ui'
 import { h } from 'vue'
 
 export const useShareLinksStore = defineStore('admin_share_links', () => {
+  const { loading: deleteShareLinksLoading, runAsync: _deleteShareLinks } = useRequest(api.admin.share_links.delete, { manual: true })
+  async function deleteShareLinks(params: ShareLinkModelType['deleteShareLinkBody']) {
+    dialog.create({
+      title: '确认删除分享链接',
+      content: () => h(NFlex, { vertical: true }, {
+        default: () => [
+          h(
+            'div',
+            { style: { color: 'red' } },
+            params.force
+              ? '强制删除会不检查分享链接的情况, 直接删除分享链接, '
+              : '删除会检查分享链接的状态, 如果分享链接有效就会忽略不删除选中的条目, ',
+          ),
+          h('div', `但不会删除关联的卡密, 确定要删除选中的 ${params.ids.length} 个分享链接吗？`),
+        ],
+      }),
+      positiveText: '确认',
+      negativeText: '取消',
+      onPositiveClick: async () => {
+        await _deleteShareLinks(params)
+        await getShareLinks()
+      },
+    })
+  }
+
   const {
     table: { tableProps: shareLinkShareInfoTkbindListDataTableProps },
   } = useProDataTablePlus<object, TypeboxTypes['ShareLinkShareInfoTkbindList']>({
@@ -40,31 +64,6 @@ export const useShareLinksStore = defineStore('admin_share_links', () => {
       },
     ],
   })
-
-  const { loading: deleteShareLinksLoading, send: _deleteShareLinks } = useRequest(api.admin.share_links.delete)
-  async function deleteShareLinks(params: ShareLinkModelType['deleteShareLinkBody']) {
-    dialog.create({
-      title: '确认删除分享链接',
-      content: () => h(NFlex, { vertical: true }, {
-        default: () => [
-          h(
-            'div',
-            { style: { color: 'red' } },
-            params.force
-              ? '强制删除会不检查分享链接的情况, 直接删除分享链接, '
-              : '删除会检查分享链接的状态, 如果分享链接有效就会忽略不删除选中的条目, ',
-          ),
-          h('div', `但不会删除关联的卡密, 确定要删除选中的 ${params.ids.length} 个分享链接吗？`),
-        ],
-      }),
-      positiveText: '确认',
-      negativeText: '取消',
-      onPositiveClick: async () => {
-        await _deleteShareLinks(params)
-        await getShareLinks()
-      },
-    })
-  }
 
   const {
     search: { formProps: shareLinkSearchFormProps, formValues: shareLinkSearchFormValues },

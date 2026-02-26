@@ -1,13 +1,14 @@
 import type { RouteRecordRawPlus } from '@frontend/router/index.ts'
-import type { renderIcon } from '@frontend/utils/renderIcon.ts'
+import type { RenderIconReturn } from '@frontend/utils/renderIcon.ts'
 
 import type { MaybePromise } from '@frontend/utils/types.ts'
-import type { Router } from 'vue-router'
+import { router } from '@frontend/router/index.ts'
+import { useStorage } from '@vueuse/core'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 export interface RouteTab {
-  icon?: ReturnType<typeof renderIcon>
+  icon?: RenderIconReturn
   path: string
   pinned: boolean
   title: string
@@ -18,79 +19,58 @@ export type RouteTabs = Record<string, RouteTab>
 export const ROUTE_TABS_KEY = 'BDWP_ROUTE_TABS'
 export const ROUTE_TABS_ORDER_KEY = 'BDWP_ROUTE_TABS_ORDER'
 
-export const tabs = ref<RouteTabs>({})
-export const tabsOrder = ref<string[]>([])
-export const activeTab = ref<string>('')
+export const tabs = useStorage<RouteTabs>(ROUTE_TABS_KEY, {})
+export const tabsOrder = useStorage<string[]>(ROUTE_TABS_ORDER_KEY, [])
+export const activeTab = ref('')
 
-export async function useRouteTabs(router: Router, checker?: (path: string) => MaybePromise<boolean>) {
+export async function useRouteTabs(checker?: (path: string) => MaybePromise<boolean>) {
   router.afterEach(async (to, _, failure) => {
-    if (failure || (checker && !(await checker(to.path)))) {
+    const typedTo = to as unknown as RouteRecordRawPlus
+
+    if (failure || (checker && !(await checker(typedTo.path)))) {
       return
     }
 
-    const typedTo = to as unknown as RouteRecordRawPlus
-
-    tabs.value[to.path] = {
+    tabs.value[typedTo.path] = {
       icon: typedTo.meta.icon,
       path: typedTo.path,
       pinned: false,
       title: typedTo.meta.title,
     }
-    if (!tabsOrder.value.includes(to.path)) {
-      tabsOrder.value.push(to.path)
-    }
-    activeTab.value = to.path
 
-    // 同步到 localStorage
-    localStorage.setItem(ROUTE_TABS_KEY, JSON.stringify(tabs.value))
-    localStorage.setItem(ROUTE_TABS_ORDER_KEY, JSON.stringify(tabsOrder.value))
+    if (!tabsOrder.value.includes(typedTo.path)) {
+      tabsOrder.value.push(typedTo.path)
+    }
+
+    activeTab.value = typedTo.path
   })
 
-  try {
-    const routes = router.getRoutes()
-    const routesSet = Object.fromEntries(routes.map(r => [r.path, r]))
+  const routes = router.getRoutes()
+  const routesSet = Object.fromEntries(routes.map(r => [r.path, r]))
 
-    const json_tabs = JSON.parse(localStorage.getItem(ROUTE_TABS_KEY) ?? '{}') as RouteTabs
-    if (typeof json_tabs === 'object' && json_tabs !== null) {
-      for (const path in json_tabs) {
-        const element = json_tabs[path]
-        if (!element)
-          continue
+  for (const path in tabs.value) {
+    const element = tabs.value[path]
+    const route = routesSet[path]
 
-        // 确认标签是否存在对应路由
-        const route = routesSet[path]
-        if (!route) {
-          delete json_tabs[path]
-          continue
-        }
-
-        element.icon = route.meta.icon as ReturnType<typeof renderIcon>
-      }
-
-      tabs.value = json_tabs
+    if (!element || !route) {
+      delete tabs.value[path]
+      continue
     }
 
-    const json_tabs_order = JSON.parse(
-      localStorage.getItem(ROUTE_TABS_ORDER_KEY) ?? '[]',
-    )
+    element.icon = route.meta.icon as RenderIconReturn
+  }
 
-    if (Array.isArray(json_tabs_order)) {
-      // 确保所有标签都在 order 中
-      for (const path of Object.keys(tabs.value)) {
-        if (!json_tabs_order.includes(path)) {
-          json_tabs_order.push(path)
-        }
-      }
-
-      // 过滤掉 order 中不存在的标签
-      tabsOrder.value = json_tabs_order.filter(
-        (path): path is string => typeof path === 'string' && path in tabs.value,
-      )
+  // 确保所有标签都在 order 中
+  for (const path of Object.keys(tabs.value)) {
+    if (!tabsOrder.value.includes(path)) {
+      tabsOrder.value.push(path)
     }
   }
-  catch {
-    // 无论如何解析失败都不影响正常使用
-  }
+
+  // 过滤掉 order 中不存在的标签
+  tabsOrder.value = tabsOrder.value.filter(
+    (path): path is string => typeof path === 'string' && path in tabs.value,
+  )
 }
 
 export function switchTab(path: string, preflight = false) {
@@ -129,15 +109,8 @@ export function closeTab(path: string) {
   if (activeTab.value === path) {
     switchTab(path)
   }
-
-  // 同步到 localStorage
-  localStorage.setItem(ROUTE_TABS_KEY, JSON.stringify(tabs.value))
-  localStorage.setItem(ROUTE_TABS_ORDER_KEY, JSON.stringify(tabsOrder.value))
 }
 
 export function updateTabsOrder(newOrder: string[]) {
   tabsOrder.value = newOrder
-
-  // 同步到 localStorage
-  localStorage.setItem(ROUTE_TABS_ORDER_KEY, JSON.stringify(tabsOrder.value))
 }

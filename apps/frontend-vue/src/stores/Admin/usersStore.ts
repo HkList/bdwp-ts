@@ -5,16 +5,15 @@ import type { Oneof } from '@frontend/utils/types.ts'
 import { api } from '@frontend/api/index.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
 import { useProModalForm } from '@frontend/hooks/useProModalForm.ts'
-import { useRequest } from '@frontend/hooks/useRequest.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { Pencil, Trash } from '@vicons/ionicons5'
 import { NButton, NFlex } from 'naive-ui'
 import { defineStore } from 'pinia'
-import { renderProDateText } from 'pro-naive-ui'
+import { renderProDateText, useRequest } from 'pro-naive-ui'
 import { h } from 'vue'
 
 export const useUsersStore = defineStore('admin_users', () => {
-  const { loading: addUserLoading, send: _addUser } = useRequest(api.admin.users.post)
+  const { loading: addUserLoading, runAsync: _addUser } = useRequest(api.admin.users.post, { manual: true })
   const addUser = async (values: UserModelType['createUserBody']) => {
     const res = await _addUser(values)
     if (res.error) {
@@ -37,7 +36,7 @@ export const useUsersStore = defineStore('admin_users', () => {
     },
   })
 
-  const { loading: deleteUsersLoading, send: _deleteUsers } = useRequest(api.admin.users.delete)
+  const { loading: deleteUsersLoading, runAsync: _deleteUsers } = useRequest(api.admin.users.delete, { manual: true })
   const deleteUsers = async (ids: number[]) => {
     await _deleteUsers({
       ids,
@@ -45,7 +44,7 @@ export const useUsersStore = defineStore('admin_users', () => {
     await getUsers()
   }
 
-  const { loading: updateUsersLoading, send: _updateUsers } = useRequest(api.admin.users.patch)
+  const { loading: updateUsersLoading, runAsync: _updateUsers } = useRequest(api.admin.users.patch, { manual: true })
   const updateUsers = async (users: UserModelType['updateUsersBody']) => {
     const res = await _updateUsers(users)
     if (res.error) {

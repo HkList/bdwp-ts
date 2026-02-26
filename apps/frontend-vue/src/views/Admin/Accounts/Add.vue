@@ -32,7 +32,7 @@ const { addAccountModalForm, enterpriseOptions } = storeToRefs(accountsStore)
         <ProButton
           type="info"
           :disabled="!addAccountModalForm.form.values.value.cookie"
-          @click="getEnterpriseInfo(addAccountModalForm.form.values.value.cookie)"
+          @click="getEnterpriseInfo({ cookie: addAccountModalForm.form.values.value.cookie })"
         >
           获取组织信息
         </ProButton>

@@ -5,7 +5,7 @@ import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import '@frontend/assets/css/index.scss'
 
-useRouteTabs(router, path => path.startsWith('/admin'))
+useRouteTabs(path => path.startsWith('/admin'))
 
 const app = createApp(App)
 app.use(createPinia())

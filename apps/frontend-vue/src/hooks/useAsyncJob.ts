@@ -60,10 +60,12 @@ export async function useAsyncJob<T>(
       const result = res.data as AsyncJobApiResult<T>
 
       notificationLoading.content = () => {
-        return h(NFlex, { vertical: true }, [
-          h('div', `进度: ${result.progress}%`),
-          h('div', `消息: ${result.message}`),
-        ])
+        return h(NFlex, { vertical: true }, {
+          default: () => [
+            h('div', `进度: ${result.progress}%`),
+            h('div', `消息: ${result.message}`),
+          ],
+        })
       }
 
       if (result.status !== 'processing') {

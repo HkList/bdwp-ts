@@ -1,6 +1,7 @@
+import type { RenderIconReturn } from '@frontend/utils/renderIcon.ts'
 import type { RouteRecordRaw } from 'vue-router'
 
-import { useAuthStore } from '@frontend/stores/authStore.ts'
+import { useUserStore } from '@frontend/stores/userStore.ts'
 import { loadingBar } from '@frontend/utils/discreteApi.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { Desktop, Home, Key, LogIn, People, Person, Search, Share, ShareSocial } from '@vicons/ionicons5'
@@ -8,7 +9,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 type BaseRouteRecordRawPlus = Omit<RouteRecordRaw, 'children' | 'component' | 'meta'> & {
   meta: {
-    icon?: ReturnType<typeof renderIcon>
+    icon?: RenderIconReturn
     title: string
     needAdmin?: boolean
   }
@@ -96,17 +97,16 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
+  const userStore = useUserStore()
   loadingBar.start()
 
   if (to.path.includes('/admin')) {
-    const authStore = useAuthStore()
-    if (!authStore.isAuthenticated) {
+    if (!userStore.isAuthenticated) {
       return '/sign_in'
     }
   }
   else if (to.path === '/sign_in') {
-    const authStore = useAuthStore()
-    if (authStore.isAuthenticated) {
+    if (userStore.isAuthenticated) {
       return '/admin'
     }
   }

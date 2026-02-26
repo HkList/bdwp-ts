@@ -9,7 +9,7 @@
       // 防止主题切换闪烁：在页面渲染前立即应用主题
       ;(function () {
         const storageKey = 'vueuse-color-scheme'
-        const mode = localStorage.getItem(storageKey) || 'auto'
+        const mode = localStorage.getItem(storageKey) ?? 'auto'
 
         function applyTheme(isDark) {
           const htmlElement = document.documentElement

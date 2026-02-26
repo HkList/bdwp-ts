@@ -93,7 +93,7 @@ const selectRowOnClickProps = computed<ProDataTablePlusProps>(() => ({
   <ProCard :title="props.cardTitle">
     <ProDataTable v-bind="selectRowOnClickProps">
       <template v-for="(_, name) in slots" :key="name" #[name]="slotProps">
-        <slot :name="name" v-bind="slotProps || {}" />
+        <slot :name="name" v-bind="slotProps" />
       </template>
     </ProDataTable>
 
