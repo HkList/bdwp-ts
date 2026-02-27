@@ -1,17 +1,18 @@
 import { notification } from '@frontend/utils/discreteApi.ts'
+import { useClipboard } from '@vueuse/core'
 
-export function copyText(text: string, message = '复制成功') {
+const { copy } = useClipboard({ legacy: true })
+
+export async function copyText(text: string, message = '复制成功') {
   try {
-    navigator.clipboard.writeText(text)
+    await copy(text)
   }
   catch {
-    // 使用兼容方法
-    const textArea = document.createElement('textarea')
-    textArea.value = text
-    document.body.appendChild(textArea)
-    textArea.select()
-    document.execCommand('copy')
-    document.body.removeChild(textArea)
+    notification.error({
+      title: '复制失败',
+      duration: 1000,
+    })
+    return
   }
 
   notification.success({
