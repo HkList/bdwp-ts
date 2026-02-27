@@ -16,6 +16,7 @@ import Draggable from 'vuedraggable'
 
 const router = useRouter()
 const closeAble = ref(true)
+const closingPath = ref<string[]>([])
 const isClosingCount = ref(0)
 watch(tabsOrder.value, newValue => (closeAble.value = newValue.length > 1), { immediate: true })
 // 兜底
@@ -36,6 +37,10 @@ function onDragEnd(event: { item: HTMLElement }) {
 
 async function handleCardClick(path: string) {
   if (path === activeTab.value) {
+    return
+  }
+
+  if (closingPath.value.includes(path)) {
     return
   }
 
@@ -82,6 +87,7 @@ function warpedCloseTab(event: MouseEvent, path: string, fromTab = false) {
     return
   }
 
+  closingPath.value.push(path)
   isClosingCount.value += 1
 
   tabElement.style.maxWidth = '0px'
@@ -104,8 +110,14 @@ function warpedCloseTab(event: MouseEvent, path: string, fromTab = false) {
 
     // 清理拖拽动画关闭的标签时，可能存在的残留路径
     const pathIndex = dropedPath.value.indexOf(path)
-    if (pathIndex !== -1)
+    if (pathIndex !== -1) {
       dropedPath.value.splice(pathIndex, 1)
+    }
+
+    const closingPathIndex = closingPath.value.indexOf(path)
+    if (closingPathIndex !== -1) {
+      closingPath.value.splice(closingPathIndex, 1)
+    }
 
     isClosingCount.value -= 1
   }, 600)

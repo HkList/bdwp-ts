@@ -5,7 +5,6 @@ import type { MaybePromise } from '@frontend/utils/types.ts'
 import { router } from '@frontend/router/index.ts'
 import { useStorage } from '@vueuse/core'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 export interface RouteTab {
   icon?: RenderIconReturn
@@ -92,7 +91,7 @@ export function switchTab(path: string, preflight = false) {
     throw new Error('没有可切换的标签了')
 
   activeTab.value = newTab
-  useRouter().push(activeTab.value)
+  router.push(activeTab.value)
 }
 
 export function closeTab(path: string) {
