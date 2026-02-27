@@ -20,24 +20,27 @@ export const ROUTE_TABS_ORDER_KEY = 'BDWP_ROUTE_TABS_ORDER'
 
 export const tabs = useStorage<RouteTabs>(ROUTE_TABS_KEY, {})
 export const tabsOrder = useStorage<string[]>(ROUTE_TABS_ORDER_KEY, [])
-export const activeTab = ref('')
+export const activeTab = ref(tabsOrder.value[0] ?? '')
 
 export async function useRouteTabs(checker?: (path: string) => MaybePromise<boolean>) {
   router.afterEach(async (to, _, failure) => {
     const typedTo = to as unknown as RouteRecordRawPlus
 
-    if (failure || (checker && !(await checker(typedTo.path)))) {
+    if (
+      failure
+      || (checker && !(await checker(typedTo.path)))
+    ) {
       return
     }
 
-    tabs.value[typedTo.path] = {
-      icon: typedTo.meta.icon,
-      path: typedTo.path,
-      pinned: false,
-      title: typedTo.meta.title,
-    }
+    if (!tabs.value[typedTo.path]) {
+      tabs.value[typedTo.path] = {
+        icon: typedTo.meta.icon,
+        path: typedTo.path,
+        pinned: false,
+        title: typedTo.meta.title,
+      }
 
-    if (!tabsOrder.value.includes(typedTo.path)) {
       tabsOrder.value.push(typedTo.path)
     }
 
@@ -72,29 +75,24 @@ export async function useRouteTabs(checker?: (path: string) => MaybePromise<bool
   )
 }
 
-export function switchTab(path: string, preflight = false) {
-  const index = tabsOrder.value.indexOf(path)
-  if (index === -1) {
+export function switchTab(nextIndex: number) {
+  const newTab = tabsOrder.value.at(nextIndex)
+  if (!newTab) {
+    console.error('标签索引值超出范围，无法切换')
     return
   }
 
-  let nextIndex: number
-  if (preflight) {
-    nextIndex = tabsOrder.value[index + 1] !== undefined ? index + 1 : index - 1
-  }
-  else {
-    nextIndex = tabsOrder.value[index] !== undefined ? index : index - 1
-  }
-
-  const newTab = tabsOrder.value[nextIndex]
-  if (!newTab)
-    throw new Error('没有可切换的标签了')
-
+  // 加速切换标签的响应速度，先更新 activeTab，再进行路由跳转
   activeTab.value = newTab
-  router.push(activeTab.value)
+  router.push(newTab)
 }
 
 export function closeTab(path: string) {
+  // 如果只有一个标签，不允许关闭
+  if (tabsOrder.value.length === 1) {
+    return
+  }
+
   // 判断标签是否存在
   const index = tabsOrder.value.indexOf(path)
   if (index === -1) {
@@ -106,10 +104,6 @@ export function closeTab(path: string) {
 
   // 如果关闭的标签是当前激活的标签，切换到下一个标签
   if (activeTab.value === path) {
-    switchTab(path)
+    switchTab(tabsOrder.value[index] ? index : index - 1)
   }
-}
-
-export function updateTabsOrder(newOrder: string[]) {
-  tabsOrder.value = newOrder
 }

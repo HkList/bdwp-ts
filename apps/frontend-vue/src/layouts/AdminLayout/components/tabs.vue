@@ -5,7 +5,6 @@ import {
   switchTab,
   tabs,
   tabsOrder,
-  updateTabsOrder,
 } from '@frontend/hooks/useRouteTabs.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import { Close } from '@vicons/ionicons5'
@@ -15,25 +14,8 @@ import { useRouter } from 'vue-router'
 import Draggable from 'vuedraggable'
 
 const router = useRouter()
-const closeAble = ref(true)
+
 const closingPath = ref<string[]>([])
-const isClosingCount = ref(0)
-watch(tabsOrder.value, newValue => (closeAble.value = newValue.length > 1), { immediate: true })
-// 兜底
-setTimeout(() => {
-  closeAble.value = tabsOrder.value.length > 1
-}, 1000)
-
-const dropedPath = ref<string[]>([])
-function onDragEnd(event: { item: HTMLElement }) {
-  const element = event.item
-  const path = element.getAttribute('path') ?? ''
-
-  dropedPath.value.push(path)
-
-  // 拖拽结束后，更新 tabsOrder 的顺序
-  updateTabsOrder(tabsOrder.value)
-}
 
 async function handleCardClick(path: string) {
   if (path === activeTab.value) {
@@ -47,7 +29,44 @@ async function handleCardClick(path: string) {
   await router.push(path)
 }
 
+function warpedCloseTab(path: string) {
+  if (
+    // 如果只有一个标签，不允许关闭
+    tabsOrder.value.length === 1
+    // 如果正在关闭的标签已经在关闭队列中
+    || closingPath.value.includes(path)
+    // 如果正在关闭的标签数量大于总标签数量, 那么说明已经没有标签可以关闭了
+    || tabsOrder.value.length <= closingPath.value.length + 1
+
+  ) {
+    return
+  }
+
+  closingPath.value.push(path)
+
+  const closingIndex = tabsOrder.value.indexOf(path)
+  if (closingIndex === -1) {
+    return
+  }
+
+  // 如果关闭的标签是当前激活的标签，提前切换到下一个标签, 避免需要等待动画结束, 才能看到切换效果
+  if (path === activeTab.value) {
+    // 提前跳转
+    switchTab(tabsOrder.value[closingIndex + 1] ? closingIndex + 1 : closingIndex - 1)
+  }
+
+  setTimeout(() => {
+    closeTab(path)
+
+    const closingPathIndex = closingPath.value.indexOf(path)
+    if (closingPathIndex !== -1) {
+      closingPath.value.splice(closingPathIndex, 1)
+    }
+  }, 600)
+}
+
 const scrollbar = useTemplateRef('scrollbar')
+
 function handleMousewheel(event: WheelEvent) {
   if (!scrollbar.value) {
     return
@@ -59,73 +78,8 @@ function handleMousewheel(event: WheelEvent) {
   })
 }
 
-function warpedCloseTab(event: MouseEvent, path: string, fromTab = false) {
-  // 判断是否还有剩余标签
-  if (!closeAble.value) {
-    return
-  }
-
-  let tabElement: HTMLElement | null | undefined
-
-  if (fromTab) {
-    tabElement = event.currentTarget as HTMLElement
-  }
-  else {
-    const target = event.currentTarget as HTMLElement
-    if (!target) {
-      return
-    }
-
-    tabElement = target.parentElement?.parentElement?.parentElement
-  }
-
-  if (!tabElement) {
-    return
-  }
-
-  if (tabsOrder.value.length - isClosingCount.value <= 1) {
-    return
-  }
-
-  closingPath.value.push(path)
-  isClosingCount.value += 1
-
-  tabElement.style.maxWidth = '0px'
-  tabElement.style.opacity = '0'
-  tabElement.style.borderWidth = '0px'
-  tabElement.style.marginLeft = '0px'
-
-  // 如果关闭的标签是当前激活的标签，提前切换到下一个标签, 避免需要等待动画结束, 才能看到切换效果
-  if (path === activeTab.value) {
-    // 提前跳转
-    switchTab(path, true)
-  }
-
-  if (tabsOrder.value.length - 1 <= 1) {
-    closeAble.value = false
-  }
-
-  setTimeout(() => {
-    closeTab(path)
-
-    // 清理拖拽动画关闭的标签时，可能存在的残留路径
-    const pathIndex = dropedPath.value.indexOf(path)
-    if (pathIndex !== -1) {
-      dropedPath.value.splice(pathIndex, 1)
-    }
-
-    const closingPathIndex = closingPath.value.indexOf(path)
-    if (closingPathIndex !== -1) {
-      closingPath.value.splice(closingPathIndex, 1)
-    }
-
-    isClosingCount.value -= 1
-  }, 600)
-}
-
-// 监听路由变化，自动滚动到 activeTab
 watch(
-  activeTab,
+  () => activeTab.value,
   async () => {
     await nextTick()
 
@@ -159,33 +113,29 @@ watch(
       :item-key="(item: string) => item"
       animation="200"
       ghost-class="ghost"
-      @end="onDragEnd"
     >
-      <template #item="{ element: path }">
+      <template #item="{ element }">
         <NCard
           class="tab"
           :class="{
-            active: path === activeTab,
-            fadeIn: !dropedPath.includes(path),
+            active: element === activeTab,
+            closing: closingPath.includes(element),
           }"
-          :path="path"
-          @click="handleCardClick(path)"
-          @auxclick.middle="(event: MouseEvent) => warpedCloseTab(event, path, true)"
+          :path="element"
+          @click="handleCardClick(element)"
+          @auxclick.middle="warpedCloseTab(element)"
         >
-          <template v-if="tabs[path]">
-            <component :is="tabs[path].icon" class="icon" />
-            <span>{{ tabs[path].title }}</span>
-            <div
+          <template v-if="tabs[element]">
+            <component :is="tabs[element].icon" class="icon" />
+            <span>{{ tabs[element].title }}</span>
+            <component
+              :is="renderIcon(Close)"
               class="icon"
               :class="{
-                invisable: !closeAble,
+                invisable: tabsOrder.length <= 1,
               }"
-            >
-              <component
-                :is="renderIcon(Close)"
-                @click.stop="(event: MouseEvent) => warpedCloseTab(event, path)"
-              />
-            </div>
+              @click.stop="warpedCloseTab(element)"
+            />
           </template>
         </NCard>
       </template>
@@ -235,20 +185,6 @@ watch(
   height: 100%;
   white-space: nowrap;
 
-  @keyframes tabIn {
-    from {
-      max-width: 0px;
-      opacity: 0;
-      margin-left: 0px;
-    }
-
-    to {
-      max-width: 200px;
-      opacity: 1;
-      margin-left: 10px;
-    }
-  }
-
   .tab {
     display: flex;
     align-items: flex-start;
@@ -284,10 +220,6 @@ watch(
       border-color: var(--hk-border-hover-color);
     }
 
-    &.fadeIn {
-      animation: tabIn 0.8s;
-    }
-
     .icon {
       font-size: 17px;
       height: 17px;
@@ -307,6 +239,13 @@ watch(
       background-color: var(--hk-background-active-color);
       border-color: var(--hk-border-active-color);
       color: var(--hk-border-active-color);
+    }
+
+    &.closing {
+      max-width: 0px;
+      opacity: 0;
+      border-width: 0px;
+      margin-left: 0px;
     }
   }
 
