@@ -1,6 +1,9 @@
 import { t } from 'elysia'
 
 export const QrloginModel = {
+  getQrCodeQuery: t.Object({
+    key: t.String(),
+  }),
   getQrCodeSuccess: t.Object({
     message: t.Literal('获取二维码成功'),
     data: t.Object({
@@ -15,28 +18,31 @@ export const QrloginModel = {
     data: t.Null(),
   }),
 
-  loginByQrcodeBody: t.Object({
+  loginByQrCodeQuery: t.Object({
+    key: t.String(),
+  }),
+  loginByQrCodeBody: t.Object({
     sign: t.String(),
   }),
-  loginByQrcodeSuccess: t.Object({
+  loginByQrCodeSuccess: t.Object({
     message: t.Literal('登录成功'),
     data: t.Object({
       login_id: t.String(),
     }),
   }),
-  loginByQrcodeSuccessWaitingStatus: t.Object({
+  loginByQrCodeSuccessWaitingStatus: t.Object({
     message: t.TemplateLiteral([
       t.Literal('获取二维码状态成功: '),
       t.Union([t.Literal('二维码等待确认中'), t.Literal('二维码取消登录')]),
     ]),
     data: t.Null(),
   }),
-  loginByQrcodeFailed: t.Object({
+  loginByQrCodeFailed: t.Object({
     message: t.String(),
     data: t.Null(),
   }),
 }
 
 export interface QrloginModelType {
-  loginByQrcodeBody: typeof QrloginModel.loginByQrcodeBody.static
+  loginByQrCodeBody: typeof QrloginModel.loginByQrCodeBody.static
 }

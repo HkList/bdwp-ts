@@ -3,10 +3,10 @@ import { t } from 'elysia'
 
 export const KeyModel = {
   createKeyBody: t.Object({
-    account_id: t.Number(),
+    account_id: t.Integer({ minimum: 0 }),
     keys: t.Array(t.String()),
-    total_count: t.Number({ minimum: 1 }),
-    total_hours: t.Number({ minimum: 1 }),
+    total_count: t.Integer({ minimum: 0 }),
+    total_hours: t.Integer({ minimum: 0 }),
     disable_create_share_link: t.Optional(t.Boolean()),
   }),
   createKeySuccess: t.Object({
@@ -29,7 +29,7 @@ export const KeyModel = {
   }),
 
   deleteKeysBody: t.Object({
-    ids: t.Array(t.Number()),
+    ids: t.Array(t.Integer({ minimum: 0 })),
   }),
   deleteKeysSuccess: t.Object({
     message: t.Literal('删除卡密成功'),
@@ -42,15 +42,15 @@ export const KeyModel = {
 
   updateKeysBody: t.Array(
     t.Object({
-      id: t.Number(),
+      id: t.Integer({ minimum: 0 }),
       key: t.Optional(t.String()),
-      used_count: t.Optional(t.Number()),
-      total_count: t.Optional(t.Number()),
+      used_count: t.Optional(t.Integer({ minimum: 0 })),
+      total_count: t.Optional(t.Integer({ minimum: 0 })),
       expired_at: t.Optional(t.Date()),
-      total_hours: t.Optional(t.Number()),
+      total_hours: t.Optional(t.Integer({ minimum: 0 })),
       status: t.Optional(t.Boolean()),
       reason: t.Optional(t.String()),
-      share_link_id: t.Optional(t.Number()),
+      share_link_id: t.Optional(t.Integer({ minimum: 0 })),
     }),
   ),
   updateKeysSuccess: t.Object({
@@ -67,19 +67,19 @@ export const KeyModel = {
   }),
 
   getAllKeysQuery: t.Object({
-    page: t.Optional(t.Number()),
-    page_size: t.Optional(t.Number()),
-    id: t.Optional(t.Number()),
-    account_id: t.Optional(t.Number()),
+    page: t.Optional(t.Integer({ minimum: 0 })),
+    page_size: t.Optional(t.Integer({ minimum: 0 })),
+    id: t.Optional(t.Integer({ minimum: 0 })),
+    account_id: t.Optional(t.Integer({ minimum: 0 })),
     status: t.Optional(t.Boolean()),
     key: t.Optional(t.String()),
   }),
   getAllKeysSuccess: t.Object({
     message: t.Literal('获取卡密列表成功'),
     data: t.Object({
-      total: t.Number(),
-      page: t.Number(),
-      page_size: t.Number(),
+      total: t.Integer({ minimum: 0 }),
+      page: t.Integer({ minimum: 0 }),
+      page_size: t.Integer({ minimum: 0 }),
       data: t.Array(Typeboxs.Key),
     }),
   }),

@@ -9,7 +9,7 @@ export const AccountModel = {
     message: t.Literal('获取企业信息成功'),
     data: t.Array(
       t.Object({
-        cid: t.Number(),
+        cid: t.Integer({ minimum: 0 }),
         orgInfo: t.Object({
           name: t.String(),
         }),
@@ -24,7 +24,7 @@ export const AccountModel = {
   createAccountBody: t.Object({
     baidu_name: t.String(),
     cookie: t.String(),
-    cid: t.Number(),
+    cid: t.Integer({ minimum: 0 }),
   }),
   createAccountSuccess: t.Object({
     message: t.Literal('创建异步任务成功'),
@@ -42,7 +42,7 @@ export const AccountModel = {
   }),
 
   deleteAccountsBody: t.Object({
-    ids: t.Array(t.Number()),
+    ids: t.Array(t.Integer({ minimum: 0 })),
   }),
   deleteAccountsSuccess: t.Object({
     message: t.Literal('删除账号成功'),
@@ -59,11 +59,11 @@ export const AccountModel = {
 
   updateAccountsBody: t.Array(
     t.Object({
-      id: t.Number(),
+      id: t.Integer({ minimum: 0 }),
       baidu_name: t.Optional(t.String()),
       cookie: t.Optional(t.String()),
       // 禁止更新cid
-      // cid: t.Optional(t.Number()),
+      // cid: t.Optional(t.Integer({ minimum: 0 })),
       status: t.Optional(t.Boolean()),
       reason: t.Optional(t.String()),
     }),
@@ -84,21 +84,21 @@ export const AccountModel = {
   }),
 
   getAllAccountsQuery: t.Object({
-    page: t.Optional(t.Number()),
-    page_size: t.Optional(t.Number()),
-    id: t.Optional(t.Number()),
+    page: t.Optional(t.Integer({ minimum: 0 })),
+    page_size: t.Optional(t.Integer({ minimum: 0 })),
+    id: t.Optional(t.Integer({ minimum: 0 })),
     status: t.Optional(t.Boolean()),
     baidu_name: t.Optional(t.String()),
     uk: t.Optional(t.String()),
     org_name: t.Optional(t.String()),
-    cid: t.Optional(t.Number()),
+    cid: t.Optional(t.Integer({ minimum: 0 })),
   }),
   getAllAccountsSuccess: t.Object({
     message: t.Literal('获取账号列表成功'),
     data: t.Object({
-      total: t.Number(),
-      page: t.Number(),
-      page_size: t.Number(),
+      total: t.Integer({ minimum: 0 }),
+      page: t.Integer({ minimum: 0 }),
+      page_size: t.Integer({ minimum: 0 }),
       data: t.Array(Typeboxs.Account),
     }),
   }),

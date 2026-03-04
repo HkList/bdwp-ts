@@ -9,7 +9,6 @@ import { ref } from 'vue'
 export interface RouteTab {
   icon?: RenderIconReturn
   path: string
-  pinned: boolean
   title: string
 }
 
@@ -37,7 +36,6 @@ export async function useRouteTabs(checker?: (path: string) => MaybePromise<bool
       tabs.value[typedTo.path] = {
         icon: typedTo.meta.icon,
         path: typedTo.path,
-        pinned: false,
         title: typedTo.meta.title,
       }
 

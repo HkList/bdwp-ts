@@ -3,24 +3,24 @@ import { t } from 'elysia'
 
 export const ShareLinkModel = {
   getAllShareLinksQuery: t.Object({
-    page: t.Optional(t.Number()),
-    page_size: t.Optional(t.Number()),
-    id: t.Optional(t.Number()),
-    account_id: t.Optional(t.Number()),
+    page: t.Optional(t.Integer({ minimum: 0 })),
+    page_size: t.Optional(t.Integer({ minimum: 0 })),
+    id: t.Optional(t.Integer({ minimum: 0 })),
+    account_id: t.Optional(t.Integer({ minimum: 0 })),
     surl: t.Optional(t.String()),
   }),
   getAllShareLinksSuccess: t.Object({
     message: t.Literal('获取分享链接列表成功'),
     data: t.Object({
-      total: t.Number(),
-      page: t.Number(),
-      page_size: t.Number(),
+      total: t.Integer({ minimum: 0 }),
+      page: t.Integer({ minimum: 0 }),
+      page_size: t.Integer({ minimum: 0 }),
       data: t.Array(Typeboxs.ShareLink),
     }),
   }),
 
   deleteShareLinkBody: t.Object({
-    ids: t.Array(t.Number()),
+    ids: t.Array(t.Integer({ minimum: 0 })),
     force: t.Optional(t.Boolean()),
   }),
   deleteShareLinkSuccess: t.Object({

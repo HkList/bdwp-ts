@@ -9,6 +9,7 @@ import {
   TaskModule,
   UserModule,
 } from '@backend/modules/index.ts'
+import { KeyAuthPlugin } from '@backend/plugins/keyAuthPlugin.ts'
 import { UserAuthPlugin } from '@backend/plugins/userAuthPlugin.ts'
 import { bearer } from '@elysiajs/bearer'
 import { cors } from '@elysiajs/cors'
@@ -114,9 +115,14 @@ export const app = new Elysia()
     app =>
       app
         .use(AuthModule)
-        .use(ParseModule)
-        .use(QrloginModule)
         .use(TaskModule)
+        .group(
+          '/user',
+          app =>
+            app.use(KeyAuthPlugin())
+              .use(ParseModule)
+              .use(QrloginModule),
+        )
         .group(
           '/admin',
           app =>

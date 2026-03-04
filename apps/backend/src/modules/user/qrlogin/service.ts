@@ -1,4 +1,4 @@
-import type { QrloginModelType } from '@backend/modules/qrlogin/model.ts'
+import type { QrloginModelType } from '@backend/modules/user/qrlogin/model.ts'
 import { checkQrCodeStatus, getCookieByBduss, getFullCookie, getQrCode } from '@backend/api'
 import { redis } from '@backend/services/redis.ts'
 import { status } from 'elysia'
@@ -8,7 +8,7 @@ export class QrloginService {
     return await getQrCode()
   }
 
-  static async loginByQrcode({ sign }: QrloginModelType['loginByQrcodeBody']) {
+  static async loginByQrCode({ sign }: QrloginModelType['loginByQrCodeBody']) {
     const bdussResponse = await checkQrCodeStatus({ sign })
     if (bdussResponse.code === 500) {
       return status(500, {

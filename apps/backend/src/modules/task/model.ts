@@ -7,7 +7,7 @@ export const TaskModel = {
   GetTaskStatusSuccess: t.Object({
     message: t.Literal('获取任务状态成功'),
     data: t.Object({
-      progress: t.Number(),
+      progress: t.Number({ minimum: 0, maximum: 100 }),
       status: t.Enum({
         processing: 'processing',
         completed: 'completed',

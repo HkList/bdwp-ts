@@ -6,7 +6,7 @@ const UserTypeTypeSchema = t.Enum({
 })
 
 const UserTypeboxSchema = t.Object({
-  id: t.Integer(),
+  id: t.Integer({ minimum: 0 }),
   username: t.String(),
   password: t.String(),
   type: UserTypeTypeSchema,
@@ -15,15 +15,15 @@ const UserTypeboxSchema = t.Object({
 })
 
 const AccountTypeboxSchema = t.Object({
-  id: t.Integer(),
-  user_id: t.Integer(),
+  id: t.Integer({ minimum: 0 }),
+  user_id: t.Integer({ minimum: 0 }),
   baidu_name: t.String(),
   uk: t.String(),
   cookie: t.String(),
   bdstoken: t.String(),
   org_name: t.String(),
   cid: t.String(),
-  ticket_remain_count: t.Integer(),
+  ticket_remain_count: t.Integer({ minimum: 0 }),
   status: t.Boolean(),
   reason: t.String(),
   created_at: t.Date(),
@@ -32,32 +32,29 @@ const AccountTypeboxSchema = t.Object({
 
 const ShareLinkShareInfoTkbindListTypeboxSchema = t.Object({
   avatar: t.String(),
-  channel: t.Integer(),
-  ctime: t.Integer(),
-  uk: t.Integer(),
+  channel: t.Integer({ minimum: 0 }),
+  ctime: t.Integer({ minimum: 0 }),
+  uk: t.Integer({ minimum: 0 }),
   username: t.String(),
 })
 
 const ShareLinkShareInfoTypeboxSchema = t.Object({
   tkbind_list: t.Array(ShareLinkShareInfoTkbindListTypeboxSchema),
-  use_count: t.Integer(),
-  total_count: t.Integer(),
+  use_count: t.Integer({ minimum: 0 }),
+  total_count: t.Integer({ minimum: 0 }),
   shareid: t.String(),
 })
 
 const ShareLinkTypeboxSchema = t.Object({
-  id: t.Integer(),
-  user_id: t.Integer(),
-  account_id: t.Integer(),
+  id: t.Integer({ minimum: 0 }),
+  user_id: t.Integer({ minimum: 0 }),
+  account_id: t.Integer({ minimum: 0 }),
   surl: t.String(),
   pwd: t.String(),
   randsk: t.String(),
   shareid: t.String(),
   uk: t.String(),
-  share_info: t.Union([
-    t.Null(),
-    ShareLinkShareInfoTypeboxSchema,
-  ]),
+  share_info: t.Nullable(ShareLinkShareInfoTypeboxSchema),
   path: t.String(),
   ctime: t.Date(),
   created_at: t.Date(),
@@ -71,19 +68,16 @@ const KeyUserDataTypeboxSchema = t.Object({
 })
 
 const KeyTypeboxSchema = t.Object({
-  id: t.Integer(),
-  user_id: t.Integer(),
-  account_id: t.Integer(),
-  share_link_id: t.Nullable(t.Integer()),
-  user_data: t.Union([
-    t.Null(),
-    KeyUserDataTypeboxSchema,
-  ]),
+  id: t.Integer({ minimum: 0 }),
+  user_id: t.Integer({ minimum: 0 }),
+  account_id: t.Integer({ minimum: 0 }),
+  share_link_id: t.Nullable(t.Integer({ minimum: 0 })),
+  user_data: t.Nullable(KeyUserDataTypeboxSchema),
   key: t.String(),
-  used_count: t.Integer(),
-  total_count: t.Integer(),
+  used_count: t.Integer({ minimum: 0 }),
+  total_count: t.Integer({ minimum: 0 }),
   expired_at: t.Nullable(t.Date()),
-  total_hours: t.Integer(),
+  total_hours: t.Integer({ minimum: 0 }),
   status: t.Boolean(),
   reason: t.String(),
   created_at: t.Date(),
