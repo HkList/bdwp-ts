@@ -11,6 +11,9 @@ export const config = {
   DATABASE_URL: env.get('DATABASE_URL').required().asString(),
 
   OPENAPI_PATH: env.get('OPENAPI_PATH').default('/openapi').asString(),
+
+  // 登录状态过期时间, 单位为秒, 默认为7天
+  LOGIN_ID_EXPIRE: env.get('LOGIN_ID_EXPIRE').default(60 * 60 * 24 * 7).asIntPositive(),
 }
 
 export const bdwp_config = {

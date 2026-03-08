@@ -1,5 +1,6 @@
 import type { QrloginModelType } from '@backend/modules/user/qrlogin/model.ts'
 import { checkQrCodeStatus, getCookieByBduss, getFullCookie, getQrCode } from '@backend/api'
+import { config } from '@backend/config.ts'
 import { redis } from '@backend/services/redis.ts'
 import { status } from 'elysia'
 
@@ -39,7 +40,7 @@ export class QrloginService {
     }
 
     const login_id = crypto.randomUUID()
-    await redis.set(`login:${login_id}`, fullCookie.response.data.cookie)
+    await redis.set(`cookie:${login_id}`, fullCookie.response.data.cookie, 'EX', config.LOGIN_ID_EXPIRE)
 
     return status(200, {
       message: '登录成功',

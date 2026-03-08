@@ -1,8 +1,10 @@
 import { ParseModel } from '@backend/modules/user/parse/model.ts'
 import { ParseService } from '@backend/modules/user/parse/service.ts'
+import { KeyAuthPlugin } from '@backend/plugins/keyAuthPlugin.ts'
 import { Elysia } from 'elysia'
 
 export const ParseModule = new Elysia({ prefix: '/parse' })
+  .use(KeyAuthPlugin())
   .get('/get_key_info', async ({ query }) => await ParseService.getKeyInfo(query), {
     query: ParseModel.getKeyInfoQuery,
     response: {
@@ -21,18 +23,19 @@ export const ParseModule = new Elysia({ prefix: '/parse' })
       500: ParseModel.getListFailed,
     },
     detail: {
-      summary: '获取解析列表',
+      summary: '获取文件列表',
       tags: ['解析组件'],
     },
   })
-  // .post('/transfer', async ({ body }) => await ParseService.transfer(body), {
-  //   body: ParseModel.transferBody,
-  //   response: {
-  //     200: ParseModel.transferSuccess,
-  //     500: ParseModel.transferFailed,
-  //   },
-  //   detail: {
-  //     summary: '转存文件',
-  //     tags: ['解析组件'],
-  //   },
-  // })
+  .post('/transfer', async ({ key, body }) => await ParseService.transfer(key, body), {
+    query: ParseModel.transferQuery,
+    body: ParseModel.transferBody,
+    response: {
+      200: ParseModel.transferSuccess,
+      500: ParseModel.transferFailed,
+    },
+    detail: {
+      summary: '转存文件',
+      tags: ['解析组件'],
+    },
+  })

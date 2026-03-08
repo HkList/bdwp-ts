@@ -1,6 +1,8 @@
+import type { TypeboxTypes } from '@backend/db'
 import type { ParseModelType } from '@backend/modules/user/parse/model.ts'
 import { getWxFileList } from '@backend/api'
 import { Drizzle } from '@backend/db'
+import { transferFileJob } from '@backend/jobs/transferFile.ts'
 import { status } from 'elysia'
 
 export class ParseService {
@@ -44,5 +46,32 @@ export class ParseService {
     }
 
     return status(200, res.response)
+  }
+
+  static async transfer(key: TypeboxTypes['Key'], body: ParseModelType['transferBody']) {
+    const job = await transferFileJob.add(
+      'transferFile',
+      {
+        key,
+        body,
+      },
+      {
+        jobId: crypto.randomUUID(),
+      },
+    )
+
+    if (!job.id) {
+      return status(500, {
+        message: '创建异步任务失败',
+        data: null,
+      })
+    }
+
+    return status(200, {
+      message: '创建异步任务成功',
+      data: {
+        task_id: job.id,
+      },
+    })
   }
 }

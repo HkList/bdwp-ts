@@ -41,7 +41,7 @@ export const useShareLinksStore = defineStore('admin_share_links', () => {
 
   const {
     table: { tableProps: shareLinkShareInfoTkbindListDataTableProps },
-  } = useProDataTablePlus<object, TypeboxTypes['ShareLinkShareInfoTkbindList']>({
+  } = useProDataTablePlus<object, TypeboxTypes['ShareLinkTkbindListSingle']>({
     // 假数据
     service: async () => ({ list: [], total: 0 }),
     options: { rowKey: row => row.uk, disablePagination: true },
@@ -56,11 +56,11 @@ export const useShareLinksStore = defineStore('admin_share_links', () => {
       },
       {
         title: '用户头像',
-        render: (bind: TypeboxTypes['ShareLinkShareInfoTkbindList']) => renderProImages(bind.avatar),
+        render: row => renderProImages(row.avatar),
       },
       {
         title: '绑定日期',
-        render: (bind: TypeboxTypes['ShareLinkShareInfoTkbindList']) => renderProDateText(bind.ctime * 1000),
+        render: row => renderProDateText(row.ctime * 1000),
       },
     ],
   })
@@ -95,10 +95,9 @@ export const useShareLinksStore = defineStore('admin_share_links', () => {
       columns: () => [
         {
           type: 'expand',
-          expandable: row => row.share_info !== null,
           renderExpand: row => h(ProDataTable, {
             ...shareLinkShareInfoTkbindListDataTableProps.value,
-            data: row.share_info?.tkbind_list ?? [],
+            data: row.tkbind_list ?? [],
           }),
         },
         {
@@ -126,8 +125,8 @@ export const useShareLinksStore = defineStore('admin_share_links', () => {
         },
         {
           title: '下载卷使用情况',
-          render: row => row.share_info
-            ? `已使用 ${row.share_info.total_count} 张 / 共 ${row.share_info.use_count} 张`
+          render: row => row
+            ? `已使用 ${row.use_count} 张 / 共 ${row.total_count} 张`
             : '获取分享信息失败',
         },
         {

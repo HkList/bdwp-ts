@@ -1,12 +1,12 @@
 import type { TypeboxTypes } from '@backend/db'
 import type { AccountModelType } from '@backend/modules/admin/account/model.ts'
-import type { QueueResponse } from '@backend/utils/saveQueueStatus.ts'
+import type { JobResponse } from '@backend/utils/saveJobStatus.ts'
 import { config } from '@backend/config.ts'
 import { Drizzle, Schemas } from '@backend/db'
 import { AccountService } from '@backend/modules/admin/account/service.ts'
-import { saveQueueStatus } from '@backend/utils/saveQueueStatus.ts'
+import { saveJobStatus } from '@backend/utils/saveJobStatus.ts'
 import { toChunks } from '@backend/utils/toChunks.ts'
-import { Queue, Worker } from 'bullmq'
+import { Queue as Job, Worker } from 'bullmq'
 import { and, eq, sql } from 'drizzle-orm'
 import { status } from 'elysia'
 
@@ -16,15 +16,15 @@ export interface CreateOrUpdateAccountJobData {
   isUpdate: boolean
 }
 
-export interface CreateOrUpdateAccountQueueRawResponse {
+export interface CreateOrUpdateAccountJobRawResponse {
   id: number
 }
 
-export type CreateOrUpdateAccountQueueResponse = QueueResponse<CreateOrUpdateAccountQueueRawResponse>
+export type CreateOrUpdateAccountJobResponse = JobResponse<CreateOrUpdateAccountJobRawResponse>
 
-export const createOrUpdateAccountQueue = new Queue<
+export const createOrUpdateAccountJob = new Job<
   CreateOrUpdateAccountJobData,
-  CreateOrUpdateAccountQueueResponse
+  CreateOrUpdateAccountJobResponse
 >('createOrUpdateAccount', {
   connection: {
     host: config.REDIS_HOST,
@@ -37,13 +37,20 @@ export const createOrUpdateAccountQueue = new Queue<
   },
 })
 
-const worker = new Worker<CreateOrUpdateAccountJobData, CreateOrUpdateAccountQueueResponse>(
+const worker = new Worker<CreateOrUpdateAccountJobData, CreateOrUpdateAccountJobResponse>(
   'createOrUpdateAccount',
   async (job) => {
     const { user, body, isUpdate } = job.data
+    const job_id = job.id
+    if (!job_id) {
+      return status(500, {
+        message: '创建账号失败, 获取任务ID失败',
+        data: null,
+      })
+    }
 
-    await saveQueueStatus({
-      job,
+    await saveJobStatus({
+      job_id,
       progress: 10,
       status: 'processing',
       message: '获取账号信息中',
@@ -56,8 +63,8 @@ const worker = new Worker<CreateOrUpdateAccountJobData, CreateOrUpdateAccountQue
 
     const accountData = _accountData.response.data
 
-    await saveQueueStatus({
-      job,
+    await saveJobStatus({
+      job_id,
       progress: 50,
       status: 'processing',
       message: isUpdate ? '更新账号中' : '创建账号中',
@@ -142,7 +149,9 @@ const worker = new Worker<CreateOrUpdateAccountJobData, CreateOrUpdateAccountQue
           randsk: wx_list.seckey,
           shareid: link.shareId.toString(),
           uk: link.creator_uk.toString(),
-          share_info,
+          use_count: share_info.use_count,
+          total_count: share_info.total_count,
+          tkbind_list: share_info.tkbind_list,
           path: link.typicalPath,
           ctime: new Date(link.ctime * 1000),
         },
@@ -163,7 +172,9 @@ const worker = new Worker<CreateOrUpdateAccountJobData, CreateOrUpdateAccountQue
             randsk: sql`EXCLUDED.randsk`,
             shareid: sql`EXCLUDED.shareid`,
             uk: sql`EXCLUDED.uk`,
-            share_info: sql`EXCLUDED.share_info`,
+            use_count: sql`EXCLUDED.use_count`,
+            total_count: sql`EXCLUDED.total_count`,
+            tkbind_list: sql`EXCLUDED.tkbind_list`,
             path: sql`EXCLUDED.path`,
             ctime: sql`EXCLUDED.ctime`,
           },
@@ -183,13 +194,15 @@ const worker = new Worker<CreateOrUpdateAccountJobData, CreateOrUpdateAccountQue
       port: config.REDIS_PORT,
       db: config.REDIS_DB,
     },
-    concurrency: 1,
+    concurrency: 5,
   },
 )
 
 worker.on('active', async (job) => {
-  await saveQueueStatus({
-    job,
+  const job_id = job.id ?? ''
+
+  await saveJobStatus({
+    job_id,
     progress: 0,
     status: 'processing',
     message: '任务已启动, 正在准备中',
@@ -198,10 +211,11 @@ worker.on('active', async (job) => {
 
 worker.on('completed', async (job) => {
   const returnValue = job.returnvalue
+  const job_id = job.id ?? ''
 
   if (returnValue.code !== 200) {
-    await saveQueueStatus({
-      job,
+    await saveJobStatus({
+      job_id,
       progress: 100,
       status: 'failed',
       message: returnValue.response.message,
@@ -210,8 +224,8 @@ worker.on('completed', async (job) => {
     return
   }
 
-  await saveQueueStatus({
-    job,
+  await saveJobStatus({
+    job_id,
     progress: 100,
     status: 'completed',
     message: returnValue.response.message,
@@ -223,9 +237,10 @@ worker.on('failed', async (job, err) => {
   if (!job) {
     return
   }
+  const job_id = job.id ?? ''
 
-  await saveQueueStatus({
-    job,
+  await saveJobStatus({
+    job_id,
     progress: 100,
     status: 'failed',
     message: '创建账号失败, 请联系管理员',

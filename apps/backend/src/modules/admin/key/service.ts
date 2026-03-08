@@ -1,7 +1,7 @@
 import type { TypeboxTypes } from '@backend/db'
 import type { KeyModelType } from '@backend/modules/admin/key/model.ts'
 import { Drizzle, Schemas } from '@backend/db'
-import { createKeyQueue } from '@backend/queues/createKeys.ts'
+import { createKeyJob } from '@backend/jobs/createKeys.ts'
 import { and, count, eq, inArray, like } from 'drizzle-orm'
 import { status } from 'elysia'
 
@@ -33,7 +33,7 @@ export class KeyService {
       })
     }
 
-    const job = await createKeyQueue.add(
+    const job = await createKeyJob.add(
       'createKey',
       {
         user,

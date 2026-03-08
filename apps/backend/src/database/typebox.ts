@@ -30,7 +30,7 @@ const AccountTypeboxSchema = t.Object({
   updated_at: t.Date(),
 })
 
-const ShareLinkShareInfoTkbindListTypeboxSchema = t.Object({
+const ShareLinkTkbindListSingleTypeboxSchema = t.Object({
   avatar: t.String(),
   channel: t.Integer({ minimum: 0 }),
   ctime: t.Integer({ minimum: 0 }),
@@ -38,12 +38,7 @@ const ShareLinkShareInfoTkbindListTypeboxSchema = t.Object({
   username: t.String(),
 })
 
-const ShareLinkShareInfoTypeboxSchema = t.Object({
-  tkbind_list: t.Array(ShareLinkShareInfoTkbindListTypeboxSchema),
-  use_count: t.Integer({ minimum: 0 }),
-  total_count: t.Integer({ minimum: 0 }),
-  shareid: t.String(),
-})
+const ShareLinkTkbindListArrayTypeboxSchema = t.Array(ShareLinkTkbindListSingleTypeboxSchema)
 
 const ShareLinkTypeboxSchema = t.Object({
   id: t.Integer({ minimum: 0 }),
@@ -54,7 +49,9 @@ const ShareLinkTypeboxSchema = t.Object({
   randsk: t.String(),
   shareid: t.String(),
   uk: t.String(),
-  share_info: t.Nullable(ShareLinkShareInfoTypeboxSchema),
+  use_count: t.Integer({ minimum: 0 }),
+  total_count: t.Integer({ minimum: 0 }),
+  tkbind_list: ShareLinkTkbindListArrayTypeboxSchema,
   path: t.String(),
   ctime: t.Date(),
   created_at: t.Date(),
@@ -88,8 +85,8 @@ export const Typeboxs = {
   User: UserTypeboxSchema,
   UserType: UserTypeTypeSchema,
   Account: AccountTypeboxSchema,
-  ShareLinkShareInfoTkbindList: ShareLinkShareInfoTkbindListTypeboxSchema,
-  ShareLinkShareInfo: ShareLinkShareInfoTypeboxSchema,
+  ShareLinkTkbindListSingle: ShareLinkTkbindListSingleTypeboxSchema,
+  ShareLinkTkbindListArray: ShareLinkTkbindListArrayTypeboxSchema,
   ShareLink: ShareLinkTypeboxSchema,
   KeyUserData: KeyUserDataTypeboxSchema,
   Key: KeyTypeboxSchema,
@@ -99,8 +96,8 @@ export interface TypeboxTypes {
   User: typeof UserTypeboxSchema.static
   UserType: typeof UserTypeTypeSchema.static
   Account: typeof AccountTypeboxSchema.static
-  ShareLinkShareInfoTkbindList: typeof ShareLinkShareInfoTkbindListTypeboxSchema.static
-  ShareLinkShareInfo: typeof ShareLinkShareInfoTypeboxSchema.static
+  ShareLinkTkbindListSingle: typeof ShareLinkTkbindListSingleTypeboxSchema.static
+  ShareLinkTkbindListArray: typeof ShareLinkTkbindListArrayTypeboxSchema.static
   ShareLink: typeof ShareLinkTypeboxSchema.static
   KeyUserData: typeof KeyUserDataTypeboxSchema.static
   Key: typeof KeyTypeboxSchema.static

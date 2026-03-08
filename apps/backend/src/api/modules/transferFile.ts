@@ -82,7 +82,7 @@ export async function transferFile(options: TransferFileOptions): Promise<Transf
     {
       method: 'post',
       headers: {
-        'User-Agent': bdwp_config.PC_USERAGENT,
+        'User-Agent': bdwp_config.BROWSER_USERAGENT,
         'Cookie': options.cookie,
       },
       searchParams: {

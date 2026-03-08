@@ -26,11 +26,11 @@ export const ParseModel = {
   getListQuery: t.Object({
     key: t.String(),
     surl: t.String(),
-    pwd: t.Undefined(t.String()),
-    dir: t.Undefined(t.String()),
-    page: t.Undefined(t.Integer({ minimum: 0 })),
-    num: t.Undefined(t.Integer({ minimum: 0 })),
-    order: t.Undefined(t.Enum({
+    pwd: t.Optional(t.String()),
+    dir: t.Optional(t.String()),
+    page: t.Optional(t.Integer({ minimum: 0 })),
+    num: t.Optional(t.Integer({ minimum: 0 })),
+    order: t.Optional(t.Enum({
       filename: 'filename',
       time: 'time',
       size: 'size',
@@ -70,12 +70,25 @@ export const ParseModel = {
     data: t.Null(),
   }),
 
-  transferBody: t.Object({
+  transferQuery: t.Object({
     key: t.String(),
+  }),
+  transferBody: t.Object({
     surl: t.String(),
-    pwd: t.Undefined(t.String()),
-    dir: t.Undefined(t.String()),
+    pwd: t.Optional(t.String()),
+    dir: t.Optional(t.String()),
     fs_ids: t.Array(t.Integer({ minimum: 0 })),
+    login_id: t.String(),
+  }),
+  transferSuccess: t.Object({
+    message: t.Literal('创建异步任务成功'),
+    data: t.Object({
+      task_id: t.String(),
+    }),
+  }),
+  transferFailed: t.Object({
+    message: t.Literal('创建异步任务失败'),
+    data: t.Null(),
   }),
 }
 

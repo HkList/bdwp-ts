@@ -11,7 +11,7 @@ import {
   getWxFileList,
 } from '@backend/api'
 import { Drizzle, Schemas } from '@backend/db'
-import { createOrUpdateAccountQueue } from '@backend/queues/createOrUpdateAccount.ts'
+import { createOrUpdateAccountJob } from '@backend/jobs/createOrUpdateAccount.ts'
 import { isReferenceError } from '@backend/utils/errorCheckers.ts'
 import { toChunks } from '@backend/utils/toChunks.ts'
 import { and, count, eq, inArray, like } from 'drizzle-orm'
@@ -43,7 +43,7 @@ export class AccountService {
       })
     }
 
-    const job = await createOrUpdateAccountQueue.add(
+    const job = await createOrUpdateAccountJob.add(
       'createOrUpdateAccount',
       {
         user,
@@ -258,7 +258,7 @@ export class AccountService {
     const task_id: string[] = []
 
     for (const account of existingAccounts) {
-      const job = await createOrUpdateAccountQueue.add(
+      const job = await createOrUpdateAccountJob.add(
         'createOrUpdateAccount',
         {
           user,

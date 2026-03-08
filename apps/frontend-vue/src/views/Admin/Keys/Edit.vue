@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useKeysStore } from '@frontend/stores/Admin/keysStore.ts'
+import { NAlert } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { ProDateTime, ProDigit, ProInput, ProModalForm, ProSelect, ProSwitch } from 'pro-naive-ui'
 
@@ -27,11 +28,21 @@ const { updateKeysModalForm, selectShareLinkIdProps } = storeToRefs(keysStore)
       }"
     />
 
-    <ProDigit title="可使用时长（小时）" path="total_hours" />
+    <ProDigit title="可用时间（小时）" path="total_hours" />
 
-    <ProSwitch title="是否禁用" path="status" />
+    <NAlert type="info" title="配额提示" class="alert">
+      可用次数和可用时间都可以为0，表示不限制。
+    </NAlert>
 
-    <ProInput title="禁用原因" path="reason" />
+    <ProSwitch title="是否启用" path="status" />
+
+    <ProInput
+      title="禁用原因"
+      path="reason"
+      :field-props="{
+        disabled: updateKeysModalForm.form.fieldsValue.value.status,
+      }"
+    />
   </ProModalForm>
 </template>
 

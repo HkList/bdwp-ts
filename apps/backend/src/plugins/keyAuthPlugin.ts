@@ -17,8 +17,19 @@ export function KeyAuthPlugin() {
       throw status(404, { message: '卡密不存在', data: null })
     }
 
-    if (key.expired_at && key.expired_at < new Date()) {
+    if (key.status === false) {
+      throw status(403, { message: `卡密不可用, 原因: ${key.reason}`, data: null })
+    }
+
+    // 如果total_hours是0就不更新expired_at
+    // 这里再判断一下是不是0, 防止不小心吧expired_at错误的设置了非null值
+    if (key.total_hours !== 0 && key.expired_at && key.expired_at < new Date()) {
       throw status(403, { message: '卡密已过期', data: null })
+    }
+
+    // 如果是0就是不限制可以无限用
+    if (key.total_count !== 0 && key.used_count >= key.total_count) {
+      throw status(403, { message: '卡密使用次数已达上限', data: null })
     }
 
     return { key }

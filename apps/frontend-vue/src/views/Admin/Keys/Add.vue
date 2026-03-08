@@ -26,7 +26,11 @@ const { addKeyModalForm, addRandomModalForm, selectAccountIdProps } = storeToRef
 
     <ProDigit title="可使用次数" path="total_count" />
 
-    <ProDigit title="可使用时长（小时）" path="total_hours" />
+    <ProDigit title="可用时间（小时）" path="total_hours" />
+
+    <NAlert type="info" title="配额提示" class="alert">
+      可用次数和可用时间都可以为0，表示不限制。
+    </NAlert>
 
     <ProSwitch
       title="禁用创建分享链接"

@@ -27,9 +27,10 @@ const searchForm = createProForm({
   initialValues: data.value,
   onReset() {
     // 使用对象替换而非属性修改，确保响应式更新
-    data.value = structuredClone(props.initValues)
+    searchForm.values.value = props.initValues
 
     emit('reset')
+    emit('search')
   },
   onSubmit() {
     emit('search')

@@ -1,6 +1,6 @@
 import type { TypeboxTypes } from '@backend/db'
+import type { CreateOrUpdateAccountJobRawResponse } from '@backend/jobs/createOrUpdateAccount.ts'
 import type { AccountModelType } from '@backend/modules/admin/account/model.ts'
-import type { CreateOrUpdateAccountQueueRawResponse } from '@backend/queues/createOrUpdateAccount.ts'
 import type { Oneof } from '@frontend/utils/types.ts'
 import type { SelectOption } from 'naive-ui'
 
@@ -52,7 +52,7 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
     }
 
     // 等待异步任务完成
-    const response = await useAsyncJob<CreateOrUpdateAccountQueueRawResponse>({
+    const response = await useAsyncJob<CreateOrUpdateAccountJobRawResponse>({
       task_id: res.data.data.task_id,
     })
     if (response.status !== 'completed') {
@@ -126,7 +126,7 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
     }
 
     // 等待异步任务完成
-    const response = await useAsyncJob<CreateOrUpdateAccountQueueRawResponse>({
+    const response = await useAsyncJob<CreateOrUpdateAccountJobRawResponse>({
       task_id: res.data.data.task_id[0],
     })
     if (response.status !== 'completed') {

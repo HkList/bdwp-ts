@@ -1,6 +1,6 @@
 import type { TypeboxTypes } from '@backend/db'
+import type { CreateKeyJobRawResponse } from '@backend/jobs/createKeys.ts'
 import type { KeyModelType } from '@backend/modules/admin/key/model.ts'
-import type { CreateKeyQueueRawResponse } from '@backend/queues/createKeys.ts'
 import type { Oneof } from '@frontend/utils/types.ts'
 
 import type { SelectOption, SelectProps } from 'naive-ui'
@@ -27,7 +27,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
     }
 
     // 等待异步任务完成
-    const response = await useAsyncJob<CreateKeyQueueRawResponse>({
+    const response = await useAsyncJob<CreateKeyJobRawResponse>({
       task_id: res.data.data.task_id,
     })
     if (response.status !== 'completed') {
@@ -57,8 +57,8 @@ export const useKeysStore = defineStore('admin_keys', () => {
     rules: () => ({
       account_id: [{ required: true, type: 'number' }],
       keys: [{ required: true }],
-      total_count: [{ required: true, type: 'number' }, { min: 1, type: 'number' }],
-      total_hours: [{ required: true, type: 'number' }, { min: 1, type: 'number' }],
+      total_count: [{ required: true, type: 'number' }, { min: 0, type: 'number' }],
+      total_hours: [{ required: true, type: 'number' }, { min: 0, type: 'number' }],
     }),
     loading: addKeyLoading,
     onSubmit: async (value) => {
@@ -145,9 +145,9 @@ export const useKeysStore = defineStore('admin_keys', () => {
       rules: () => ({
         key: [{ required: true }],
         used_count: [{ required: true, type: 'number' }, { min: 0, type: 'number' }],
-        total_count: [{ required: true, type: 'number' }, { min: 1, type: 'number' }],
+        total_count: [{ required: true, type: 'number' }, { min: 0, type: 'number' }],
         expired_at: [{ type: 'date' }],
-        total_hours: [{ required: true, type: 'number' }, { min: 1, type: 'number' }],
+        total_hours: [{ required: true, type: 'number' }, { min: 0, type: 'number' }],
         status: [{ required: true, type: 'boolean' }],
       }),
       loading: updateKeysLoading,
@@ -191,7 +191,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
         return
       }
       selectShareLinkOptions.value = res.data.data.data.map(item => ({
-        label: `路径:${item.path} 分享链接:${item.surl} 下载卷:${item.share_info ? `${item.share_info.use_count}/${item.share_info.total_count}` : '无下载卷数据'}`,
+        label: `路径:${item.path} 分享链接:${item.surl} 下载卷:${item.use_count}/${item.total_count}`,
         value: item.id,
       }))
     },
@@ -248,12 +248,16 @@ export const useKeysStore = defineStore('admin_keys', () => {
           },
         },
         {
+          title: '可用次数',
+          render: row => `${row.used_count}/${row.total_count === 0 ? '无限制' : row.total_count}`,
+        },
+        {
           title: '到期时间',
-          render: row => row.total_hours !== 0
-            ? row.expired_at
+          render: row => row.total_hours === 0
+            ? '永久有效'
+            : row.expired_at
               ? renderProDateText(row.expired_at)
-              : '暂无到期时间'
-            : '永久有效',
+              : '暂无到期时间',
         },
         {
           title: '状态',
