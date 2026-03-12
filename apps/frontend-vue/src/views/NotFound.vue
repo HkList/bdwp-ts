@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ThemeSwitcher } from '@frontend/components/ThemeSwitcher/index.ts'
-import { NButton, NCard, NFlex, NResult } from 'naive-ui'
+import { NButton, NFlex, NResult } from 'naive-ui'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -9,42 +8,18 @@ const goBack = async () => router.back()
 </script>
 
 <template>
-  <NCard class="notFound">
-    <template #header>
-      <ThemeSwitcher />
+  <NResult status="404" title="页面走丢了" description="你访问的页面不存在或已被移除">
+    <template #footer>
+      <NFlex justify="center">
+        <NButton type="success" @click="goHome">
+          返回首页
+        </NButton>
+        <NButton type="info" @click="goBack">
+          返回上一页
+        </NButton>
+      </NFlex>
     </template>
-
-    <NResult status="404" title="页面走丢了" description="你访问的页面不存在或已被移除">
-      <template #footer>
-        <NFlex justify="center">
-          <NButton type="success" @click="goHome">
-            返回首页
-          </NButton>
-          <NButton type="info" @click="goBack">
-            返回上一页
-          </NButton>
-        </NFlex>
-      </template>
-    </NResult>
-  </NCard>
+  </NResult>
 </template>
 
-<style lang="scss" scoped>
-.notFound {
-  min-height: 50vh;
-  width: 30%;
-  position: relative;
-
-  :deep(.n-card-header) {
-    position: absolute;
-    right: 0;
-  }
-
-  :deep(.n-card__content) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

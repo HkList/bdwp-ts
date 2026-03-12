@@ -58,12 +58,22 @@ export const routes: RouteRecordRawPlus[] = [
   {
     children: [
       {
-        component: () => import('@frontend/views/User/Parse.vue'),
+        component: () => import('@frontend/views/NotFound.vue'),
+        meta: { icon: renderIcon(Search), title: '404' },
+        path: '/404',
+      },
+      {
+        component: () => import('@frontend/views/User/Home.vue'),
+        meta: { icon: renderIcon(Home), title: '首页' },
+        path: '/',
+      },
+      {
+        component: () => import('@frontend/views/User/Key/Index.vue'),
         meta: { icon: renderIcon(Share), title: '解析页' },
-        path: '/parse',
+        path: '/key/:key',
       },
     ],
-    component: () => import('@frontend/layouts/AppLayout.vue'),
+    component: () => import('@frontend/layouts/CardLayout.vue'),
     meta: { icon: renderIcon(Home), title: '首页' },
     path: '/',
   },
@@ -78,11 +88,6 @@ export const routes: RouteRecordRawPlus[] = [
     meta: { icon: renderIcon(Desktop), title: '管理后台首页' },
     path: '/admin',
     redirect: '/admin/users',
-  },
-  {
-    component: () => import('@frontend/views/NotFound.vue'),
-    meta: { icon: renderIcon(Search), title: '404' },
-    path: '/404',
   },
   {
     meta: { icon: renderIcon(Search), title: '404' },

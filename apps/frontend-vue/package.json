@@ -12,6 +12,7 @@
   "dependencies": {
     "@elysiajs/eden": "^1.4.8",
     "@vueuse/core": "^14.2.1",
+    "dayjs": "^1.11.19",
     "naive-ui": "^2.43.2",
     "pinia": "^3.0.4",
     "pro-naive-ui": "^3.2.2",

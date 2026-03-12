@@ -68,7 +68,7 @@ export async function getQrCode(): Promise<GetQrCodeResponse> {
 
   const typedResponse = response as GetQrCodeApiSuccessResponse
 
-  await redis.set(`qrlogin:${typedResponse.sign}`, gid, 'EX', 60)
+  await redis.set(`qrlogin:${typedResponse.sign}`, gid, 'EX', 60 * 2)
 
   return status(200, {
     message: '获取二维码成功',

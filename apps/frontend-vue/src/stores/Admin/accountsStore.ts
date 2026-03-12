@@ -88,10 +88,7 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
     },
   })
 
-  const { loading: deleteAccountsLoading, runAsync: _deleteAccounts } = useRequest(
-    api.admin.accounts.delete,
-    { manual: true },
-  )
+  const { loading: deleteAccountsLoading, runAsync: _deleteAccounts } = useRequest(api.admin.accounts.delete, { manual: true })
   const deleteAccounts = async (ids: number[]) => {
     dialog.create({
       title: '确认删除账号',
@@ -107,10 +104,7 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
     })
   }
 
-  const { loading: updateAccountsLoading, runAsync: _updateAccounts } = useRequest(
-    api.admin.accounts.patch,
-    { manual: true },
-  )
+  const { loading: updateAccountsLoading, runAsync: _updateAccounts } = useRequest(api.admin.accounts.patch, { manual: true })
   const updateAccounts = async (values: AccountModelType['updateAccountsBody']) => {
     const res = await _updateAccounts(values)
     if (res.error) {

@@ -7,6 +7,7 @@ import { loadingBar, notification } from '@frontend/utils/discreteApi.ts'
 import { sleep } from '@frontend/utils/sleep.ts'
 
 export const DO_NOT_SHOWN_MESSAGE = ['获取任务状态成功']
+export const DO_NOT_RETRY_URLS = ['/api/user/qrlogin/login']
 
 export async function retryFetch(url: string, options?: RequestInit, retries = 3, delay = 1000): Promise<Response> {
   try {
@@ -14,8 +15,17 @@ export async function retryFetch(url: string, options?: RequestInit, retries = 3
 
     // 仅在服务器错误时重试
     if (!response.ok && response.status === 500 && retries > 0) {
-      if (import.meta.env.DEV)
+      if (DO_NOT_RETRY_URLS.some(endpoint => url.includes(endpoint))) {
+        if (import.meta.env.DEV) {
+          console.warn(`请求失败但该URL已配置为不重试: ${url}`)
+        }
+
+        return response
+      }
+
+      if (import.meta.env.DEV) {
         console.warn(`请求失败，正在重试... (${retries} 次剩余)`)
+      }
 
       await sleep(delay)
       return retryFetch(url, options, retries - 1, delay)

@@ -10,8 +10,6 @@
     "seed": "bun run --cwd apps/backend seed",
     "prepare": "husky",
     "clean": "bunx rimraf --glob \"**/node_modules\" \"**/dist\" \"bun.lock\"",
-    "clean:win": "./scripts/clean.bat",
-    "clean:unix": "./scripts/clean.sh",
     "lint": "bun run --workspaces lint",
     "lint:fix": "bun run --workspaces lint -- --fix"
   },
@@ -25,5 +23,8 @@
     "eslint": "^10.0.1",
     "husky": "^9.1.7",
     "jiti": "^2.6.1"
+  },
+  "patchedDependencies": {
+    "pro-composables@3.3.3": "patches/pro-composables@3.3.3.patch"
   }
 }

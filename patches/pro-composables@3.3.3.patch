@@ -1,0 +1,13 @@
+diff --git a/es/composables/useRequest/types.d.ts b/es/composables/useRequest/types.d.ts
+index e9451cd4e4933883937fa67f53dcf0ce4ed46ed8..e5d39f3cccb6dc8819c51575f6a6fe3c7752bcd1 100644
+--- a/es/composables/useRequest/types.d.ts
++++ b/es/composables/useRequest/types.d.ts
+@@ -52,7 +52,7 @@ export interface PluginReturn<Data, Params extends any[]> {
+     onMutate?: (data: Data) => void;
+ }
+ export interface Result<Data, Params extends any[]> {
+-    data: Ref<Data>;
++    data: Ref<Data|undefined>;
+     error: Ref<Error>;
+     params: Ref<Params>;
+     loading: Ref<boolean>;

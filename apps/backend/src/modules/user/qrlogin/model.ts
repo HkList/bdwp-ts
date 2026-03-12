@@ -33,7 +33,7 @@ export const QrloginModel = {
   loginByQrCodeSuccessWaitingStatus: t.Object({
     message: t.TemplateLiteral([
       t.Literal('获取二维码状态成功: '),
-      t.Union([t.Literal('二维码等待确认中'), t.Literal('二维码取消登录')]),
+      t.Union([t.Literal('二维码等待扫描中'), t.Literal('二维码等待确认中'), t.Literal('二维码取消登录')]),
     ]),
     data: t.Null(),
   }),

@@ -35,7 +35,7 @@ export type GetQrCodeStatusResponse
   | ElysiaCustomStatusResponse<
     202,
     {
-      message: `获取二维码状态成功: ${'二维码等待确认中' | '二维码取消登录'}`
+      message: `获取二维码状态成功: ${'二维码等待扫描中' | '二维码等待确认中' | '二维码取消登录'}`
       data: null
     }
   >
@@ -81,6 +81,13 @@ export async function checkQrCodeStatus(
   }
 
   if (response.errno !== 0) {
+    if (response.errno === 1) {
+      return status(202, {
+        message: '获取二维码状态成功: 二维码等待扫描中',
+        data: null,
+      })
+    }
+
     return status(500, {
       message: `获取二维码状态失败: ${response.errno}`,
       data: null,

@@ -14,9 +14,7 @@ export const useAuthStore = defineStore('auth', () => {
   const router = useRouter()
   const { setToken } = useUserStore()
 
-  const { loading: signInLoading, runAsync: _signIn } = useRequest(api.auth.sign_in.post, {
-    manual: true,
-  })
+  const { loading: signInLoading, runAsync: _signIn } = useRequest(api.auth.sign_in.post, { manual: true })
   const signIn = async (values: AuthModelType['signInBody']) => {
     const { error, data } = await _signIn(values)
     if (error) {
