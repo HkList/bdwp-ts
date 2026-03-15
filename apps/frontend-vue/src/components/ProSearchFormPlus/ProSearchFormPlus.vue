@@ -42,16 +42,30 @@ const searchForm = createProForm({
   <ProCard :title="props.title">
     <ProForm :form="searchForm" :rules="props.rules as FormRules">
       <div class="searchFormWarpper">
-        <div v-for="column in columns" :key="column.path" class="searchFormItem">
+        <div v-for="column in columns" :key="column.path" class="searchFormItem" :style="props.searchFormItemStyle">
           <component :is="column.render(data[column.path])" v-if="column.render" />
 
           <ProInput
             v-else-if="column.type === 'string' || !column.type"
             :title="column.title"
             :path="column.path"
+            :field-props="{
+              disabled: column.disabled ? (typeof column.disabled === 'function' ? column.disabled() : column.disabled) : false,
+              onChange: column.onChange,
+              onBlur: column.onBlur,
+            }"
           />
 
-          <ProDigit v-else-if="column.type === 'number'" :title="column.title" :path="column.path" />
+          <ProDigit
+            v-else-if="column.type === 'number'"
+            :title="column.title"
+            :path="column.path"
+            :field-props="{
+              disabled: column.disabled ? (typeof column.disabled === 'function' ? column.disabled() : column.disabled) : false,
+              onChange: column.onChange,
+              onBlur: column.onBlur,
+            }"
+          />
 
           <ProSelect
             v-else-if="column.type === 'select'"
@@ -60,10 +74,22 @@ const searchForm = createProForm({
             :field-props="{
               options: column.options,
               multiple: column.multiple,
+              disabled: column.disabled ? (typeof column.disabled === 'function' ? column.disabled() : column.disabled) : false,
+              onChange: column.onChange,
+              onBlur: column.onBlur,
             }"
           />
 
-          <ProDate v-else-if="column.type === 'date'" :title="column.title" :path="column.path" />
+          <ProDate
+            v-else-if="column.type === 'date'"
+            :title="column.title"
+            :path="column.path"
+            :field-props="{
+              disabled: column.disabled ? (typeof column.disabled === 'function' ? column.disabled() : column.disabled) : false,
+              onChange: column.onChange,
+              onBlur: column.onBlur,
+            }"
+          />
         </div>
       </div>
 

@@ -205,7 +205,7 @@ watch(
       box-shadow 0.3s,
       background-color 0.3s;
 
-    :deep(.n-card__content) {
+    > :deep(.n-card__content) {
       padding: 0 10px;
       display: flex;
       align-items: center;

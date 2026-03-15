@@ -15,6 +15,9 @@ export interface UseProSearchFormPlusOptions<T extends object> {
   initValues: T
   /** 表单验证规则 */
   rules?: () => FormRules<T>
+  /** 搜索表单卡片标题 */
+  title?: string
+  searchFormItemStyle?: string
 }
 
 export interface ProSearchFormPlusReturn<T extends object> {
@@ -25,7 +28,7 @@ export interface ProSearchFormPlusReturn<T extends object> {
 }
 
 export function useProSearchFormPlus<T extends object>(options: UseProSearchFormPlusOptions<T>): ProSearchFormPlusReturn<T> {
-  const { columns, initValues, rules } = options
+  const { columns, initValues, rules, title, searchFormItemStyle } = options
 
   const formValues = ref(structuredClone(initValues))
   const computedColumns = computed(() => columns())
@@ -42,6 +45,8 @@ export function useProSearchFormPlus<T extends object>(options: UseProSearchForm
 
       'columns': computedColumns.value,
       'rules': computedRules.value,
+      'title': title ?? '搜索',
+      searchFormItemStyle,
     })),
     formValues,
     rules: computedRules,

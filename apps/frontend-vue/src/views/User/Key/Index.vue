@@ -3,6 +3,7 @@ import { useDownloadTicketStore } from '@frontend/stores/User/downloadTicketStor
 import { useLoginStore } from '@frontend/stores/User/loginStore.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import Login from '@frontend/views/User/Key/Login/Index.vue'
+import Transfer from '@frontend/views/User/Key/Transfer.vue'
 import { LogIn } from '@vicons/ionicons5'
 import { NButton, NDivider, NFlex, NInput, NResult, NSpin } from 'naive-ui'
 import { storeToRefs } from 'pinia'
@@ -32,7 +33,7 @@ onMounted(async () => {
 
 <template>
   <template v-if="getKeyInfoLoading || !keyInfo">
-    <NResult title="卡密信息获取中...">
+    <NResult title="卡密信息获取中..." class="result">
       <template #icon>
         <NSpin :size="60" />
       </template>
@@ -40,7 +41,7 @@ onMounted(async () => {
   </template>
 
   <template v-else-if="keyInfo.error">
-    <NResult status="403" :title="keyInfo.error.value.message ?? '未知错误'">
+    <NResult status="403" :title="keyInfo.error.value.message ?? '未知错误'" class="result">
       <NFlex vertical>
         <NInput v-model:value="tempKey" label="卡密" />
         <NButton type="primary" :render-icon="renderIcon(LogIn)" @click="jumpToTempKey">
@@ -85,9 +86,7 @@ onMounted(async () => {
     <NDivider />
 
     <Login v-if="!isLogin" />
-    <div v-else>
-      已登录
-    </div>
+    <Transfer v-else />
   </template>
 </template>
 
@@ -101,5 +100,20 @@ onMounted(async () => {
   p{
     margin: 0;
   }
+}
+
+.result {
+  min-height: 70dvh;
+  max-height: 90dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+</style>
+
+<style lang="scss">
+.cardLayout > .n-card__content {
+  justify-content: flex-start !important;
 }
 </style>

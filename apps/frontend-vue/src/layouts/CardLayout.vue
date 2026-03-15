@@ -31,13 +31,13 @@ import { RouterView } from 'vue-router'
     width: 80%;
   }
 
-  :deep(.n-card-header) {
+  > :deep(.n-card-header) {
     position: absolute;
     right: 0;
     z-index: 9999;
   }
 
-  :deep(.n-card__content) {
+  > :deep(.n-card__content) {
     display: flex;
     flex-direction: column;
     align-items: center;

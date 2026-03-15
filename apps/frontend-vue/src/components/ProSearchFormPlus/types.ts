@@ -14,6 +14,11 @@ export type ProSearchFormPlusColumn<T extends object, K extends StringKeys<T> = 
   render?: (value: T[K]) => VNode
   /** 显示的标题 */
   title: string
+  /** 是否禁用 */
+  disabled?: boolean | (() => boolean)
+  /** onBlur */
+  onBlur?: () => void
+  onChange?: () => void
 } & (
   | { multiple?: boolean, options: SelectOption[], type: 'select' }
   | { type: 'date' }
@@ -42,6 +47,7 @@ export interface ProSearchFormPlusProps<T extends object> {
   'hideResetButton'?: boolean
   /** 是否隐藏搜索按钮 */
   'hideSearchButton'?: boolean
+  'searchFormItemStyle'?: string
 
   /** 重置事件回调 */
   'onReset'?: () => void
