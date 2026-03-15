@@ -6,11 +6,24 @@ import { status } from 'elysia'
 
 export class QrloginService {
   static async getQrCode() {
-    return await getQrCode()
+    const res = await getQrCode()
+    if (res.code === 200) {
+      await redis.set(`qrlogin:${res.response.data.sign}`, res.response.data.gid, 'EX', 60 * 10)
+    }
+
+    return res
   }
 
   static async loginByQrCode({ sign }: QrloginModelType['loginByQrCodeBody']) {
-    const bdussResponse = await checkQrCodeStatus({ sign })
+    const gid = await redis.get(`qrlogin:${sign}`)
+    if (!gid) {
+      return status(500, {
+        message: '登录失败: gid查询失败',
+        data: null,
+      })
+    }
+
+    const bdussResponse = await checkQrCodeStatus({ sign, gid })
     if (bdussResponse.code === 500) {
       return status(500, {
         message: bdussResponse.response.message,

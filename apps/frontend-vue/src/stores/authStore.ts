@@ -15,8 +15,8 @@ export const useAuthStore = defineStore('auth', () => {
   const { setToken } = useUserStore()
 
   const { loading: signInLoading, runAsync: _signIn } = useRequest(api.auth.sign_in.post, { manual: true })
-  const signIn = async (values: AuthModelType['signInBody']) => {
-    const { error, data } = await _signIn(values)
+  const signIn = async (body: AuthModelType['signInBody']) => {
+    const { error, data } = await _signIn(body)
     if (error) {
       return
     }

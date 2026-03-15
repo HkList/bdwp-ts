@@ -18,8 +18,8 @@ import { RouterView } from 'vue-router'
 .cardLayout {
   width: 35%;
   margin: 100px auto;
-  min-height: 70vh;
-  max-height: 90vh;
+  min-height: 70dvh;
+  max-height: 90dvh;
   position: relative;
   overflow: auto;
 

@@ -1,6 +1,5 @@
 import type { ElysiaCustomStatusResponse } from 'elysia'
 import { bdwp_config } from '@backend/config.ts'
-import { redis } from '@backend/services/redis.ts'
 import { request } from '@backend/utils/request.ts'
 import { status } from 'elysia'
 
@@ -21,7 +20,10 @@ export type GetQrCodeResponse
     200,
     {
       message: '获取二维码成功'
-      data: GetQrCodeApiSuccessResponse
+      data: GetQrCodeApiSuccessResponse & {
+        link: string
+        gid: string
+      }
     }
   >
   | ElysiaCustomStatusResponse<
@@ -68,10 +70,16 @@ export async function getQrCode(): Promise<GetQrCodeResponse> {
 
   const typedResponse = response as GetQrCodeApiSuccessResponse
 
-  await redis.set(`qrlogin:${typedResponse.sign}`, gid, 'EX', 60 * 2)
+  if (!typedResponse.imgurl.startsWith('http')) {
+    typedResponse.imgurl = `https://${typedResponse.imgurl}`
+  }
 
   return status(200, {
     message: '获取二维码成功',
-    data: typedResponse,
+    data: {
+      ...typedResponse,
+      link: `https://wappass.baidu.com/wp/?qrlogin&t=${Date.now()}&error=0&sign=${typedResponse.sign}&cmd=login&lp=pc&tpl=netdisk&adapter=3&qrloginfrom=pc&local=`,
+      gid,
+    },
   })
 }

@@ -2,7 +2,7 @@
 import { useDownloadTicketStore } from '@frontend/stores/User/downloadTicketStore.ts'
 import { useLoginStore } from '@frontend/stores/User/loginStore.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
-import Login from '@frontend/views/User/Key/Login.vue'
+import Login from '@frontend/views/User/Key/Login/Index.vue'
 import { LogIn } from '@vicons/ionicons5'
 import { NButton, NDivider, NFlex, NInput, NResult, NSpin } from 'naive-ui'
 import { storeToRefs } from 'pinia'

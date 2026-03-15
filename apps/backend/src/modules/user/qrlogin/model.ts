@@ -11,6 +11,7 @@ export const QrloginModel = {
       imgurl: t.String(),
       sign: t.String(),
       prompt: t.String(),
+      link: t.String(),
     }),
   }),
   getQrCodeFailed: t.Object({

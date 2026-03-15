@@ -6,6 +6,7 @@ import {
   ParseModule,
   QrloginModule,
   ShareLinkModule,
+  SmsLoginModule,
   TaskModule,
   UserModule,
 } from '@backend/modules/index.ts'
@@ -121,7 +122,8 @@ export const app = new Elysia()
           app =>
             app.use(KeyAuthPlugin())
               .use(ParseModule)
-              .use(QrloginModule),
+              .use(QrloginModule)
+              .use(SmsLoginModule),
         )
         .group(
           '/admin',

@@ -154,7 +154,7 @@ async function handleClickCrumb(item: Breadcrumb) {
 <style lang="scss" scoped>
 .adminLayout {
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
 
   .pcLayoutSider {
     width: 240px !important;
@@ -208,7 +208,7 @@ async function handleClickCrumb(item: Breadcrumb) {
     }
 
     .content {
-      height: calc(100vh - 64px - 42px - 48px); // 减去头部、二级导航栏和底部的高度
+      height: calc(100dvh - 64px - 42px - 48px); // 减去头部、二级导航栏和底部的高度
 
       .content-wrapper {
         padding: 24px;

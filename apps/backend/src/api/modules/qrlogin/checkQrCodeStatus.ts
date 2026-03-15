@@ -1,6 +1,5 @@
 import type { ElysiaCustomStatusResponse } from 'elysia'
 import { bdwp_config } from '@backend/config.ts'
-import { redis } from '@backend/services/redis.ts'
 import { request } from '@backend/utils/request.ts'
 import { status } from 'elysia'
 
@@ -42,19 +41,12 @@ export type GetQrCodeStatusResponse
 
 export interface CheckQrCodeStatusOptions {
   sign: string
+  gid: string
 }
 
 export async function checkQrCodeStatus(
   options: CheckQrCodeStatusOptions,
 ): Promise<GetQrCodeStatusResponse> {
-  const gid = await redis.get(`qrlogin:${options.sign}`)
-  if (!gid) {
-    return status(500, {
-      message: '获取二维码状态失败: gid查询失败',
-      data: null,
-    })
-  }
-
   const response = await request.send<
     GetQrCodeStatusApiSuccessResponse,
     GetQrCodeStatusApiFailedResponse
@@ -66,7 +58,7 @@ export async function checkQrCodeStatus(
     },
     searchParams: {
       channel_id: options.sign,
-      gid,
+      gid: options.gid,
       tpl: 'netdisk',
       apiver: 'v3',
       tt: Date.now(),
