@@ -69,7 +69,9 @@ export async function useAsyncJob<T>(
       }
 
       if (result.status !== 'processing') {
-        notificationLoading.destroy()
+        setTimeout(() => {
+          notificationLoading.destroy()
+        }, 3000)
         return result as AsyncJobResult<T>
       }
     }

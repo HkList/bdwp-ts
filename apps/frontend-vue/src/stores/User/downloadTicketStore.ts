@@ -1,7 +1,10 @@
 import type { ParseModel, ParseModelType } from '@backend/modules/user/parse/model.ts'
 import { api } from '@frontend/api/index.ts'
+import { useAsyncJob } from '@frontend/hooks/useAsyncJob.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
 import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
+import { useLoginStore } from '@frontend/stores/User/loginStore.ts'
+import { message } from '@frontend/utils/discreteApi.ts'
 import { formatBytes } from '@frontend/utils/format.ts'
 import { iconList } from '@frontend/utils/genFileIcon'
 import { getFileIcon } from '@frontend/utils/genFileIcon.ts'
@@ -9,7 +12,7 @@ import { parseBaiduShareLink } from '@frontend/utils/parseBaiduShareLink.ts'
 import { NA } from 'naive-ui'
 import { defineStore, storeToRefs } from 'pinia'
 import { renderProDateText, useRequest } from 'pro-naive-ui'
-import { computed, h } from 'vue'
+import { computed, h, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 export const useDownloadTicketStore = defineStore('user_download_ticket', () => {
@@ -110,6 +113,7 @@ export const useDownloadTicketStore = defineStore('user_download_ticket', () => 
         disablePagination: true,
         manual: true,
         rowKey: row => row.fs_id,
+        loading: () => transfering.value,
       },
     },
     {
@@ -160,8 +164,36 @@ export const useDownloadTicketStore = defineStore('user_download_ticket', () => 
     await getFileList()
   }
 
-  const transferSelectedFile = () => {
-    console.error('选中的ID', fileListCheckedRowKeys.value)
+  const transfering = ref(false)
+  const transferSelectedFile = async () => {
+    const loginStore = useLoginStore()
+    const { loginId } = storeToRefs(loginStore)
+
+    transfering.value = true
+
+    if (!loginId.value) {
+      message.error('异常转存, 缺少 login_id')
+      transfering.value = false
+      return
+    }
+
+    const transferRes = await api.user.parse.transfer.post({
+      ...fileListSearchFormValues.value,
+      surl: parseBaiduShareLink(fileListSearchFormValues.value.surl).surl,
+      fs_ids: fileListCheckedRowKeys.value,
+      login_id: loginId.value,
+    }, { query: { key: key.value } })
+
+    if (transferRes.error) {
+      transfering.value = false
+      return
+    }
+
+    await useAsyncJob({
+      task_id: transferRes.data.data.task_id,
+    })
+
+    transfering.value = false
   }
 
   return {
@@ -178,6 +210,7 @@ export const useDownloadTicketStore = defineStore('user_download_ticket', () => 
     fileListDataTableProps,
     fileListCheckedRowKeys,
 
+    transfering,
     transferSelectedFile,
   }
 })
