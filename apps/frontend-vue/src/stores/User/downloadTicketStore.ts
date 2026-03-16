@@ -1,14 +1,21 @@
 import type { ParseModel, ParseModelType } from '@backend/modules/user/parse/model.ts'
 import { api } from '@frontend/api/index.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
+import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
 import { formatBytes } from '@frontend/utils/format.ts'
+import { iconList } from '@frontend/utils/genFileIcon'
+import { getFileIcon } from '@frontend/utils/genFileIcon.ts'
 import { parseBaiduShareLink } from '@frontend/utils/parseBaiduShareLink.ts'
-import { defineStore } from 'pinia'
-import { useRequest } from 'pro-naive-ui'
-import { computed } from 'vue'
+import { NA } from 'naive-ui'
+import { defineStore, storeToRefs } from 'pinia'
+import { renderProDateText, useRequest } from 'pro-naive-ui'
+import { computed, h } from 'vue'
 import { useRoute } from 'vue-router'
 
 export const useDownloadTicketStore = defineStore('user_download_ticket', () => {
+  const layoutStore = useLayoutStore()
+  const { isMobile } = storeToRefs(layoutStore)
+
   const route = useRoute()
   const key = computed<string>(() => {
     if (Array.isArray(route.params.key)) {
@@ -41,6 +48,26 @@ export const useDownloadTicketStore = defineStore('user_download_ticket', () => 
           }
         }
 
+        if (fileListSearchFormValues.value.dir !== '/') {
+          let prevDir = fileListSearchFormValues.value.dir?.split('/').slice(0, -1).join('/') ?? '/'
+          if (prevDir === '') {
+            prevDir = '/'
+          }
+          response.data.data.list.unshift({
+            category: 0,
+            fs_id: -1,
+            is_dir: true,
+            local_ctime: 0,
+            local_mtime: 0,
+            path: prevDir,
+            server_ctime: 0,
+            server_filename: '..',
+            server_mtime: 0,
+            size: 0,
+            md5: '',
+          })
+        }
+
         return {
           list: response.data.data.list,
           total: 0,
@@ -49,15 +76,30 @@ export const useDownloadTicketStore = defineStore('user_download_ticket', () => 
       columns: () => [
         {
           type: 'selection',
+          disabled: ({ is_dir }) => is_dir, // 禁止选择文件夹
         },
         {
           title: '文件名',
-          path: 'server_filename',
+          render: (row) => {
+            return h(
+              'p',
+              { style: 'display: flex; gap: 8px;' },
+              [
+                h('img', { style: 'width: 22px; height: 22px;', src: row.is_dir ? iconList.folder : getFileIcon(row.server_filename) }),
+                row.is_dir
+                  ? h(NA, { onClick: () => openDir(row), onDblclick: () => openDir(row, true) }, () => row.server_filename)
+                  : row.server_filename,
+              ],
+            )
+          },
         },
         {
           title: '文件大小',
-          path: 'size',
           render: ({ size }) => formatBytes(size),
+        },
+        {
+          title: '修改时间',
+          render: ({ server_mtime }) => renderProDateText(server_mtime * 1000),
         },
       ],
       options: {
@@ -105,6 +147,18 @@ export const useDownloadTicketStore = defineStore('user_download_ticket', () => 
       searchFormItemStyle: 'width: 100% !important;',
     },
   )
+
+  const openDir = async (row: (typeof ParseModel['getListSuccess']['static'])['data']['list'][number], isDblClick = false) => {
+    if (
+      !row.is_dir
+      || (!isDblClick && !isMobile.value)
+    ) {
+      return
+    }
+
+    fileListSearchFormValues.value.dir = row.path
+    await getFileList()
+  }
 
   const transferSelectedFile = () => {
     console.error('选中的ID', fileListCheckedRowKeys.value)

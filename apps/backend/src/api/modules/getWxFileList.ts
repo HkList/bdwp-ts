@@ -6,7 +6,7 @@ import { status } from 'elysia'
 export interface WxFileItem {
   category: string
   fs_id: string
-  is_dir: '1' | '0'
+  isdir: '1' | '0'
   local_ctime: string
   local_mtime: string
   md5?: string
@@ -14,7 +14,7 @@ export interface WxFileItem {
   server_ctime: string
   server_filename: string
   server_mtime: string
-  size: number
+  size: string
 }
 
 export interface ParsedWxFileItem {
@@ -188,10 +188,12 @@ export async function getWxFileList(options: GetWxFileListOptions): Promise<File
     .replace(/~/g, '=')
     .replace(/_/g, '/')
 
+  console.log(typedResponse.data.list)
+
   const parsedList = typedResponse.data.list.map(item => ({
     category: Number.parseInt(item.category),
     fs_id: Number.parseInt(item.fs_id),
-    is_dir: item.is_dir === '1',
+    is_dir: Number.parseInt(item.isdir) === 1,
     local_ctime: Number.parseInt(item.local_ctime),
     local_mtime: Number.parseInt(item.local_mtime),
     md5: item.md5 ?? '',
@@ -199,7 +201,7 @@ export async function getWxFileList(options: GetWxFileListOptions): Promise<File
     server_ctime: Number.parseInt(item.server_ctime),
     server_filename: item.server_filename,
     server_mtime: Number.parseInt(item.server_mtime),
-    size: item.size,
+    size: Number.parseFloat(item.size),
   }))
 
   return status(200, {
