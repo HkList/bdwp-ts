@@ -1,4 +1,5 @@
 import process from 'node:process'
+import { initDrizzle } from '@backend/db'
 import { initElysia } from '@backend/services/elysia.ts'
 import { initExceptionHandler } from '@backend/services/exceptionHandler.ts'
 import { initRedis } from '@backend/services/redis.ts'
@@ -6,6 +7,7 @@ import { initRedis } from '@backend/services/redis.ts'
 try {
   (async () => {
     initExceptionHandler()
+    await initDrizzle()
     await initRedis()
     await initElysia()
   })()
