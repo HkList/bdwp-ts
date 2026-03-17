@@ -188,8 +188,6 @@ export async function getWxFileList(options: GetWxFileListOptions): Promise<File
     .replace(/~/g, '=')
     .replace(/_/g, '/')
 
-  console.log(typedResponse.data.list)
-
   const parsedList = typedResponse.data.list.map(item => ({
     category: Number.parseInt(item.category),
     fs_id: Number.parseInt(item.fs_id),
