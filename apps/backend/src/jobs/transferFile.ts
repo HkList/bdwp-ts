@@ -12,7 +12,7 @@ import { verrou } from '@backend/services/verrou.ts'
 import { saveJobStatus } from '@backend/utils/saveJobStatus.ts'
 import { Queue as Job, Worker } from 'bullmq'
 import dayjs from 'dayjs'
-import { and, eq, gt } from 'drizzle-orm'
+import { and, eq, gt, sql } from 'drizzle-orm'
 import { status } from 'elysia'
 
 export interface TransferFileJobData {
@@ -107,9 +107,14 @@ const transferFileWorker: Processor<TransferFileJobData, TransferFileJobResponse
       .where(
         eq(Schemas.Key.id, key.id),
       )
+
+    key.user_data = {
+      ...userInfo.response.data,
+      uk: userInfo.response.data.uk.toString(),
+    }
   }
 
-  if (key.user_data!.uk !== userInfo.response.data.uk.toString()) {
+  if (key.user_data.uk !== userInfo.response.data.uk.toString()) {
     return status(500, {
       message: '转存文件失败: 当前登陆账号与卡密绑定的账号不匹配, 请重新登录',
       data: null,
@@ -180,12 +185,25 @@ const transferFileWorker: Processor<TransferFileJobData, TransferFileJobResponse
         .from(Schemas.ShareLink)
         .where(
           and(
-            eq(Schemas.ShareLink.use_count, 0),
-            eq(Schemas.ShareLink.total_count, 1),
             gt(Schemas.ShareLink.ctime, dayjs().subtract(1, 'year').toDate()),
+            sql`${Schemas.ShareLink.tkbind_list}::text LIKE ${`%\\\\"uk\\\\":${key.user_data.uk}%`}`,
           ),
         )
         .limit(1)
+
+      if (!share_link) {
+        ;[share_link] = await Drizzle
+          .select()
+          .from(Schemas.ShareLink)
+          .where(
+            and(
+              eq(Schemas.ShareLink.use_count, 0),
+              eq(Schemas.ShareLink.total_count, 1),
+              gt(Schemas.ShareLink.ctime, dayjs().subtract(1, 'year').toDate()),
+            ),
+          )
+          .limit(1)
+      }
 
       if (!share_link) {
         return status(500, {

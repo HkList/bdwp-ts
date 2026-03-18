@@ -192,6 +192,13 @@ export class AccountService {
   ) {
     const { ids } = body
 
+    if (ids.includes(1)) {
+      return status(409, {
+        message: '禁止删除ID为1的账号',
+        data: null,
+      })
+    }
+
     try {
       await Drizzle.transaction(async (tx) => {
         // 先删除账号关联的数据

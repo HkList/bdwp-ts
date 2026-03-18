@@ -1,7 +1,7 @@
 import { AccountModel } from '@backend/modules/admin/account/model.ts'
 import { AccountService } from '@backend/modules/admin/account/service.ts'
 import { UserAuthPlugin } from '@backend/plugins/userAuthPlugin.ts'
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 
 export const AccountModule = new Elysia({ prefix: '/accounts' })
   .use(UserAuthPlugin())
@@ -33,7 +33,7 @@ export const AccountModule = new Elysia({ prefix: '/accounts' })
     response: {
       200: AccountModel.deleteAccountsSuccess,
       404: AccountModel.deleteAccountsFailedNotFound,
-      409: AccountModel.deleteAccountsFailedReferenceError,
+      409: t.Union([AccountModel.deleteAccountsFailedReferenceError, AccountModel.deleteAccountsFailedShouldNotDelete]),
     },
     detail: {
       summary: '删除账号',

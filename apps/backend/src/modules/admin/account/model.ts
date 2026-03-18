@@ -56,6 +56,10 @@ export const AccountModel = {
     message: t.Literal('账号存在关联数据, 无法删除'),
     data: t.Null(),
   }),
+  deleteAccountsFailedShouldNotDelete: t.Object({
+    message: t.Literal('禁止删除ID为1的账号'),
+    data: t.Null(),
+  }),
 
   updateAccountsBody: t.Array(
     t.Object({

@@ -1,5 +1,6 @@
 import type { TypeboxTypes } from './typebox.ts'
-import { boolean, integer, jsonb, pgEnum, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
+import { sql } from 'drizzle-orm'
+import { boolean, index, integer, jsonb, pgEnum, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 
 const timestamps = {
   created_at: timestamp().notNull().defaultNow(),
@@ -62,7 +63,11 @@ export const ShareLink = pgTable(
     ctime: timestamp().notNull(),
     ...timestamps,
   },
-  table => [uniqueIndex('surl_shareid_unique_idx').on(table.surl, table.shareid)],
+  table => [
+    uniqueIndex('surl_shareid_unique_idx').on(table.surl, table.shareid),
+    index('share_links_tkbind_list_trgm_idx').using('gin', sql`(${table.tkbind_list}::text) gin_trgm_ops`),
+    index('share_links_tkbind_list_jsonb_idx').using('gin', table.tkbind_list),
+  ],
 )
 
 export const Key = pgTable('keys', {
