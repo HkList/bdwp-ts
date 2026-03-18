@@ -15,14 +15,6 @@ export const KeyModel = {
       task_id: t.String(),
     }),
   }),
-  createKeyFailedAccountNotFound: t.Object({
-    message: t.Literal('账号不存在'),
-    data: t.Null(),
-  }),
-  createKeyFailedExceedRemainCount: t.Object({
-    message: t.Literal('卡密数量超过账号剩余下载卷数量'),
-    data: t.Null(),
-  }),
   createKeyFailedCreateJobFailed: t.Object({
     message: t.Literal('创建异步任务失败'),
     data: t.Null(),

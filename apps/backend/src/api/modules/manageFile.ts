@@ -167,7 +167,7 @@ export async function manageFile<T extends keyof FileOpMap>(
     {
       method: 'post',
       headers: {
-        'User-Agent': bdwp_config.PC_USERAGENT,
+        'User-Agent': bdwp_config.BROWSER_USERAGENT,
         'Cookie': options.cookie,
       },
       searchParams: {

@@ -77,7 +77,7 @@ onMounted(async () => {
         绑定用户:
         {{
           keyInfo.data.data.user_data
-            ? `${keyInfo.data.data.user_data.username} (${keyInfo.data.data.user_data.uk})`
+            ? `${keyInfo.data.data.user_data.netdisk_name} (${keyInfo.data.data.user_data.uk})`
             : "未绑定"
         }}
       </p>
@@ -113,7 +113,7 @@ onMounted(async () => {
 </style>
 
 <style lang="scss">
-.cardLayout > .n-card__content {
+.cardLayout > .n-card-content {
   justify-content: flex-start !important;
 }
 </style>

@@ -9,8 +9,6 @@ export const KeyModule = new Elysia({ prefix: '/keys' })
     body: KeyModel.createKeyBody,
     response: {
       200: KeyModel.createKeySuccess,
-      404: KeyModel.createKeyFailedAccountNotFound,
-      409: KeyModel.createKeyFailedExceedRemainCount,
       500: KeyModel.createKeyFailedCreateJobFailed,
     },
     detail: {

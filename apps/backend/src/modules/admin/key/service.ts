@@ -10,29 +10,6 @@ export class KeyService {
     user: TypeboxTypes['User'],
     body: KeyModelType['createKeyBody'],
   ) {
-    const { account_id, keys } = body
-
-    const account = await Drizzle.query.Account.findFirst({
-      where: {
-        user_id: user.id,
-        id: account_id,
-      },
-    })
-
-    if (!account) {
-      return status(404, {
-        message: '账号不存在',
-        data: null,
-      })
-    }
-
-    if (keys.length > account.ticket_remain_count) {
-      return status(409, {
-        message: '卡密数量超过账号剩余下载卷数量',
-        data: null,
-      })
-    }
-
     const job = await createKeyJob.add(
       'createKey',
       {

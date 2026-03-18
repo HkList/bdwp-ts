@@ -1,5 +1,4 @@
 import type { SmsLoginModelType } from '@backend/modules/user/smslogin/model.ts'
-import { phoneReg } from '@backend/utils/validatePhone.ts'
 import { api } from '@frontend/api/index.ts'
 import { useProForm } from '@frontend/hooks/useProForm.ts'
 import { useDownloadTicketStore } from '@frontend/stores/User/downloadTicketStore.ts'
@@ -10,6 +9,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import { useRequest } from 'pro-naive-ui'
 import { computed, ref } from 'vue'
 
+const phoneReg = /^1[3-9]\d{9}$/
 export const LOGIN_ID_STORAGE_KEY = 'BDWP_LOGIN_ID'
 
 export const useLoginStore = defineStore('user_login', () => {

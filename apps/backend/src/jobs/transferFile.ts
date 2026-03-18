@@ -4,7 +4,7 @@ import type { ParseModelType } from '@backend/modules/user/parse/model.ts'
 import type { JobResponse } from '@backend/utils/saveJobStatus.ts'
 import type { Processor } from 'bullmq'
 import path from 'node:path'
-import { createFolder, getWxFileList, manageFile, transferFile } from '@backend/api'
+import { createFolder, getAccountInfo, getWxFileList, manageFile, transferFile } from '@backend/api'
 import { config } from '@backend/config.ts'
 import { Drizzle, Schemas } from '@backend/db'
 import { redis } from '@backend/services/redis.ts'
@@ -350,6 +350,28 @@ const transferFileWorker: Processor<TransferFileJobData, TransferFileJobResponse
       .where(
         eq(Schemas.Key.id, key.id),
       )
+  }
+
+  if (!key.user_data) {
+    try {
+      const userInfo = await getAccountInfo({
+        cookie,
+      })
+      if (userInfo.code === 200) {
+        await Drizzle
+          .update(Schemas.Key)
+          .set({
+            user_data: {
+              ...userInfo.response.data,
+              uk: userInfo.response.data.uk.toString(),
+            },
+          })
+          .where(
+            eq(Schemas.Key.id, key.id),
+          )
+      }
+    }
+    catch {}
   }
 
   return status(200, {

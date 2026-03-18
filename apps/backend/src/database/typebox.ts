@@ -59,9 +59,11 @@ const ShareLinkTypeboxSchema = t.Object({
 })
 
 const KeyUserDataTypeboxSchema = t.Object({
-  username: t.String(),
+  avatar_url: t.String(),
   baidu_name: t.String(),
+  netdisk_name: t.String(),
   uk: t.String(),
+  vip_type: t.Integer(),
 })
 
 const KeyTypeboxSchema = t.Object({

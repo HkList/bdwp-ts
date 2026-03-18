@@ -1,24 +1,6 @@
-import { Drizzle, Schemas } from '@backend/db'
+import { main } from '@backend/database/seeder.ts'
 
-async function main() {
-  await Drizzle.insert(Schemas.User)
-    .values([
-      {
-        username: 'admin',
-        password: await Bun.password.hash('admin_password'),
-        type: 'admin',
-      },
-    ])
-    .onConflictDoUpdate({
-      target: [Schemas.User.username],
-      set: {
-        username: 'admin',
-        password: await Bun.password.hash('admin_password'),
-        type: 'admin',
-      },
-    })
-
+(async () => {
+  await main()
   console.log('Seeding completed.')
-}
-
-main()
+})()

@@ -40,7 +40,7 @@ const {
 .cardLayout {
   width: 60dvw !important;
 
-  > .n-card__content {
+  > .n-card-content {
     width: calc(60dvw - 10px);
   }
 }

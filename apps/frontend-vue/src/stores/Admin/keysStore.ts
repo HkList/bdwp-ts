@@ -244,7 +244,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
               return '卡密未绑定用户'
             }
 
-            return `百度名: ${row.user_data.baidu_name} 用户名: ${row.user_data.username} UK: ${row.user_data.uk}`
+            return `百度名: ${row.user_data.baidu_name} 网盘名: ${row.user_data.netdisk_name} UK: ${row.user_data.uk}`
           },
         },
         {

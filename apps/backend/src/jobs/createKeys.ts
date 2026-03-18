@@ -96,7 +96,8 @@ const createKeyWorker: Processor<CreateKeyJobData, CreateKeyJobResponse, string>
       data: null,
     })
   }
-  if (keys.length > account.ticket_remain_count) {
+
+  if (!disable_create_share_link && keys.length > account.ticket_remain_count) {
     return status(500, {
       message: '卡密数量超过账号剩余下载卷数量',
       data: null,
