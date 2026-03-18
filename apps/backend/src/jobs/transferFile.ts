@@ -85,6 +85,37 @@ const transferFileWorker: Processor<TransferFileJobData, TransferFileJobResponse
     })
   }
 
+  const userInfo = await getAccountInfo({
+    cookie,
+  })
+  if (userInfo.code !== 200) {
+    return status(500, {
+      message: '转存文件失败: 获取账号信息失败, 请重新登录',
+      data: null,
+    })
+  }
+
+  if (!key.user_data) {
+    await Drizzle
+      .update(Schemas.Key)
+      .set({
+        user_data: {
+          ...userInfo.response.data,
+          uk: userInfo.response.data.uk.toString(),
+        },
+      })
+      .where(
+        eq(Schemas.Key.id, key.id),
+      )
+  }
+
+  if (key.user_data!.uk !== userInfo.response.data.uk.toString()) {
+    return status(500, {
+      message: '转存文件失败: 当前登陆账号与卡密绑定的账号不匹配, 请重新登录',
+      data: null,
+    })
+  }
+
   await saveJobStatus({
     job_id,
     progress: 10,
@@ -350,28 +381,6 @@ const transferFileWorker: Processor<TransferFileJobData, TransferFileJobResponse
       .where(
         eq(Schemas.Key.id, key.id),
       )
-  }
-
-  if (!key.user_data) {
-    try {
-      const userInfo = await getAccountInfo({
-        cookie,
-      })
-      if (userInfo.code === 200) {
-        await Drizzle
-          .update(Schemas.Key)
-          .set({
-            user_data: {
-              ...userInfo.response.data,
-              uk: userInfo.response.data.uk.toString(),
-            },
-          })
-          .where(
-            eq(Schemas.Key.id, key.id),
-          )
-      }
-    }
-    catch {}
   }
 
   return status(200, {
