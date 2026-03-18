@@ -1,6 +1,7 @@
 import type { ElysiaCustomStatusResponse } from 'elysia'
 import { bdwp_config } from '@backend/config.ts'
 import { request } from '@backend/utils/request.ts'
+import { validatePhone } from '@backend/utils/validatePhone.ts'
 import { status } from 'elysia'
 
 export interface GetPhoneStatusApiSuccessResponse {
@@ -56,7 +57,7 @@ export interface CheckPhoneStatusOptions {
 export async function checkPhoneStatus(
   options: CheckPhoneStatusOptions,
 ): Promise<GetPhoneStatusResponse> {
-  if (!/^1[3-9]\d{9}$/.test(options.phone) || options.phone.length !== 11) {
+  if (!validatePhone(options.phone)) {
     return status(403, {
       message: '请输入正确的手机号',
       data: null,

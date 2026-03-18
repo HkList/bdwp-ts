@@ -109,6 +109,11 @@ export const errorMessages: Record<string | number, Record<string | number, stri
   },
 }
 
+const surlRegex = /^\d/
+const secKeyRegex1 = /-/g
+const secKeyRegex2 = /~/g
+const secKeyRegex3 = /_/g
+
 export interface GetWxFileListOptions {
   surl: string
   pwd?: string
@@ -123,7 +128,7 @@ export async function getWxFileList(options: GetWxFileListOptions): Promise<File
   let { surl } = options
 
   // 处理 surl，确保以 "1" 开头
-  if (/^\d/.test(surl)) {
+  if (surlRegex.test(surl)) {
     surl = surl.substring(1)
   }
   surl = `1${surl}`
@@ -184,9 +189,9 @@ export async function getWxFileList(options: GetWxFileListOptions): Promise<File
   const typedResponse = response as FileListApiSuccessResponse
 
   const pasedSeckey = typedResponse.data.seckey
-    .replace(/-/g, '+')
-    .replace(/~/g, '=')
-    .replace(/_/g, '/')
+    .replace(secKeyRegex1, '+')
+    .replace(secKeyRegex2, '=')
+    .replace(secKeyRegex3, '/')
 
   const parsedList = typedResponse.data.list.map(item => ({
     category: Number.parseInt(item.category),

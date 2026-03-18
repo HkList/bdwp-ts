@@ -1,6 +1,8 @@
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { computed } from 'vue'
 
+const wxReg = /MicroMessenger/i
+
 export function useMobile() {
   const breakpoints = useBreakpoints(breakpointsTailwind)
   const isMobile = computed(() => {
@@ -8,6 +10,6 @@ export function useMobile() {
   })
   return {
     isMobile,
-    isWeChat: /MicroMessenger/i.test(navigator.userAgent),
+    isWeChat: wxReg.test(navigator.userAgent),
   }
 }

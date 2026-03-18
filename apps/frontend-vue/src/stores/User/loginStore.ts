@@ -1,4 +1,5 @@
 import type { SmsLoginModelType } from '@backend/modules/user/smslogin/model.ts'
+import { phoneReg } from '@backend/utils/validatePhone.ts'
 import { api } from '@frontend/api/index.ts'
 import { useProForm } from '@frontend/hooks/useProForm.ts'
 import { useDownloadTicketStore } from '@frontend/stores/User/downloadTicketStore.ts'
@@ -107,7 +108,7 @@ export const useLoginStore = defineStore('user_login', () => {
       smsvc: [],
     },
     rules: () => ({
-      phone: [{ required: true }, { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' }],
+      phone: [{ required: true }, { pattern: phoneReg, message: '请输入正确的手机号' }],
       smsvc: { type: 'array', required: true, len: 6, message: '请输入6位验证码' },
     }),
     onSubmit: (body) => {

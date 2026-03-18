@@ -43,6 +43,8 @@ export interface GetCookieByBdussOptions {
   bduss: string
 }
 
+const fixResponseReg = /'(.*?)'/g
+
 export async function getCookieByBduss(
   options: GetCookieByBdussOptions,
 ): Promise<GetCookieByBdussResponse> {
@@ -72,7 +74,7 @@ export async function getCookieByBduss(
   if (typeof response === 'string') {
     // 需要手动兼容
     const content = response
-      .replace(/'(.*?)'/g, '"$1"')
+      .replace(fixResponseReg, '"$1"')
       .replaceAll('"[', '[')
       .replaceAll(']"', ']')
       .replaceAll('\\&quot;', '"')

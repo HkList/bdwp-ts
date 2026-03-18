@@ -87,7 +87,7 @@ export const useKeysStore = defineStore('admin_keys', () => {
     }),
     loading: addKeyLoading,
     onSubmit: async (value) => {
-      addKeyModalForm.value.form.values.value.keys = Array.from({ length: value.count }, () => randomString(8)).join('\n')
+      addKeyModalForm.value.form.values.value.keys = Array.from({ length: value.count }).fill(randomString(8)).join('\n')
       addRandomModalForm.value.close()
     },
   })

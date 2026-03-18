@@ -8,6 +8,7 @@ export default antfu(
       '**/dist/**',
       '**/drizzle/**',
       '**/.eslintcache',
+      '**/backend/public/**',
     ],
     typescript: true,
     vue: true,

@@ -3,3 +3,4 @@ node_modules
 .eslintcache
 test/test.ts
 .env
+public/*

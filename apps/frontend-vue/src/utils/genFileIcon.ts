@@ -90,7 +90,7 @@ export function getFileType(filename: string): ReturnFileType {
       if (single !== 'single')
         return single as ReturnFileType
       const arr = filename.split('.')
-      return arr[arr.length - 1] as ReturnFileType
+      return arr.at(-1) as ReturnFileType
     }
   }
 

@@ -1,3 +1,5 @@
+import path from 'node:path'
+import process from 'node:process'
 import { config } from '@backend/config.ts'
 import {
   AccountModule,
@@ -11,14 +13,16 @@ import {
   UserModule,
 } from '@backend/modules/index.ts'
 import { KeyAuthPlugin } from '@backend/plugins/keyAuthPlugin.ts'
+import { SpaPlugin } from '@backend/plugins/spaPlugin.ts'
 import { UserAuthPlugin } from '@backend/plugins/userAuthPlugin.ts'
 import { bearer } from '@elysiajs/bearer'
 import { cors } from '@elysiajs/cors'
 import { openapi } from '@elysiajs/openapi'
-import { staticPlugin } from '@elysiajs/static'
 import packageJson from '@root/package.json' with { type: 'json' }
 import { DrizzleQueryError } from 'drizzle-orm/errors'
 import { Elysia, ElysiaCustomStatusResponse, status } from 'elysia'
+
+export const publicPath = path.join(process.cwd(), 'public')
 
 export const app = new Elysia()
   .use(
@@ -57,7 +61,11 @@ export const app = new Elysia()
   )
   .use(bearer())
   .use(cors())
-  .use(staticPlugin())
+  .use(
+    SpaPlugin({
+      dir: publicPath,
+    }),
+  )
   .onError((context) => {
     const { code, error } = context
 
