@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useDownloadTicketStore } from '@frontend/stores/User/downloadTicketStore.ts'
 import { useLoginStore } from '@frontend/stores/User/loginStore.ts'
+import { formatDateToString } from '@frontend/utils/format.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import Login from '@frontend/views/User/Key/Login/Index.vue'
 import Transfer from '@frontend/views/User/Key/Transfer.vue'
@@ -62,7 +63,7 @@ onMounted(async () => {
         {{
           keyInfo.data.data.total_hours === 0
             ? "永久有效"
-            : keyInfo.data.data.expired_at ?? "暂未使用"
+            : formatDateToString(keyInfo.data.data.expired_at) ?? "暂未使用"
         }}
       </p>
       <p>
