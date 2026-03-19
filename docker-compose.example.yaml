@@ -1,0 +1,32 @@
+services:
+  bdwp-ts:
+    container_name: bdwp-ts
+    image: huankong233/bdwp-ts:latest
+    restart: always
+    # 依赖项：确保数据库和缓存启动后再启动应用
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      # 设置环境变量，可以设置其他配置项
+      # 详见 apps/backend/src/config.ts
+      - DATABASE_URL=postgres://bdwp-ts:admin_password@postgres:5432/bdwp_db
+      - REDIS_HOST=redis
+
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+
+  postgres:
+    container_name: postgres
+    image: postgres:18.3-alpine 
+    restart: always
+    environment:
+      POSTGRES_USER: bdwp-ts
+      POSTGRES_PASSWORD: admin_password
+      POSTGRES_DB: bdwp_db
+    volumes:
+      # 将主机的 /www/postgres 目录挂载到容器的 /var/lib/postgresql 目录，以持久化数据库数据
+      - /www/postgres:/var/lib/postgresql

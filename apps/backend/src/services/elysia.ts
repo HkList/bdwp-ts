@@ -27,6 +27,7 @@ export const publicPath = path.join(process.cwd(), 'public')
 export const app = new Elysia()
   .use(
     openapi({
+      enabled: config.NODE_ENV === 'development',
       path: config.OPENAPI_PATH,
       documentation: {
         info: {
@@ -55,7 +56,8 @@ export const app = new Elysia()
         },
       },
       exclude: {
-        paths: ['/', '/*', '', '/public/*'],
+        // 兼容 spaPlugin 的路由
+        paths: ['/*'],
       },
     }),
   )
