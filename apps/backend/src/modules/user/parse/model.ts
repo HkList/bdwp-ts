@@ -90,10 +90,22 @@ export const ParseModel = {
     message: t.Literal('创建异步任务失败'),
     data: t.Null(),
   }),
+
+  signOutQuery: t.Object({
+    key: t.String(),
+  }),
+  signOutBody: t.Object({
+    login_id: t.String(),
+  }),
+  signOutSuccess: t.Object({
+    message: t.Literal('退出登录成功'),
+    data: t.Null(),
+  }),
 }
 
 export interface ParseModelType {
   getKeyInfoQuery: typeof ParseModel.getKeyInfoQuery.static
   getListQuery: typeof ParseModel.getListQuery.static
   transferBody: typeof ParseModel.transferBody.static
+  signOutBody: typeof ParseModel.signOutBody.static
 }

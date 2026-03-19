@@ -4,7 +4,7 @@ import { useAsyncJob } from '@frontend/hooks/useAsyncJob.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
 import { useLayoutStore } from '@frontend/stores/layoutStore.ts'
 import { useLoginStore } from '@frontend/stores/User/loginStore.ts'
-import { message } from '@frontend/utils/discreteApi.ts'
+import { notification } from '@frontend/utils/discreteApi.ts'
 import { formatBytes } from '@frontend/utils/format.ts'
 import { iconList } from '@frontend/utils/genFileIcon'
 import { getFileIcon } from '@frontend/utils/genFileIcon.ts'
@@ -172,7 +172,7 @@ export const useDownloadTicketStore = defineStore('user_download_ticket', () => 
     transfering.value = true
 
     if (!loginId.value) {
-      message.error('异常转存, 缺少 login_id')
+      notification.error({ title: '异常转存, 缺少 login_id', duration: 3000 })
       transfering.value = false
       return
     }

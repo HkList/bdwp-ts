@@ -2,7 +2,7 @@ import type { SmsLoginModelType } from '@backend/modules/user/smslogin/model.ts'
 import { api } from '@frontend/api/index.ts'
 import { useProForm } from '@frontend/hooks/useProForm.ts'
 import { useDownloadTicketStore } from '@frontend/stores/User/downloadTicketStore.ts'
-import { message } from '@frontend/utils/discreteApi.ts'
+import { notification } from '@frontend/utils/discreteApi.ts'
 import { wakeUpMobileApp } from '@frontend/utils/wakeup.ts'
 import { useStorage } from '@vueuse/core'
 import { defineStore, storeToRefs } from 'pinia'
@@ -47,7 +47,7 @@ export const useLoginStore = defineStore('user_login', () => {
         qrCodeExpireTimeElapsed.value -= 1
       }
       else {
-        message.info('二维码已过期，正在重新获取...')
+        notification.error({ title: '二维码已过期，正在重新获取...', duration: 3000 })
         getQrCode()
       }
     }, 1000)
@@ -116,6 +116,16 @@ export const useLoginStore = defineStore('user_login', () => {
     },
   })
 
+  const logout = async () => {
+    if (!loginId.value) {
+      return
+    }
+
+    api.user.parse.sign_out.post({ login_id: loginId.value }, { query: { key: key.value } })
+
+    loginId.value = null
+  }
+
   return {
     loginId,
     isLogin,
@@ -140,5 +150,7 @@ export const useLoginStore = defineStore('user_login', () => {
 
     loginBySms,
     loginBySmsLoading,
+
+    logout,
   }
 })

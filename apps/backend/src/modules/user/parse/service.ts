@@ -3,6 +3,7 @@ import type { ParseModelType } from '@backend/modules/user/parse/model.ts'
 import { getWxFileList } from '@backend/api'
 import { Drizzle } from '@backend/db'
 import { transferFileJob } from '@backend/jobs/transferFile.ts'
+import { redis } from '@backend/services/redis.ts'
 import { status } from 'elysia'
 
 export class ParseService {
@@ -72,6 +73,14 @@ export class ParseService {
       data: {
         task_id: job.id,
       },
+    })
+  }
+
+  static async signOut(body: ParseModelType['signOutBody']) {
+    await redis.del(`cookie:${body.login_id}`)
+    return status(200, {
+      message: '退出登录成功',
+      data: null,
     })
   }
 }

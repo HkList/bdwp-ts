@@ -39,3 +39,14 @@ export const ParseModule = new Elysia({ prefix: '/parse' })
       tags: ['解析组件'],
     },
   })
+  .post('/sign_out', async ({ body }) => await ParseService.signOut(body), {
+    query: ParseModel.signOutQuery,
+    body: ParseModel.signOutBody,
+    response: {
+      200: ParseModel.signOutSuccess,
+    },
+    detail: {
+      summary: '退出登录',
+      tags: ['解析组件'],
+    },
+  })

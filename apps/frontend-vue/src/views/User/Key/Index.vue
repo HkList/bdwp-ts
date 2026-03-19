@@ -5,7 +5,7 @@ import { formatDateToString } from '@frontend/utils/format.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
 import Login from '@frontend/views/User/Key/Login/Index.vue'
 import Transfer from '@frontend/views/User/Key/Transfer.vue'
-import { LogIn } from '@vicons/ionicons5'
+import { LogIn, LogOut } from '@vicons/ionicons5'
 import { NButton, NDivider, NFlex, NInput, NResult, NSpin } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
@@ -13,6 +13,7 @@ import { onMounted, ref } from 'vue'
 const loginStore = useLoginStore()
 const downloadTicketStore = useDownloadTicketStore()
 
+const { logout } = loginStore
 const { getKeyInfo } = downloadTicketStore
 
 const { isLogin } = storeToRefs(loginStore)
@@ -56,6 +57,7 @@ onMounted(async () => {
     <NDivider title-placement="left">
       卡密信息
     </NDivider>
+
     <div class="key_info">
       <p>卡密信息: {{ key }}</p>
       <p>
@@ -81,6 +83,17 @@ onMounted(async () => {
             ? `${keyInfo.data.data.user_data.netdisk_name} (${keyInfo.data.data.user_data.uk})`
             : "未绑定"
         }}
+
+        <NButton
+          v-if="isLogin"
+          size="small"
+          type="warning"
+          :render-icon="renderIcon(LogOut)"
+          :style="{ marginLeft: '10px', position: 'relative', top: '4px' }"
+          @click="logout"
+        >
+          退出登陆
+        </NButton>
       </p>
     </div>
 
