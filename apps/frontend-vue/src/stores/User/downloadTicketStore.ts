@@ -79,7 +79,6 @@ export const useDownloadTicketStore = defineStore('user_download_ticket', () => 
       columns: () => [
         {
           type: 'selection',
-          disabled: ({ is_dir }) => is_dir, // 禁止选择文件夹
         },
         {
           title: '文件名',
@@ -123,7 +122,9 @@ export const useDownloadTicketStore = defineStore('user_download_ticket', () => 
           title: '分享链接',
           onBlur() {
             const { url, pwd } = parseBaiduShareLink(fileListSearchFormValues.value.surl)
-            fileListSearchFormValues.value.surl = url
+            if (url !== '') {
+              fileListSearchFormValues.value.surl = url
+            }
             if (pwd !== '') {
               fileListSearchFormValues.value.pwd = pwd
             }

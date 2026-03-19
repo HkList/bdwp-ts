@@ -112,7 +112,7 @@ export const api = treaty<App>(window?.location?.origin, {
 
       if (['令牌对应用户不存在', '令牌无效', '未提供令牌'].includes(json.message)) {
         notification.error({
-          content: '正在为您跳转到登陆页面...',
+          content: '正在为您跳转到登录页面...',
           duration: 3000,
           title: json.message,
         })

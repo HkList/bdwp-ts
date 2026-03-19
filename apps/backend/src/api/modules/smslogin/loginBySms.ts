@@ -100,7 +100,7 @@ export type LoginBySmsResponse
   = | ElysiaCustomStatusResponse<
     200,
     {
-      message: '短信登陆成功'
+      message: '短信登录成功'
       data: {
         bduss: string
         stoken: string
@@ -193,14 +193,14 @@ export async function loginBySms(
 
   if (typeof response === 'string') {
     return status(500, {
-      message: '短信登陆失败: 接口可能失效',
+      message: '短信登录失败: 接口可能失效',
       data: null,
     })
   }
 
   if (response.errInfo.no !== '0') {
     return status(500, {
-      message: `短信登陆失败: ${response.errInfo.msg}`,
+      message: `短信登录失败: ${response.errInfo.msg}`,
       data: null,
     })
   }
@@ -211,13 +211,13 @@ export async function loginBySms(
   const stoken = stokenMatch?.[1]
   if (!stokenMatch || !stoken) {
     return status(500, {
-      message: '短信登陆失败: 无法从响应中提取stoken',
+      message: '短信登录失败: 无法从响应中提取stoken',
       data: null,
     })
   }
 
   return status(200, {
-    message: '短信登陆成功',
+    message: '短信登录成功',
     data: {
       bduss: typedResponse.data.bduss,
       stoken,

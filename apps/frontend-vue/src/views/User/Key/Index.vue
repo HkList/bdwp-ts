@@ -94,7 +94,7 @@ onMounted(async () => {
           :style="{ marginLeft: '10px', position: 'relative', top: '4px' }"
           @click="logout"
         >
-          退出登陆
+          退出登录
         </NButton>
       </p>
     </div>

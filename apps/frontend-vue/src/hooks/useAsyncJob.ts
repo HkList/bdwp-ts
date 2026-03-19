@@ -1,5 +1,5 @@
 import { api } from '@frontend/api/index.ts'
-import { notification } from '@frontend/utils/discreteApi.ts'
+import { loadingBar, notification } from '@frontend/utils/discreteApi.ts'
 import { NFlex, NSpin } from 'naive-ui'
 import { h } from 'vue'
 
@@ -72,6 +72,7 @@ export async function useAsyncJob<T>(
         setTimeout(() => {
           notificationLoading.destroy()
         }, 3000)
+        loadingBar.finish()
         return result as AsyncJobResult<T>
       }
     }
