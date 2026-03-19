@@ -1,7 +1,7 @@
 import env from 'env-var'
 
 export const config = {
-  NODE_ENV: env.get('NODE_ENV').default('development').asEnum(['production', 'development']),
+  NODE_ENV: env.get('NODE_ENV').default('production').asEnum(['production', 'development']),
   APP_PORT: env.get('APP_PORT').default(3000).asPortNumber(),
 
   REDIS_HOST: env.get('REDIS_HOST').default('localhost').asString(),

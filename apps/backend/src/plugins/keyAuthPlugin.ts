@@ -21,9 +21,7 @@ export function KeyAuthPlugin() {
       throw status(403, { message: `卡密不可用, 原因: ${key.reason}`, data: null })
     }
 
-    // 如果total_hours是0就不更新expired_at
-    // 这里再判断一下是不是0, 防止不小心吧expired_at错误的设置了非null值
-    if (key.total_hours !== 0 && key.expired_at && key.expired_at < new Date()) {
+    if (key.expired_at && key.expired_at < new Date()) {
       throw status(403, { message: '卡密已过期', data: null })
     }
 
