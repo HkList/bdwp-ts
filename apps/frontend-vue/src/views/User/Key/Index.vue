@@ -63,9 +63,11 @@ onMounted(async () => {
       <p>
         到期时间:
         {{
-          keyInfo.data.data.total_hours === 0
-            ? "永久有效"
-            : formatDateToString(keyInfo.data.data.expired_at) ?? "暂未使用"
+          keyInfo.data.data.expired_at
+            ? formatDateToString(keyInfo.data.data.expired_at)
+            : keyInfo.data.data.total_hours === 0
+              ? "永久有效"
+              : "暂未使用"
         }}
       </p>
       <p>

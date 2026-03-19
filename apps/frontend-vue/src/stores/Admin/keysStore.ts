@@ -253,11 +253,12 @@ export const useKeysStore = defineStore('admin_keys', () => {
         },
         {
           title: '到期时间',
-          render: row => row.total_hours === 0
-            ? '永久有效'
-            : row.expired_at
+          render: row =>
+            row.expired_at
               ? renderProDateText(row.expired_at)
-              : '暂无到期时间',
+              : row.total_hours === 0
+                ? '永久有效'
+                : '暂无到期时间',
         },
         {
           title: '状态',
