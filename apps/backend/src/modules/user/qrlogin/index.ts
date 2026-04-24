@@ -25,7 +25,7 @@ export const QrloginModule = new Elysia({ prefix: '/qrlogin' })
       500: QrloginModel.loginByQrCodeFailed,
     },
     detail: {
-      summary: '登陆',
+      summary: '登录',
       tags: ['二维码登录'],
     },
   })

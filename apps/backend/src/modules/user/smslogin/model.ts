@@ -37,7 +37,7 @@ export const SmsLoginModel = {
     smsvc: t.String(),
   }),
   loginBySmsSuccess: t.Object({
-    message: t.Literal('短信登陆成功'),
+    message: t.Literal('短信登录成功'),
     data: t.Object({
       login_id: t.String(),
     }),

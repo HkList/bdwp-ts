@@ -13,7 +13,6 @@ import {
   UserModule,
 } from '@backend/modules/index.ts'
 import { KeyAuthPlugin } from '@backend/plugins/keyAuthPlugin.ts'
-import { SpaPlugin } from '@backend/plugins/spaPlugin.ts'
 import { UserAuthPlugin } from '@backend/plugins/userAuthPlugin.ts'
 import { bearer } from '@elysiajs/bearer'
 import { cors } from '@elysiajs/cors'
@@ -21,6 +20,7 @@ import { openapi } from '@elysiajs/openapi'
 import packageJson from '@root/package.json' with { type: 'json' }
 import { DrizzleQueryError } from 'drizzle-orm/errors'
 import { Elysia, ElysiaCustomStatusResponse, status } from 'elysia'
+import { SpaPlugin } from 'elysia-spa'
 
 export const publicPath = path.join(process.cwd(), 'public')
 
@@ -65,7 +65,7 @@ export const app = new Elysia()
   .use(cors())
   .use(
     SpaPlugin({
-      dir: publicPath,
+      assets: publicPath,
     }),
   )
   .onError((context) => {

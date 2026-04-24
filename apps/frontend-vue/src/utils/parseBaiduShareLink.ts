@@ -12,8 +12,18 @@ export function parseBaiduShareLink(url: string) {
   const pwdMatch2 = url.match(PWD_QUERY_CONTINUE_RE)
   const pwdMatch3 = url.match(PWD_TEXT_RE)
 
-  const surl = urlMatch ? urlMatch[1] : urlMatch2 ? `1${urlMatch2[1]}` : ''
-  const pwd = pwdMatch ? pwdMatch[1] : pwdMatch2 ? pwdMatch2[1] : pwdMatch3 ? pwdMatch3[1] : ''
+  const surl = urlMatch
+    ? urlMatch[1]
+    : urlMatch2
+      ? `1${urlMatch2[1]}`
+      : ''
+  const pwd = pwdMatch
+    ? pwdMatch[1]
+    : pwdMatch2
+      ? pwdMatch2[1]
+      : pwdMatch3
+        ? pwdMatch3[1]
+        : ''
 
   return {
     surl: surl ?? '',

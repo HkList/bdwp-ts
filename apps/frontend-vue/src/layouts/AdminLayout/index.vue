@@ -111,7 +111,7 @@ async function handleClickCrumb(item: Breadcrumb) {
             @click="toggle"
           />
 
-          <!-- 退出登陆 -->
+          <!-- 退出登录 -->
           <NPopconfirm :disabled="signOutLoading" @positive-click="signOut">
             <template #trigger>
               <NButton

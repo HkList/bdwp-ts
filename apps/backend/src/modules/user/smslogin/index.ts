@@ -15,7 +15,7 @@ export const SmsLoginModule = new Elysia({ prefix: '/smslogin' })
     },
     detail: {
       summary: '发送短信验证码',
-      tags: ['短信登陆'],
+      tags: ['短信登录'],
     },
   })
   .post('/login', async ({ body }) => await SmsLoginService.loginBySms(body), {
@@ -27,7 +27,7 @@ export const SmsLoginModule = new Elysia({ prefix: '/smslogin' })
       500: SmsLoginModel.loginBySmsFailed,
     },
     detail: {
-      summary: '登陆',
-      tags: ['短信登陆'],
+      summary: '登录',
+      tags: ['短信登录'],
     },
   })

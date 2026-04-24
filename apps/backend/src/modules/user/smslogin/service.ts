@@ -43,7 +43,7 @@ export class SmsLoginService {
     await redis.set(`cookie:${login_id}`, cookieRes.response.data.cookie, 'EX', config.LOGIN_ID_EXPIRE)
 
     return status(200, {
-      message: '短信登陆成功',
+      message: '短信登录成功',
       data: {
         login_id,
       },

@@ -116,7 +116,7 @@ const transferFileWorker: Processor<TransferFileJobData, TransferFileJobResponse
 
   if (key.user_data.uk !== userInfo.response.data.uk.toString()) {
     return status(500, {
-      message: '转存文件失败: 当前登陆账号与卡密绑定的账号不匹配, 请重新登录',
+      message: '转存文件失败: 当前登录账号与卡密绑定的账号不匹配, 请重新登录',
       data: null,
     })
   }
