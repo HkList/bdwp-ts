@@ -42,7 +42,9 @@ export default defineConfig({
       gzipSize: true,
       open: false,
     }),
-    compression(),
+    compression({
+      algorithms: ['br', 'gzip', 'zstd'],
+    }),
   ],
   resolve: {
     alias: {

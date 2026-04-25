@@ -19,7 +19,7 @@
     "dayjs": "^1.11.19",
     "drizzle-orm": "^1.0.0-beta.15-859cf75",
     "elysia": "^1.4.25",
-    "elysia-spa": "^0.0.1",
+    "elysia-spa": "^0.0.3",
     "env-var": "^7.5.0",
     "ioredis": "^5.9.3",
     "ky": "^1.14.3"
