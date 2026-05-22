@@ -124,6 +124,7 @@ export const useDownloadTicketStore = defineStore('user_download_ticket', () => 
             const { url, pwd } = parseBaiduShareLink(fileListSearchFormValues.value.surl)
             if (url !== '') {
               fileListSearchFormValues.value.surl = url
+              fileListSearchFormValues.value.dir = '/'
             }
             if (pwd !== '') {
               fileListSearchFormValues.value.pwd = pwd
@@ -147,6 +148,9 @@ export const useDownloadTicketStore = defineStore('user_download_ticket', () => 
         key: key.value,
         surl: '',
         dir: '/',
+      },
+      formProps: {
+        hideResetButton: true,
       },
       title: '分享链接信息',
       searchFormItemStyle: 'width: 100% !important;',

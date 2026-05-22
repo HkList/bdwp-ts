@@ -9,6 +9,7 @@ import { useAsyncJob } from '@frontend/hooks/useAsyncJob.ts'
 import { useProDataTablePlus } from '@frontend/hooks/useProDataTablePlus.ts'
 import { useProModalForm } from '@frontend/hooks/useProModalForm.ts'
 import { useRouteQueryWatcher } from '@frontend/hooks/useRouteQueryWatcher.ts'
+import { router } from '@frontend/router/index.ts'
 import { copyText } from '@frontend/utils/copyText.ts'
 import { dialog, notification } from '@frontend/utils/discreteApi.ts'
 import { renderIcon } from '@frontend/utils/renderIcon.ts'
@@ -303,6 +304,12 @@ export const useAccountsStore = defineStore('admin_accounts', () => {
         },
       ],
       initValues: {},
+      formProps: {
+        onReset() {
+          router.replace({ query: {} })
+          accountSearchFormValues.value.id = undefined
+        },
+      },
     },
   )
 

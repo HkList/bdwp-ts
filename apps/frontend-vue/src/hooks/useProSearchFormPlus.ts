@@ -18,6 +18,7 @@ export interface UseProSearchFormPlusOptions<T extends object> {
   /** 搜索表单卡片标题 */
   title?: string
   searchFormItemStyle?: string
+  formProps?: Omit<ProSearchFormPlusProps<T>, 'columns' | 'rules' | 'initValues' | 'value' | 'onUpdate:value'>
 }
 
 export interface ProSearchFormPlusReturn<T extends object> {
@@ -28,7 +29,7 @@ export interface ProSearchFormPlusReturn<T extends object> {
 }
 
 export function useProSearchFormPlus<T extends object>(options: UseProSearchFormPlusOptions<T>): ProSearchFormPlusReturn<T> {
-  const { columns, initValues, rules, title, searchFormItemStyle } = options
+  const { columns, initValues, rules, title, searchFormItemStyle, formProps } = options
 
   const formValues = ref(structuredClone(initValues))
   const computedColumns = computed(() => columns())
@@ -47,6 +48,7 @@ export function useProSearchFormPlus<T extends object>(options: UseProSearchForm
       'rules': computedRules.value,
       'title': title ?? '搜索',
       searchFormItemStyle,
+      ...formProps,
     })),
     formValues,
     rules: computedRules,

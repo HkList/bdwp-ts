@@ -237,12 +237,16 @@ const transferFileWorker: Processor<TransferFileJobData, TransferFileJobResponse
     })
   }
 
-  // 判断分享链接是否过期
-  if (dayjs(share_link.ctime).add(1, 'year').isBefore(dayjs())) {
-    return status(500, {
-      message: '转存文件失败: 分享链接已过期, 请联系管理员',
-      data: null,
-    })
+  // 取出当前分享链接的用户的信息
+  const keyUserData = share_link.tkbind_list.find(item => item.uk === userInfo.response.data.uk)
+  if (keyUserData) {
+    // 判断分享链接是否过期
+    if (dayjs(keyUserData.ctime).add(1, 'year').isBefore(dayjs())) {
+      return status(500, {
+        message: '转存文件失败: 分享链接已过期, 请联系管理员',
+        data: null,
+      })
+    }
   }
 
   // 更新卡密的过期时间
