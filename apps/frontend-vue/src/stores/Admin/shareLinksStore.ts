@@ -202,6 +202,12 @@ export const useShareLinksStore = defineStore('admin_share_links', () => {
         },
       ],
       initValues: {},
+      formProps: {
+        onReset() {
+          router.replace({ query: {} })
+          shareLinkSearchFormValues.value.id = undefined
+        },
+      },
     },
   )
 
